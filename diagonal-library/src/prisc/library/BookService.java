@@ -56,32 +56,45 @@ public class BookService {
          receive a String and returns a list of books containing it
          in the title. Uses BookRepository to find the books.
     */
-    public List<prisc.library.Book> findByTitle(String title){
-        return bookRepository.findByTitle(title);
+    public List<BookDTO> findByTitle(String title){
+        List<Book> books = bookRepository.findByTitle(title);
+        return books.stream().map(this::bookToDTO).toList();
     }
 
     /* **
          receive a String and returns a list of books containing it
          in the author name. Uses BookRepository to find the books.
     */
-    public List<prisc.library.Book> findByAuthor(String author){
-        return bookRepository.findByAuthor(author);
+    public List<BookDTO> findByAuthor(String author){
+        List<Book> books = bookRepository.findByAuthor(author);
+        return books.stream().map(this::bookToDTO).toList();
     }
 
     /* **
       receive an int and returns a list of books containing it
       as its year. Uses BookRepository to find the books.
    */
-    public List<prisc.library.Book> findByYear(int year) {
-        return bookRepository.findByYear(year);
+    public List<BookDTO> findByYear(int year) {
+        List<Book> books = bookRepository.findByYear(year);
+        return books.stream().map(this::bookToDTO).toList();
     }
 
     /* **
      receive an int and returns the book that has this id.
      Uses BookRepository to find the book.
     */
-    public prisc.library.Book findById(int id) {
-        return bookRepository.findById(id);
+    public BookDTO findById(int id) {
+        Book book = bookRepository.findById(id);
+        BookDTO bookDTO;
+
+        if (book == null){
+            bookDTO = new BookDTO(-1, "", "", 0);
+        } else {
+            bookDTO = bookToDTO(book);
+        }
+
+        return bookDTO;
+
     }
 
 
@@ -110,7 +123,7 @@ public class BookService {
 
     private void deleteBook(int id) {
 
-        bookRepository.delete(findById(id));
+        bookRepository.delete(bookRepository.findById(id));
 
     }
 

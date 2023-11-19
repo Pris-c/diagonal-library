@@ -51,11 +51,11 @@ public class LibraryPrinter {
 
     public static void printInvalidOption(){
         System.out.println();
-        System.out.println("## Invalid option.\n");
+        System.out.println("## Invalid option.");
     }
 
     public static void printFailMessage(String message){
-        System.out.println("## FAIL: " + message +"\n");
+        System.out.println("\n## FAIL: " + message +"\n");
     }
     public static void printMessage(String message){
         System.out.println("\n## " + message);
