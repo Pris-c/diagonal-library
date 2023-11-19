@@ -2,15 +2,109 @@ package prisc.library;
 
 import prisc.utils.LibraryPrinter;
 import prisc.utils.enums.NumericField;
+import prisc.utils.enums.Operation;
 import prisc.utils.enums.StringField;
 
 import java.time.Year;
+import java.util.List;
 import java.util.Scanner;
 
 public class BookController {
 
     private final Scanner scan = new Scanner(System.in);
     private final BookService bookService = new BookService();
+
+
+
+    public void mainMenu(){
+
+        String option;
+
+        do {
+
+            System.out.println("\n## What do you want to do?");
+            System.out.println("1 - Consult available books");
+            System.out.println("2 - Register a new book");
+            System.out.println("3 - Find a book");
+            System.out.println("4 - Update a book");
+            System.out.println("5 - Delete a book");
+            System.out.println("0 - Finish the application");
+            System.out.print(">> ");
+
+            option = scan.nextLine();
+
+            switch (option){
+                case "1":
+                    listAll();
+                    break;
+                case "2":
+                    save();
+                    break;
+                case "3":
+                    //findBook();
+                    break;
+                case "4":
+                    //updateById();
+                    break;
+                case "5":
+                    //deleteById();
+                    break;
+                case "0":
+                    break;
+                default:
+                    LibraryPrinter.printInvalidOption();
+
+            }
+
+        } while(!option.equals("0"));
+    }
+
+
+
+
+
+    public void listAll() {
+        List<BookDTO> books = bookService.getAll();
+
+        if (!books.isEmpty()){
+            LibraryPrinter.printMessage("Listing books..");
+            books.forEach(System.out::println);
+        } else {
+            LibraryPrinter.printMessage("No books were found");
+        }
+    }
+
+
+    public void save(){
+
+        Operation operation = Operation.SAVE;
+
+        LibraryPrinter.printMessage("Insert the new book's infos");
+
+        String title = readAValidTitleOrAuthor(StringField.TITLE, operation);
+
+        String author = readAValidTitleOrAuthor(StringField.AUTHOR, operation);
+
+        int year = readAValidYear();
+
+        BookDTO bookToBeSaved = new BookDTO(title, author, year);
+
+        BookDTO savedBook = bookService.save( bookToBeSaved );
+
+        int savedBookId = savedBook.getId();
+
+        if (savedBookId > 0){
+            LibraryPrinter.printMessage("Book saved successfully");
+            System.out.println(savedBook);
+
+        } else if (savedBookId < 0) {
+            LibraryPrinter.printFailMessage("This book is already registered.");
+        }
+        else {
+            LibraryPrinter.printFailMessage("The book could not be saved.");
+        }
+
+    }
 
 
 
@@ -34,8 +128,8 @@ public class BookController {
             or the user decide change the operation.
     */
 
-    private String readAValidTitleOrAuthor(StringField field){
-    //private String readAValidTitleOrAuthor(StringField field, Operation operation){
+    //private String readAValidTitleOrAuthor(StringField field){
+    private String readAValidTitleOrAuthor(StringField field, Operation operation){
 
         String fieldDescription = field.getFieldDescription();
 
@@ -47,17 +141,20 @@ public class BookController {
             LibraryPrinter.printEntryRequest(fieldDescription);
             String inputtedString = scan.nextLine();
             System.out.println();
+            // TODO: Improve printer
 
-            if(validateTitleAndAuthorString(inputtedString).equals(inputtedString) ){
+            if( validateTitleAndAuthorString(inputtedString)!=null && validateTitleAndAuthorString(inputtedString).equals(inputtedString) ){
                 validString = inputtedString;
                 stringIsValid = true;
 
             } else {
+
                 LibraryPrinter.printFailMessage("The " + fieldDescription.toLowerCase() + " must have between 1 and " + "100" +  " character");
 
-                    // TODO: Implements menus. Maybe use enum Operation to set correct menu
-                    // invalidInputToFindMenu(field);
-                    // invalidInputToInsertMenu(field);
+                if (operation.equals(Operation.SAVE)) {
+                    invalidInputToSave();
+                }
+                // else if (find)
 
             }
 
@@ -93,6 +190,8 @@ public class BookController {
                 yearIsValid = true;
             } else {
                 LibraryPrinter.printFailMessage("The year must be a number between 0 and " + currentYear);
+                invalidInputToSave();
+
                 // TODO: Implements menu.
                 // invalidInputToFindMenu(field);
                 // invalidInputToInsertMenu(field);
@@ -127,6 +226,7 @@ public class BookController {
                 idIsValid = true;
             } else {
                 LibraryPrinter.printFailMessage("The Id must be a positive number");
+                invalidInputToSave();
                 // TODO: Implements menu.
                 // invalidInputToFindMenu(field);
                 // invalidInputToInsertMenu(field)
@@ -185,7 +285,7 @@ public class BookController {
             intYear = Integer.parseInt(inputtedYear);
 
             if ( (intYear < 0) || (intYear > currentYear) ){
-                intYear = -1;
+                intYear = null;
             }
 
         } catch (Exception ignored){}
@@ -213,6 +313,37 @@ public class BookController {
         } catch (Exception ignored){}
 
         return validId;
+
+    }
+
+
+    private void invalidInputToSave() {
+        boolean validOption = false;
+
+        do {
+
+            System.out.println("1 - Try it again\n" +
+                                "0 - Return to the main menu");
+
+
+            LibraryPrinter.printEntryRequest();
+            String option = scan.nextLine();
+
+            switch (option) {
+                case "1":
+                    validOption = true;
+                    // Returns to method that calls it
+                    break;
+
+                case "0":
+                    validOption = true;
+                    mainMenu();
+                    break;
+                default:
+                    LibraryPrinter.printInvalidOption();
+                    break;
+            }
+        } while (!validOption);
 
     }
 

@@ -16,8 +16,11 @@ public class BookService {
     /* **
           call BookRepository and returns a list with all books saved in the database
     */
-    private List<Book> getAll() {
-        return bookRepository.getAll();
+    protected List<BookDTO> getAll() {
+        List<Book> books = bookRepository.getAll();
+
+        return books.stream().map(this::bookToDTO).toList();
+
     }
 
 
@@ -29,14 +32,22 @@ public class BookService {
           and returns the book that was saved.
 
     */
-    private Book save(BookDTO bookToBeSaved){
+    protected BookDTO save(BookDTO bookToBeSaved){
+
+        Book book;
+        BookDTO savedBook;
 
         if (bookAlreadyExists(bookToBeSaved)){
-        // TODO: Personalize exception
-            return null;
+            savedBook = new BookDTO(-1, bookToBeSaved.getTitle(), bookToBeSaved.getAuthor(), bookToBeSaved.getYear());
+
         } else {
-           return   bookRepository.save(bookToBeSaved);
+
+           book =   bookRepository.save(bookToBeSaved);
+           savedBook = new BookDTO(book.getBookId(), book.getTitle(), book.getAuthor(), book.getYear());
+
         }
+
+        return savedBook;
 
     }
 
@@ -142,6 +153,10 @@ public class BookService {
             bookAlreadyExists = true;
         }
         return bookAlreadyExists;
+    }
+
+    public BookDTO bookToDTO(Book book){
+        return new BookDTO(book.getBookId(), book.getTitle(), book.getAuthor(), book.getYear());
     }
 
 

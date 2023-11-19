@@ -1,15 +1,10 @@
-import prisc.library.LibraryService;
+import prisc.library.BookController;
 
 public class Main {
     public static void main(String[] args) {
 
-        LibraryService libraryHelper = new LibraryService();
-
-        libraryHelper.fillBooksList();
-
-        System.out.println("Welcome to the Diagonal Library");
-
-        libraryHelper.mainMenu();
+        BookController bookController = new BookController();
+        bookController.mainMenu();
 
     }
 }
