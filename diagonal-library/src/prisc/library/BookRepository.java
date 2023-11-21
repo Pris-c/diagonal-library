@@ -89,15 +89,14 @@ public class BookRepository {
 
 
 
-    public Book update(int id, BookDTO bookToBeUpdated) {
-        Book book = findById(id);
+    public Book update(Book bookToBeUpdated) {
+        Book book = findById(bookToBeUpdated.getBookId());
 
         book.setTitle(bookToBeUpdated.getTitle());
         book.setAuthor(bookToBeUpdated.getAuthor());
         book.setYear(bookToBeUpdated.getYear());
 
         return book;
-
 
     }
 

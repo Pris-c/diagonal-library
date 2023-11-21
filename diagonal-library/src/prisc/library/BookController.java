@@ -2,8 +2,8 @@ package prisc.library;
 
 import prisc.utils.LibraryPrinter;
 import prisc.utils.enums.NumericField;
-import prisc.utils.enums.Operation;
 import prisc.utils.enums.StringField;
+import prisc.utils.enums.UpdateStatus;
 
 import java.time.Year;
 import java.util.List;
@@ -19,6 +19,7 @@ public class BookController {
     public void mainMenu(){
 
         String option;
+        boolean validOption = false;
 
         do {
 
@@ -45,18 +46,20 @@ public class BookController {
                     find();
                     break;
                 case "4":
-                    //updateById();
+                    update();
                     break;
                 case "5":
-                    //deleteById();
+                    //delete();
+                    validOption = true;
                     break;
                 case "0":
+                    validOption = true;
                     break;
                 default:
                     LibraryPrinter.printInvalidOption();
             }
 
-        } while(!option.equals("0"));
+        } while(!validOption);
     }
 
 
@@ -77,15 +80,16 @@ public class BookController {
 
     public void save(){
 
-        Operation operation = Operation.SAVE;
+        LibraryPrinter.printMessage("Insert the new book's information");
 
-        LibraryPrinter.printMessage("Insert the new book's infos");
+        //String title = readAValidTitleOrAuthor(StringField.TITLE, operation);
+        String title = readAValidTitleOrAuthor(StringField.TITLE);
 
-        String title = readAValidTitleOrAuthor(StringField.TITLE, operation);
+        //String author = readAValidTitleOrAuthor(StringField.AUTHOR, operation);
+        String author = readAValidTitleOrAuthor(StringField.AUTHOR);
 
-        String author = readAValidTitleOrAuthor(StringField.AUTHOR, operation);
-
-        int year = readAValidYear(operation);
+        //int year = readAValidYear(operation);
+        int year = readAValidYear();
 
         BookDTO bookToBeSaved = new BookDTO(title, author, year);
 
@@ -98,7 +102,8 @@ public class BookController {
             System.out.println(savedBook);
 
         } else if (savedBookId < 0) {
-            LibraryPrinter.printFailMessage("This book is already registered.");
+            LibraryPrinter.printFailMessage("The Book \"" + bookToBeSaved.getTitle() + "\"" + " by " + bookToBeSaved.getAuthor() + " already exists.");
+
         }
         else {
             LibraryPrinter.printFailMessage("The book could not be saved.");
@@ -108,7 +113,8 @@ public class BookController {
 
 
     public void  find(){
-        String option = "-1";
+        String option;
+        boolean validOption = false;
 
         do {
             LibraryPrinter.printMessage("Chose one option:");
@@ -116,33 +122,117 @@ public class BookController {
             System.out.println("2 - Find a book by author");
             System.out.println("3 - Find a book by year");
             System.out.println("4 - Find a book by id");
-            System.out.println("0 - Back to the Main menu");
+            System.out.println("0 - Back to the main menu");
             LibraryPrinter.printEntryRequest();
 
             option = scan.nextLine();
 
             switch (option){
                 case "1":
+                    validOption = true;
                     findByTitle();
                     break;
                 case "2":
+                    validOption = true;
                     findByAuthor();
                     break;
                 case "3":
+                    validOption = true;
                     findByYear();
                     break;
                 case "4":
+                    validOption = true;
                     findById();
                     break;
                 case "0":
                     // returns to method that call it
-                    option = "0";
+                    validOption = true;
                     break;
                 default:
                     LibraryPrinter.printInvalidOption();
             }
 
-        } while (!option.equals("0"));
+        } while (!validOption);
+    }
+
+
+    private void update(){
+
+        int id = readAValidId();
+        //int id = readAValidId(operation);
+
+        BookDTO bookToBeUpdate = bookService.findById(id);
+        int bookId = bookToBeUpdate.getId();
+
+        if (bookId >= 0){
+
+            LibraryPrinter.printMessage("Found book..");
+            System.out.println(bookToBeUpdate);
+            String option;
+            UpdateStatus updateStatus = null;
+
+            do {
+
+                LibraryPrinter.printMessage("Pick an option: ");
+                System.out.println("""
+                        1 - Update Title
+                        2 - Update Author
+                        3 - Update Year
+                        0 - Back to the main menu""");
+                LibraryPrinter.printEntryRequest();
+
+                option = scan.nextLine();
+
+                switch (option){
+                    case "1":
+
+                        //bookToBeUpdate.setTitle(readAValidTitleOrAuthor(StringField.TITLE, operation));
+                        bookToBeUpdate.setTitle(readAValidTitleOrAuthor(StringField.TITLE));
+                        updateStatus = bookService.update(bookToBeUpdate);
+                        break;
+
+                    case "2":
+
+                        //bookToBeUpdate.setAuthor(readAValidTitleOrAuthor(StringField.AUTHOR, operation));
+                        bookToBeUpdate.setAuthor(readAValidTitleOrAuthor(StringField.AUTHOR));
+                        updateStatus = bookService.update(bookToBeUpdate);
+                        break;
+
+                    case "3":
+
+                        //bookToBeUpdate.setYear(readAValidYear(operation));
+                        bookToBeUpdate.setYear(readAValidYear());
+                        updateStatus = bookService.update(bookToBeUpdate);
+                        break;
+
+                    case "0":
+                        break;
+                    default:
+                        LibraryPrinter.printInvalidOption();
+                        break;
+
+                }
+
+                if (updateStatus != null) {
+
+                    if (updateStatus.equals(UpdateStatus.SUCCESS)) {
+                        LibraryPrinter.printMessage("Book updated successful");
+                        System.out.println(bookService.findById(bookToBeUpdate.getId()));
+                    } else if (updateStatus.equals(UpdateStatus.SAME_BOOK)) {
+                        LibraryPrinter.printFailMessage("The new book information is equals to the previous one.");
+                    } else if (updateStatus.equals(UpdateStatus.BOOK_ALREADY_EXISTS)) {
+                        LibraryPrinter.printFailMessage("One book with Title: " + bookToBeUpdate.getTitle() +
+                                " Author: " + bookToBeUpdate.getAuthor() + " already exists");
+                    }
+                }
+
+
+            } while (!option.equals("0"));
+
+        } else {
+            LibraryPrinter.printMessage("No books were found");
+        }
+
     }
 
 
@@ -151,9 +241,7 @@ public class BookController {
 
     private void findByTitle(){
 
-        Operation operation = Operation.FIND;
-
-        String title = readAValidTitleOrAuthor(StringField.TITLE, operation);
+        String title = readAValidTitleOrAuthor(StringField.TITLE);
 
         List<BookDTO> books = bookService.findByTitle(title);
 
@@ -170,9 +258,7 @@ public class BookController {
 
     private void findByAuthor(){
 
-        Operation operation = Operation.FIND;
-
-        String author = readAValidTitleOrAuthor(StringField.AUTHOR, operation);
+        String author = readAValidTitleOrAuthor(StringField.AUTHOR);
 
         List<BookDTO> books = bookService.findByAuthor(author);
 
@@ -182,16 +268,12 @@ public class BookController {
         } else {
             LibraryPrinter.printMessage("No books were found");
         }
-
-
     }
 
 
     private void findById(){
 
-        Operation operation = Operation.FIND;
-
-        int id = readAValidId(operation);
+        int id = readAValidId();
 
         BookDTO book = bookService.findById(id);
         int bookId = book.getId();
@@ -202,18 +284,13 @@ public class BookController {
         } else {
             LibraryPrinter.printMessage("No books were found");
         }
-
-
     }
 
 
 
     private void findByYear(){
 
-
-        Operation operation = Operation.FIND;
-
-        int year = readAValidYear(operation);
+        int year = readAValidYear();
 
         List<BookDTO> books = bookService.findByYear(year);
 
@@ -223,19 +300,7 @@ public class BookController {
         } else {
             LibraryPrinter.printMessage("No books were found");
         }
-
-
     }
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -247,8 +312,7 @@ public class BookController {
             or the user decide change the operation.
     */
 
-    //private String readAValidTitleOrAuthor(StringField field){
-    private String readAValidTitleOrAuthor(StringField field, Operation operation){
+    private String readAValidTitleOrAuthor(StringField field){
 
         String fieldDescription = field.getFieldDescription();
 
@@ -266,15 +330,9 @@ public class BookController {
 
             } else {
 
-                LibraryPrinter.printFailMessage("The " + fieldDescription.toLowerCase() + " must have between 1 and " + "100" +  " character");
+                LibraryPrinter.printFailMessage("The " + fieldDescription.toLowerCase() + " must have between 1 and " + "100" + " character");
 
-                if (operation.equals(Operation.SAVE)) {
-                    invalidInputToSave();
-                } else if (operation.equals(Operation.FIND)) {
-                    invalidInputToFind();
-                }
-                // else if (OTHER)
-
+                invalidInput();
             }
 
         } while(!stringIsValid);
@@ -289,7 +347,8 @@ public class BookController {
             or the user decide change the operation.
     */
 
-    private int readAValidYear(Operation operation) {
+    //private int readAValidYear(Operation operation) {
+    private int readAValidYear() {
 
         String stringYear;
         Integer validYear;
@@ -310,12 +369,7 @@ public class BookController {
 
                 LibraryPrinter.printFailMessage("The year must be a number between 0 and " + currentYear);
 
-                if (operation.equals(Operation.SAVE)) {
-                    invalidInputToSave();
-                } else if (operation.equals(Operation.FIND)){
-                    invalidInputToFind();
-                }
-
+                invalidInput();
             }
 
         } while (!yearIsValid);
@@ -323,11 +377,12 @@ public class BookController {
         return validYear;
     }
 
+
     /* **
            Read inputs from the user until be inserted a valid id
            or the user decide change the operation.
    */
-    private int readAValidId(Operation operation) {
+    private int readAValidId() {
 
         String stringId;
         Integer validId;
@@ -346,24 +401,13 @@ public class BookController {
                 idIsValid = true;
             } else {
                 LibraryPrinter.printFailMessage("The id must be a positive number");
-               if (operation.equals(Operation.SAVE)) {
-                    invalidInputToSave();
-                } else if (operation.equals(Operation.FIND)){
-                    invalidInputToFind();
-                }
+                invalidInput();
             }
 
         } while (!idIsValid);
 
         return validId;
     }
-
-
-
-
-
-
-
 
 
     /*            ** VALIDATE INPUTS METHODS **                     */
@@ -439,7 +483,7 @@ public class BookController {
 
     /*            ** INVALID INPUTS MENUS  **                     */
 
-    private void invalidInputToSave() {
+    private void invalidInput() {
         boolean validOption = false;
 
         do {
@@ -469,46 +513,6 @@ public class BookController {
         } while (!validOption);
 
     }
-
-    private void invalidInputToFind(){
-
-        boolean validOption = false;
-
-        do {
-
-            System.out.println("""
-                    1 - Try it again
-                    2 - Select another search option
-                    0 - Return to the main menu""");
-
-
-            LibraryPrinter.printEntryRequest();
-            String option = scan.nextLine();
-
-            switch (option) {
-                case "1":
-                    validOption = true;
-                    // Returns to method that calls it
-                    break;
-
-                case "2":
-                    validOption = true;
-                    find();
-                    break;
-
-                case "0":
-                    validOption = true;
-                    mainMenu();
-                    break;
-                default:
-                    LibraryPrinter.printInvalidOption();
-                    break;
-            }
-        } while (!validOption);
-
-
-    }
-
 
 
 }

@@ -38,12 +38,12 @@ public class BookService {
         BookDTO savedBook;
 
         if (bookAlreadyExists(bookToBeSaved)){
-            savedBook = new BookDTO(-1, bookToBeSaved.getTitle(), bookToBeSaved.getAuthor(), bookToBeSaved.getYear());
+            savedBook = new BookDTO(-1, "", "", 0);
 
         } else {
 
-           book =   bookRepository.save(bookToBeSaved);
-           savedBook = new BookDTO(book.getBookId(), book.getTitle(), book.getAuthor(), book.getYear());
+           book = bookRepository.save(bookToBeSaved);
+           savedBook = bookToDTO(book);
 
         }
 
@@ -98,26 +98,31 @@ public class BookService {
     }
 
 
-    public UpdateStatus update(int id, BookDTO bookToBeUpdated) {
+    public UpdateStatus update(BookDTO bookToBeUpdated) {
 
         UpdateStatus updateStatus;
-        Book book = bookRepository.findById(id);
+        Book book = bookRepository.findById(bookToBeUpdated.getId());
 
-        boolean bookIsTheSame = isBookIsTheSame(bookToBeUpdated, book);
+        boolean bookIsTheSame = compareBooks(bookToBeUpdated, book);
 
         if (bookIsTheSame){
+
             updateStatus = UpdateStatus.SAME_BOOK;
             
         } else if (bookAlreadyExists(bookToBeUpdated)) {
 
             updateStatus = UpdateStatus.BOOK_ALREADY_EXISTS;
-        } else {
 
-            bookRepository.update(id, bookToBeUpdated);
+        } else {
+            book.setTitle(bookToBeUpdated.getTitle());
+            book.setAuthor(bookToBeUpdated.getAuthor());
+            book.setYear(bookToBeUpdated.getYear());
+
+            bookRepository.update(book);
             updateStatus = UpdateStatus.SUCCESS;
         }
-            return updateStatus;
-        }
+        return updateStatus;
+    }
 
 
 
@@ -130,7 +135,7 @@ public class BookService {
 
 
 
-    private static boolean isBookIsTheSame(BookDTO bookToBeUpdated, Book book) {
+    private static boolean compareBooks(BookDTO bookToBeUpdated, Book book) {
         String title = bookToBeUpdated.getTitle().toLowerCase();
         String author = bookToBeUpdated.getAuthor().toLowerCase();
         int year = bookToBeUpdated.getYear();
@@ -146,21 +151,16 @@ public class BookService {
 
         boolean bookAlreadyExists = false;
 
-        List<Book> books = bookRepository.getAll();
+        List<Book> booksByTitle = bookRepository.findByTitle(bookDTO.getTitle());
 
-        String title = bookDTO.getTitle().toLowerCase();
         String author = bookDTO.getAuthor().toLowerCase();
-        int year = bookDTO.getYear();
 
         // TODO: Is it possible to improve this check?
-        Book checkBook = books.stream().filter(
-                        b ->
-                        (b.getTitle().toLowerCase()).equals(title) &&
-                        (b.getAuthor().toLowerCase()).equals(author) &&
-                        b.getYear() == year
-                )
-                .findFirst()
-                .orElse(null);
+        Book checkBook = booksByTitle.stream().filter(
+                        b -> (b.getAuthor().toLowerCase()).equals(author)
+                    )
+                    .findFirst()
+                    .orElse(null);
 
         if (checkBook != null){
             bookAlreadyExists = true;
@@ -170,6 +170,9 @@ public class BookService {
 
     public BookDTO bookToDTO(Book book){
         return new BookDTO(book.getBookId(), book.getTitle(), book.getAuthor(), book.getYear());
+    }
+    public  Book DTOToBook(BookDTO bookDTO){
+        return new Book(bookDTO.getId(), bookDTO.getTitle(), bookDTO.getAuthor(), bookDTO.getYear());
     }
 
 
