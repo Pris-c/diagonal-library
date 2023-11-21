@@ -49,8 +49,7 @@ public class BookController {
                     update();
                     break;
                 case "5":
-                    //delete();
-                    validOption = true;
+                    delete();
                     break;
                 case "0":
                     validOption = true;
@@ -82,13 +81,10 @@ public class BookController {
 
         LibraryPrinter.printMessage("Insert the new book's information");
 
-        //String title = readAValidTitleOrAuthor(StringField.TITLE, operation);
         String title = readAValidTitleOrAuthor(StringField.TITLE);
 
-        //String author = readAValidTitleOrAuthor(StringField.AUTHOR, operation);
         String author = readAValidTitleOrAuthor(StringField.AUTHOR);
 
-        //int year = readAValidYear(operation);
         int year = readAValidYear();
 
         BookDTO bookToBeSaved = new BookDTO(title, author, year);
@@ -159,9 +155,10 @@ public class BookController {
     private void update(){
 
         int id = readAValidId();
-        //int id = readAValidId(operation);
 
         BookDTO bookToBeUpdate = bookService.findById(id);
+        BookDTO book = bookToBeUpdate;
+
         int bookId = bookToBeUpdate.getId();
 
         if (bookId >= 0){
@@ -186,21 +183,18 @@ public class BookController {
                 switch (option){
                     case "1":
 
-                        //bookToBeUpdate.setTitle(readAValidTitleOrAuthor(StringField.TITLE, operation));
                         bookToBeUpdate.setTitle(readAValidTitleOrAuthor(StringField.TITLE));
                         updateStatus = bookService.update(bookToBeUpdate);
                         break;
 
                     case "2":
 
-                        //bookToBeUpdate.setAuthor(readAValidTitleOrAuthor(StringField.AUTHOR, operation));
                         bookToBeUpdate.setAuthor(readAValidTitleOrAuthor(StringField.AUTHOR));
                         updateStatus = bookService.update(bookToBeUpdate);
                         break;
 
                     case "3":
 
-                        //bookToBeUpdate.setYear(readAValidYear(operation));
                         bookToBeUpdate.setYear(readAValidYear());
                         updateStatus = bookService.update(bookToBeUpdate);
                         break;
@@ -213,16 +207,18 @@ public class BookController {
 
                 }
 
-                if (updateStatus != null) {
+                if (updateStatus != null && !option.equals("0")) {
 
                     if (updateStatus.equals(UpdateStatus.SUCCESS)) {
-                        LibraryPrinter.printMessage("Book updated successful");
+                        LibraryPrinter.printMessage("Book updated successfully");
                         System.out.println(bookService.findById(bookToBeUpdate.getId()));
+
                     } else if (updateStatus.equals(UpdateStatus.SAME_BOOK)) {
                         LibraryPrinter.printFailMessage("The new book information is equals to the previous one.");
-                    } else if (updateStatus.equals(UpdateStatus.BOOK_ALREADY_EXISTS)) {
-                        LibraryPrinter.printFailMessage("One book with Title: " + bookToBeUpdate.getTitle() +
-                                " Author: " + bookToBeUpdate.getAuthor() + " already exists");
+
+                    } else  { // if (updateStatus.equals(UpdateStatus.BOOK_ALREADY_EXISTS))
+                        LibraryPrinter.printFailMessage("One book with Title: " + book.getTitle() +
+                                " Author: " + book.getAuthor() + " already exists");
                     }
                 }
 
@@ -232,6 +228,29 @@ public class BookController {
         } else {
             LibraryPrinter.printMessage("No books were found");
         }
+
+    }
+
+    private void delete(){
+        LibraryPrinter.printMessage("Type the book to be deleted");
+        int id = readAValidId();
+
+        BookDTO bookDTO = bookService.findById(id);
+
+        if (bookDTO.getId() == id){
+            boolean deleteSuccessfuly = bookService.delete(id);
+
+            if (deleteSuccessfuly) {
+                LibraryPrinter.printMessage("Book deleted successfully");
+                System.out.println(bookDTO);
+            } else {
+                LibraryPrinter.printFailMessage("The book could not be deleted");
+            }
+
+        } else {
+            LibraryPrinter.printMessage("Book not found");
+        }
+
 
     }
 
@@ -346,8 +365,6 @@ public class BookController {
             Read inputs from the user until be inserted a valid year
             or the user decide change the operation.
     */
-
-    //private int readAValidYear(Operation operation) {
     private int readAValidYear() {
 
         String stringYear;

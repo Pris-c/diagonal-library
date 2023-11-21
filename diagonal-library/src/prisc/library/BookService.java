@@ -56,7 +56,7 @@ public class BookService {
          receive a String and returns a list of books containing it
          in the title. Uses BookRepository to find the books.
     */
-    public List<BookDTO> findByTitle(String title){
+    protected List<BookDTO> findByTitle(String title){
         List<Book> books = bookRepository.findByTitle(title);
         return books.stream().map(this::bookToDTO).toList();
     }
@@ -65,7 +65,7 @@ public class BookService {
          receive a String and returns a list of books containing it
          in the author name. Uses BookRepository to find the books.
     */
-    public List<BookDTO> findByAuthor(String author){
+    protected List<BookDTO> findByAuthor(String author){
         List<Book> books = bookRepository.findByAuthor(author);
         return books.stream().map(this::bookToDTO).toList();
     }
@@ -74,7 +74,7 @@ public class BookService {
       receive an int and returns a list of books containing it
       as its year. Uses BookRepository to find the books.
    */
-    public List<BookDTO> findByYear(int year) {
+    protected List<BookDTO> findByYear(int year) {
         List<Book> books = bookRepository.findByYear(year);
         return books.stream().map(this::bookToDTO).toList();
     }
@@ -83,7 +83,7 @@ public class BookService {
      receive an int and returns the book that has this id.
      Uses BookRepository to find the book.
     */
-    public BookDTO findById(int id) {
+    protected BookDTO findById(int id) {
         Book book = bookRepository.findById(id);
         BookDTO bookDTO;
 
@@ -98,7 +98,7 @@ public class BookService {
     }
 
 
-    public UpdateStatus update(BookDTO bookToBeUpdated) {
+    protected UpdateStatus update(BookDTO bookToBeUpdated) {
 
         UpdateStatus updateStatus;
         Book book = bookRepository.findById(bookToBeUpdated.getId());
@@ -126,14 +126,11 @@ public class BookService {
 
 
 
-    private void deleteBook(int id) {
+    protected boolean delete(int id) {
 
-        bookRepository.delete(bookRepository.findById(id));
+        return bookRepository.delete(bookRepository.findById(id));
 
     }
-
-
-
 
     private static boolean compareBooks(BookDTO bookToBeUpdated, Book book) {
         String title = bookToBeUpdated.getTitle().toLowerCase();
@@ -162,6 +159,8 @@ public class BookService {
                     .findFirst()
                     .orElse(null);
 
+        System.err.println(checkBook);
+
         if (checkBook != null){
             bookAlreadyExists = true;
         }
@@ -171,10 +170,6 @@ public class BookService {
     public BookDTO bookToDTO(Book book){
         return new BookDTO(book.getBookId(), book.getTitle(), book.getAuthor(), book.getYear());
     }
-    public  Book DTOToBook(BookDTO bookDTO){
-        return new Book(bookDTO.getId(), bookDTO.getTitle(), bookDTO.getAuthor(), bookDTO.getYear());
-    }
-
 
 
 }
