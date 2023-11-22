@@ -126,10 +126,11 @@ public class BookService {
 
     protected UpdateStatus updateYear(BookDTO bookToBeUpdated) {
 
-        UpdateStatus updateStatus;
         Book book = bookRepository.findById(bookToBeUpdated.getId());
 
         book.setYear(bookToBeUpdated.getYear());
+        Book bookUpdated = bookRepository.update(book);
+
         return UpdateStatus.SUCCESS;
     }
 
@@ -140,6 +141,14 @@ public class BookService {
         return bookRepository.delete(bookRepository.findById(id));
 
     }
+
+
+
+
+    public boolean libraryIsEmpty(){
+        return bookRepository.libraryIsEmpty();
+    }
+
 
     private static boolean compareBooks(BookDTO bookToBeUpdated, Book book) {
         String title = bookToBeUpdated.getTitle().toLowerCase();

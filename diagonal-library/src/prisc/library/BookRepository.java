@@ -111,6 +111,10 @@ public class BookRepository {
         return books.remove(book);
     }
 
+    public boolean libraryIsEmpty(){
+        return books.isEmpty();
+    }
+
 
 
 }

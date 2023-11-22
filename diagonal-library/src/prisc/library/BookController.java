@@ -17,7 +17,6 @@ public class BookController {
 
 
     public void mainMenu(){
-        // TODO: Check if List is empty during find, update and delete operations
 
         String option;
         boolean validOption = false;
@@ -44,13 +43,25 @@ public class BookController {
                     save();
                     break;
                 case "3":
-                    find();
+                    if (bookService.libraryIsEmpty()){
+                        LibraryPrinter.printMessage("There are no books registered.");
+                    } else {
+                        find();
+                    }
                     break;
                 case "4":
-                    update();
+                    if (bookService.libraryIsEmpty()){
+                        LibraryPrinter.printMessage("There are no books registered.");
+                    } else {
+                        update();
+                    }
                     break;
                 case "5":
-                    delete();
+                    if (bookService.libraryIsEmpty()){
+                        LibraryPrinter.printMessage("There are no books registered.");
+                    } else {
+                        delete();
+                    }
                     break;
                 case "0":
                     validOption = true;
@@ -65,16 +76,16 @@ public class BookController {
 
 
 
-
     public void listAll() {
-        List<BookDTO> books = bookService.getAll();
 
-        if (!books.isEmpty()){
+        if (bookService.libraryIsEmpty()){
+            LibraryPrinter.printMessage("There are no books registered.");
+        } else {
+            List<BookDTO> books = bookService.getAll();
             LibraryPrinter.printMessage("Listing books..");
             books.forEach(System.out::println);
-        } else {
-            LibraryPrinter.printMessage("No books were found");
         }
+
     }
 
 
@@ -99,7 +110,8 @@ public class BookController {
             System.out.println(savedBook);
 
         } else if (savedBookId < 0) {
-            LibraryPrinter.printFailMessage("The Book \"" + bookToBeSaved.getTitle() + "\"" + " by " + bookToBeSaved.getAuthor() + " already exists.");
+            //TODO: Check books information
+            LibraryPrinter.printFailMessage("The Book " + bookToBeSaved.getTitle().toUpperCase() + " by " + bookToBeSaved.getAuthor().toUpperCase() + " already exists.");
 
         }
         else {
@@ -218,6 +230,7 @@ public class BookController {
                         LibraryPrinter.printFailMessage("The new book information is equals to the previous one.");
 
                     } else  { // if (updateStatus.equals(UpdateStatus.BOOK_ALREADY_EXISTS))
+                        //TODO: Fix books information
                         LibraryPrinter.printFailMessage("One book with Title: " + book.getTitle() +
                                 " Author: " + book.getAuthor() + " already exists");
                     }
