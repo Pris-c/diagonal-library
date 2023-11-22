@@ -124,6 +124,15 @@ public class BookService {
         return updateStatus;
     }
 
+    protected UpdateStatus updateYear(BookDTO bookToBeUpdated) {
+
+        UpdateStatus updateStatus;
+        Book book = bookRepository.findById(bookToBeUpdated.getId());
+
+        book.setYear(bookToBeUpdated.getYear());
+        return UpdateStatus.SUCCESS;
+    }
+
 
 
     protected boolean delete(int id) {
@@ -149,6 +158,7 @@ public class BookService {
         boolean bookAlreadyExists = false;
 
         List<Book> booksByTitle = bookRepository.findByTitle(bookDTO.getTitle());
+        //System.err.println("ByTitle" + booksByTitle);
 
         String author = bookDTO.getAuthor().toLowerCase();
 
@@ -159,7 +169,7 @@ public class BookService {
                     .findFirst()
                     .orElse(null);
 
-        System.err.println(checkBook);
+        //System.err.println("CheckBook:" + checkBook);
 
         if (checkBook != null){
             bookAlreadyExists = true;

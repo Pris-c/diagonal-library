@@ -46,7 +46,7 @@ public class BookRepository {
     public List<Book> findByTitle(String title) {
 
         return books.stream()
-                .filter(b -> (b.getTitle())
+                .filter(b -> (b.getTitle().toLowerCase())
                         .contains(title.toLowerCase()))
                 .toList();
     }
@@ -58,8 +58,10 @@ public class BookRepository {
        in the author name.
     */
     public List<Book> findByAuthor(String author) {
+        // TODO: Create a Predicate function
         return books.stream()
-                .filter(b -> (b.getAuthor().toLowerCase()).contains(author.toLowerCase())) // TODO: Create a Predicate function
+                .filter(b -> (b.getAuthor().toLowerCase())
+                        .contains(author.toLowerCase()))
                 .toList();
 
     }

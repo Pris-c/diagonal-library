@@ -17,6 +17,7 @@ public class BookController {
 
 
     public void mainMenu(){
+        // TODO: Check if List is empty during find, update and delete operations
 
         String option;
         boolean validOption = false;
@@ -196,7 +197,7 @@ public class BookController {
                     case "3":
 
                         bookToBeUpdate.setYear(readAValidYear());
-                        updateStatus = bookService.update(bookToBeUpdate);
+                        updateStatus = bookService.updateYear(bookToBeUpdate);
                         break;
 
                     case "0":
