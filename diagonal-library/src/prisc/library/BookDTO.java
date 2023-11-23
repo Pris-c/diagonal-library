@@ -1,6 +1,5 @@
 package prisc.library;
 
-// TODO: Rename Class
 public class BookDTO {
 
     private int id;
@@ -8,22 +7,19 @@ public class BookDTO {
     private String author;
     private int year;
 
-
     public BookDTO(String title, String author, int year) {
         this.id = 0;
         this.title = title;
         this.author = author;
         this.year = year;
-    }public BookDTO(int id, String title, String author, int year) {
+    }
+
+    public BookDTO(int id, String title, String author, int year) {
         this.id = id;
         this.title = title;
         this.author = author;
         this.year = year;
     }
-
-
-
-
 
     public int getId() {
         return id;
@@ -57,13 +53,9 @@ public class BookDTO {
         this.year = year;
     }
 
-
-
     @Override
     public String toString() {
         return " Book " + id + ", Title: " + title + ", Author: " + author + ", Year: " + year;
     }
-
-
 
 }

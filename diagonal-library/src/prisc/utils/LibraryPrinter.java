@@ -1,32 +1,27 @@
 package prisc.utils;
 
-import prisc.library.Book;
-
-import java.util.List;
-
 public class LibraryPrinter {
 
-    public static void printEntryRequest(String field){
+    public static void printEntryRequest(String field) {
         System.out.print(field + "\n>> ");
     }
 
-    public static void printEntryRequest(){
+    public static void printEntryRequest() {
         System.out.print(">> ");
     }
 
-    public static void printInvalidOption(){
+    public static void printInvalidOption() {
         System.out.println();
         System.out.println("## Invalid option.");
     }
 
-    public static void printFailMessage(String message){
-        System.out.println("\n## FAIL: " + message +"\n");
+    public static void printFailMessage(String message) {
+        System.out.println("\n## FAIL: " + message + "\n");
     }
-    public static void printMessage(String message){
+
+    public static void printMessage(String message) {
         System.out.println("\n## " + message);
     }
-
-
 
 
 }

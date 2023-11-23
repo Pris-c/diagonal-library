@@ -14,12 +14,10 @@ public class BookController {
     private final Scanner scan = new Scanner(System.in);
     private final BookService bookService = new BookService();
 
-
     /**
-         shows the initial menu, read the user input
-         and calls the appropriated function
+     * Shows the initial menu, read the user input and calls the appropriated function
      */
-    public void mainMenu(){
+    public void mainMenu() {
 
         String option;
         boolean validOption = false;
@@ -28,17 +26,17 @@ public class BookController {
 
             LibraryPrinter.printMessage("What do you want to do?");
             System.out.println("""
-                                    1 - Consult available books
-                                    2 - Register a new book
-                                    3 - Find a book
-                                    4 - Update a book
-                                    5 - Delete a book
-                                    0 - Finish the application""");
+                    1 - Consult available books
+                    2 - Register a new book
+                    3 - Find a book
+                    4 - Update a book
+                    5 - Delete a book
+                    0 - Finish the application""");
             LibraryPrinter.printEntryRequest();
 
             option = scan.nextLine();
 
-            switch (option){
+            switch (option) {
                 case "1":
                     listAll();
                     break;
@@ -46,21 +44,21 @@ public class BookController {
                     save();
                     break;
                 case "3":
-                    if (bookService.libraryIsEmpty()){
+                    if (bookService.libraryIsEmpty()) {
                         LibraryPrinter.printMessage("There are no books registered.");
                     } else {
                         find();
                     }
                     break;
                 case "4":
-                    if (bookService.libraryIsEmpty()){
+                    if (bookService.libraryIsEmpty()) {
                         LibraryPrinter.printMessage("There are no books registered.");
                     } else {
                         update();
                     }
                     break;
                 case "5":
-                    if (bookService.libraryIsEmpty()){
+                    if (bookService.libraryIsEmpty()) {
                         LibraryPrinter.printMessage("There are no books registered.");
                     } else {
                         delete();
@@ -73,60 +71,55 @@ public class BookController {
                     LibraryPrinter.printInvalidOption();
             }
 
-        } while(!validOption);
+        } while (!validOption);
     }
 
 
-
-
     /**
-        checks if database is empty.
-        if not, shows the books registered
+     * Checks if database is empty. if not, shows the books registered
      */
     private void listAll() {
 
-        if (bookService.libraryIsEmpty()){
+        if (bookService.libraryIsEmpty()) {
             LibraryPrinter.printMessage("There are no books registered.");
         } else {
             List<BookDTO> books = bookService.getAll();
             LibraryPrinter.printMessage("Listing books..");
             books.forEach(System.out::println);
         }
-
     }
 
 
     /**
-         reads the input from the user to a new book
-         and calls the Service to save it in database.
-         prints to user if the book was saved or if the operation failed
+     * Reads the input from the user to a new book and calls the Service to save it in database.
+     * Prints to user if the book was saved or if the operation failed
      */
-    private void save(){
+    private void save() {
 
         BookDTO bookToBeSaved = readInformationToSaveBook();
-        BookDTO savedBook = bookService.save( bookToBeSaved );
+        BookDTO savedBook = bookService.save(bookToBeSaved);
 
         int savedBookId = savedBook.getId();
 
-        if (savedBookId > 0){
+        if (savedBookId > 0) {
             LibraryPrinter.printMessage("Book saved successfully");
             System.out.println(savedBook);
 
         } else if (savedBookId < 0) {
-            LibraryPrinter.printFailMessage("The Book " + bookToBeSaved.getTitle().toUpperCase() + " by " + bookToBeSaved.getAuthor().toUpperCase() + " already exists.");
+            LibraryPrinter.printFailMessage("The Book " + bookToBeSaved.getTitle().toUpperCase() +
+                    " by " + bookToBeSaved.getAuthor().toUpperCase() + " already exists.");
 
         } else {
             LibraryPrinter.printFailMessage("The book could not be saved.");
         }
-
     }
 
 
     /**
-         shows the menu with options to find a book, read the user input
-         and calls the appropriated function
+     * Shows the menu with options to find a book, read the user input
+     * and calls the appropriated function
      */
-    private void  find(){
+    private void find() {
         String option;
         boolean validOption = false;
 
@@ -141,7 +134,7 @@ public class BookController {
 
             option = scan.nextLine();
 
-            switch (option){
+            switch (option) {
                 case "1":
                     validOption = true;
                     findByTitle();
@@ -171,10 +164,10 @@ public class BookController {
 
 
     /**
-        reads an id from user, check if there is a book with it in database
-        offers options to update the book and realize the operation picked
+     * Reads an id from user, check if there is a book with it in database
+     * offers options to update the book and realize the operation picked
      */
-    private void update(){
+    private void update() {
 
         int id = readAValidId();
 
@@ -183,17 +176,17 @@ public class BookController {
 
         int bookId = bookToBeUpdate.getId();
 
-        if (bookId >= 0){
+        if (bookId >= 0) {
 
             LibraryPrinter.printMessage("Found book..");
             System.out.println(bookToBeUpdate);
             String option;
-            UpdateStatus updateStatus = null;
+            UpdateStatus updateStatus;
 
             do {
                 option = getAnUpdateOption();
 
-                if(!option.equals("0")){
+                if (!option.equals("0")) {
                     updateStatus = tryUpdate(option, bookToBeUpdate);
 
                     if (updateStatus != null) {
@@ -205,7 +198,7 @@ public class BookController {
                         } else if (updateStatus.equals(UpdateStatus.SAME_BOOK)) {
                             LibraryPrinter.printFailMessage("The new book information is equals to the previous one.");
 
-                        } else  { // if (updateStatus.equals(UpdateStatus.BOOK_ALREADY_EXISTS))
+                        } else { // if (updateStatus.equals(UpdateStatus.BOOK_ALREADY_EXISTS))
                             LibraryPrinter.printFailMessage("One book with Title: " + book.getTitle().toUpperCase() +
                                     " Author: " + book.getAuthor().toUpperCase() + " already exists");
                         }
@@ -217,34 +210,33 @@ public class BookController {
         } else {
             LibraryPrinter.printMessage("No books were found");
         }
-
     }
 
+
     /**
-        obtains the update option from the user
+     * Obtains the update option from the user
      */
-    private String getAnUpdateOption(){
+    private String getAnUpdateOption() {
 
         LibraryPrinter.printMessage("Pick an option: ");
         System.out.println("""
-                        1 - Update Title
-                        2 - Update Author
-                        3 - Update Year
-                        0 - Back to the main menu""");
+                1 - Update Title
+                2 - Update Author
+                3 - Update Year
+                0 - Back to the main menu""");
         LibraryPrinter.printEntryRequest();
 
         return scan.nextLine();
-
     }
 
 
     /**
-         call approprieted update method from Service
+     * Calls appropriated update method from Service
      */
-    private UpdateStatus tryUpdate(String option, BookDTO bookToBeUpdate){
-        UpdateStatus updateStatus = null;
+    private UpdateStatus tryUpdate(String option, BookDTO bookToBeUpdate) {
+        UpdateStatus updateStatus = UpdateStatus.SAME_BOOK;
 
-        switch (option){
+        switch (option) {
             case "1":
                 bookToBeUpdate.setTitle(readAValidTitleOrAuthor(StringField.TITLE));
                 updateStatus = bookService.updateStringFields(bookToBeUpdate);
@@ -266,21 +258,20 @@ public class BookController {
         }
 
         return updateStatus;
-
     }
 
 
     /**
-        reads an id from user, check if there is a book with it in database
-        if there is, delete this book
+     * Reads an id from user, check if there is a book with it in database;
+     * if there is, delete this book.
      */
-    private void delete(){
+    private void delete() {
         LibraryPrinter.printMessage("Type the book to be deleted");
         int id = readAValidId();
 
         BookDTO bookDTO = bookService.findById(id);
 
-        if (bookDTO.getId() == id){
+        if (bookDTO.getId() == id) {
             boolean deleteSuccessfuly = bookService.delete(id);
 
             if (deleteSuccessfuly) {
@@ -293,44 +284,37 @@ public class BookController {
         } else {
             LibraryPrinter.printMessage("Book not found");
         }
-
-
     }
 
 
-
-    /*            ** FIND METHODS **                     */
-
     /**
-        reads a String input from the user and returns the books that contains it in the title
+     * Reads a String input from the user and returns the books that contains it in the title
      */
-    private void findByTitle(){
+    private void findByTitle() {
 
         String title = readAValidTitleOrAuthor(StringField.TITLE);
 
         List<BookDTO> books = bookService.findByTitle(title);
 
-        if (!books.isEmpty()){
+        if (!books.isEmpty()) {
             LibraryPrinter.printMessage("Listing books..");
             books.forEach(System.out::println);
         } else {
             LibraryPrinter.printMessage("No books were found");
         }
-
-
     }
 
 
     /**
-        reads a String input from the user and returns the books that contains it in the author name
+     * Reads a String input from the user and returns the books that contains it in the author name
      */
-    private void findByAuthor(){
+    private void findByAuthor() {
 
         String author = readAValidTitleOrAuthor(StringField.AUTHOR);
 
         List<BookDTO> books = bookService.findByAuthor(author);
 
-        if (!books.isEmpty()){
+        if (!books.isEmpty()) {
             LibraryPrinter.printMessage("Listing books..");
             books.forEach(System.out::println);
         } else {
@@ -340,16 +324,16 @@ public class BookController {
 
 
     /**
-        reads an int input from the user and returns the book that have it as id
+     * Reads an int input from the user and returns the book that have it as id
      */
-    private void findById(){
+    private void findById() {
 
         int id = readAValidId();
 
         BookDTO book = bookService.findById(id);
         int bookId = book.getId();
 
-        if (bookId > 0){
+        if (bookId > 0) {
             LibraryPrinter.printMessage("Found book..");
             System.out.println(book);
         } else {
@@ -358,17 +342,16 @@ public class BookController {
     }
 
 
-
     /**
-        reads an int input from the user and returns the books that have it as year
+     * Reads an int input from the user and returns the books that have it as year
      */
-    private void findByYear(){
+    private void findByYear() {
 
         int year = readAValidYear();
 
         List<BookDTO> books = bookService.findByYear(year);
 
-        if (!books.isEmpty()){
+        if (!books.isEmpty()) {
             LibraryPrinter.printMessage("Listing books..");
             books.forEach(System.out::println);
         } else {
@@ -377,47 +360,45 @@ public class BookController {
     }
 
 
-
-    /*            ** READ VALID INPUTS METHODS **                     */
-
     /**
-        reads inputs from the user until be inserted a valid Title or Author String
-        or the user decide change the operation.
-    */
-    private String readAValidTitleOrAuthor(StringField field){
+     * Reads inputs from the user until be inserted a valid Title or Author String
+     * or the user decide change the operation.
+     */
+    private String readAValidTitleOrAuthor(StringField field) {
 
         String fieldDescription = field.getFieldDescription();
 
         boolean stringIsValid = false;
         String validString = null;
 
-        do{
+        do {
 
             LibraryPrinter.printEntryRequest(fieldDescription);
             String inputtedString = scan.nextLine();
 
-            if( validateTitleAndAuthorString(inputtedString)!=null && validateTitleAndAuthorString(inputtedString).equals(inputtedString) ){
+            if (validateTitleAndAuthorString(inputtedString) != null &&
+                    validateTitleAndAuthorString(inputtedString).equals(inputtedString)) {
+
                 validString = inputtedString;
                 stringIsValid = true;
 
             } else {
 
-                LibraryPrinter.printFailMessage("The " + fieldDescription.toLowerCase() + " must have between 1 and " + "100" + " character");
-
+                LibraryPrinter.printFailMessage("The " + fieldDescription.toLowerCase() +
+                                    " must have between 1 and " + "100" + " character");
                 invalidInput();
             }
 
-        } while(!stringIsValid);
+        } while (!stringIsValid);
 
         return validString;
     }
 
 
-
     /**
-        reads inputs from the user until be inserted a valid year
-        or the user decide change the operation.
-    */
+     * Reads inputs from the user until be inserted a valid year
+     * or the user decide change the operation.
+     */
     private int readAValidYear() {
 
         String stringYear;
@@ -433,12 +414,11 @@ public class BookController {
 
             validYear = validateYear(stringYear);
 
-            if (validYear != null){
+            if (validYear != null) {
                 yearIsValid = true;
             } else {
 
                 LibraryPrinter.printFailMessage("The year must be a number between 0 and " + currentYear);
-
                 invalidInput();
             }
 
@@ -449,9 +429,9 @@ public class BookController {
 
 
     /**
-       read inputs from the user until be inserted a valid id
-       or the user decide change the operation.
-   */
+     * Reads inputs from the user until be inserted a valid id
+     * or the user decide change the operation.
+     */
     private int readAValidId() {
 
         String stringId;
@@ -467,7 +447,7 @@ public class BookController {
 
             validId = validateId(stringId);
 
-            if (validId != null){
+            if (validId != null) {
                 idIsValid = true;
             } else {
                 LibraryPrinter.printFailMessage("The id must be a positive number");
@@ -481,7 +461,7 @@ public class BookController {
 
 
     /**
-         read inputs from the user to save a new book
+     * Reads inputs from the user to save a new book
      */
     private BookDTO readInformationToSaveBook() {
         LibraryPrinter.printMessage("Insert the new book's information");
@@ -494,13 +474,10 @@ public class BookController {
     }
 
 
-    /*            ** VALIDATE INPUTS METHODS **                     */
-
     /**
-        receives a String and returns it if is valid
-        or null if invalid
-    */
-    private String validateTitleAndAuthorString(String inputtedString){
+     * Receives a String and returns it if is valid or null if invalid
+     */
+    private String validateTitleAndAuthorString(String inputtedString) {
 
         String validString = null;
 
@@ -510,64 +487,62 @@ public class BookController {
         boolean stringIsNotEmpty = !inputtedString.isEmpty();
         boolean stringIsNotBlank = !inputtedString.isBlank();
 
-        if(stringLengthIsValid && stringIsNotBlank && stringIsNotEmpty){
+        if (stringLengthIsValid && stringIsNotBlank && stringIsNotEmpty) {
             validString = inputtedString;
         }
 
         return validString;
-
     }
 
 
     /**
-          receives a String and returns the Integer that represents the year
-          if is valid, or null if is invalid
-    */
-    private Integer validateYear(String inputtedYear){
+     * Receives a String and returns the Integer that represents the year
+     * if is valid, or null if is invalid
+     */
+    private Integer validateYear(String inputtedYear) {
 
         int currentYear = Year.now().getValue();
         Integer intYear = null;
 
-        try{
+        try {
 
             intYear = Integer.parseInt(inputtedYear);
 
-            if ( (intYear < 0) || (intYear > currentYear) ){
+            if ((intYear < 0) || (intYear > currentYear)) {
                 intYear = null;
             }
 
-        } catch (Exception ignored){}
+        } catch (Exception ignored) {
+        }
 
         return intYear;
-
     }
 
     /**
-        receives a String and returns the Integer that represents the id
-         if is valid, or null if is invalid
-    */
-    private Integer validateId(String inputtedId){
+     * Receives a String and returns the Integer that represents the id
+     * if is valid, or null if is invalid
+     */
+    private Integer validateId(String inputtedId) {
 
         Integer validId = null;
 
-        try{
+        try {
 
             validId = Integer.parseInt(inputtedId);
 
-            if (validId < 0){
+            if (validId < 0) {
                 validId = null;
             }
 
-        } catch (Exception ignored){}
+        } catch (Exception ignored) {
+        }
 
         return validId;
-
     }
 
 
-    /*            ** INVALID INPUTS MENUS  **                     */
     /**
-         offers options to user when his input is invalid
+     * Offers options to user when his input is invalid
      */
     private void invalidInput() {
         boolean validOption = false;
@@ -575,8 +550,8 @@ public class BookController {
         do {
 
             System.out.println("""
-                                1 - Try it again
-                                0 - Return to the main menu""");
+                    1 - Try it again
+                    0 - Return to the main menu""");
 
 
             LibraryPrinter.printEntryRequest();
@@ -597,8 +572,6 @@ public class BookController {
                     break;
             }
         } while (!validOption);
-
     }
-
 
 }

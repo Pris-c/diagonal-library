@@ -2,7 +2,6 @@ package prisc.library;
 
 public class Book {
 
-//    private static int count;
     private int bookId;
     private String title;
     private String author;
