@@ -4,6 +4,7 @@ package prisc.library;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BookRepository {
 
@@ -11,6 +12,11 @@ public class BookRepository {
     private static List<Book> books;
     private static boolean hasBookList;
 
+
+
+    /** Constructor:
+        Ensures there is only one Book List (database)
+    */
     public BookRepository() {
         if (!hasBookList) {
             books = new ArrayList<>();
@@ -18,17 +24,13 @@ public class BookRepository {
         }
     }
 
-    /* **
-           returns a list with all books saved in the database
-   */
+    /** returns a list with all books saved in the database */
     public List<Book> getAll() {
         return books;
     }
 
 
-    /* **
-           insert a new book in the database and returns it
-   */
+    /** inserts a new book in the database and returns it */
     public Book save(BookDTO bookToBeSaved){
         Book book = new Book(++countId, bookToBeSaved.getTitle(), bookToBeSaved.getAuthor(), bookToBeSaved.getYear());
         if(books.add(book)){
@@ -39,58 +41,36 @@ public class BookRepository {
     }
 
 
-    /* **
-         receive a String and returns a list of books containing it
-         in the title.
+    /** receives a String and returns a list of books containing it
+        in the title.
     */
     public List<Book> findByTitle(String title) {
-
-        return books.stream()
-                .filter(b -> (b.getTitle().toLowerCase())
-                        .contains(title.toLowerCase()))
-                .toList();
+        return filterBooksByTitle(books, title);
     }
 
-
-
-    /* **
-       receive a String and returns a list of books containing it
-       in the author name.
+    /** receives a String and returns a list of books containing it
+        in the author name.
     */
     public List<Book> findByAuthor(String author) {
-        // TODO: Create a Predicate function
-        return books.stream()
-                .filter(b -> (b.getAuthor().toLowerCase())
-                        .contains(author.toLowerCase()))
-                .toList();
-
+        return filterBooksByAuthor(books, author);
     }
 
-    /* **
-      receive an int and returns a list of books containing it
-      as its year
+
+    /** receives an int and returns a list of books containing it
+        as its year
    */
     public List<Book> findByYear(int year) {
-        return books.stream()
-                .filter(b -> (b.getYear() == year))
-                .toList();
+        return filterBooksByYear(books, year);
     }
 
-    /* **
-     receive an int and returns the book that has this id
-    */
+
+    /**  receives an int and returns the book that has this id  */
     public Book findById(int id) {
-
-        return books.stream()
-                .filter(b-> (b.getBookId() == id))
-                .findFirst()
-                .orElse(null);
-
-
+        return getBookById(books, id);
     }
 
 
-
+    /**  receives a Book with an existent id, and replaces the information in database  */
     public Book update(Book bookToBeUpdated) {
         Book book = findById(bookToBeUpdated.getBookId());
 
@@ -103,18 +83,56 @@ public class BookRepository {
     }
 
 
-    /* **
-     receive a Book and removes it from database
-     return true in success case or false if fail
+    /** receives a Book and removes it from database
+        return true in success case or false if fails
     */
     public boolean delete(Book book) {
         return books.remove(book);
     }
 
+    /** returns true if the database is empty or false if it is not  */
     public boolean libraryIsEmpty(){
         return books.isEmpty();
     }
 
+
+
+
+    /** filters books by title content  */
+    private List<Book> filterBooksByTitle(List<Book> books, String title) {
+        return books.stream()
+                .filter(b -> containsIgnoreCase(b.getTitle(), title))
+                .collect(Collectors.toList());
+    }
+
+    /** filters books by author content  */
+    private List<Book> filterBooksByAuthor(List<Book> books, String author) {
+        return books.stream()
+                .filter(b -> containsIgnoreCase(b.getAuthor(), author))
+                .collect(Collectors.toList());
+    }
+
+
+    /** checks if a String contains another one ignoring case  */
+    private boolean containsIgnoreCase(String text, String target) {
+        return text.toLowerCase().contains(target.toLowerCase());
+    }
+
+    /** filters books by year  */
+    private List<Book> filterBooksByYear(List<Book> books, int year) {
+        return books.stream()
+                .filter(b -> (b.getYear() == year))
+                .collect(Collectors.toList());
+
+    }
+
+    /** get book by id  */
+    private Book getBookById(List<Book> books, int id) {
+        return books.stream()
+                .filter(b -> (b.getBookId() == id))
+                .findFirst()
+                .orElse(null);
+    }
 
 
 }
