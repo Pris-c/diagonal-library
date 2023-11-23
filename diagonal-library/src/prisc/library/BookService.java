@@ -4,6 +4,7 @@ package prisc.library;
 import prisc.utils.enums.UpdateStatus;
 
 import java.util.List;
+import java.util.Objects;
 
 public class BookService {
 
@@ -13,26 +14,22 @@ public class BookService {
     }
 
 
-    /* **
-          call BookRepository and returns a list with all books saved in the database
+    /**
+      calls BookRepository and returns a list with all books saved in the database
     */
     protected List<BookDTO> getAll() {
         List<Book> books = bookRepository.getAll();
-
-        return books.stream().map(this::bookToDTO).toList();
+        return getBooksAndMapToDTO(books);
 
     }
 
-
-
-
-    /* **
+    /**
           receives a BookDTO, check if it already exists in database,
           and returns null if it does, and call BookRepository to save, if not,
           and returns the book that was saved.
-
     */
     protected BookDTO save(BookDTO bookToBeSaved){
+        // TODO: Personalize exception
 
         Book book;
         BookDTO savedBook;
@@ -48,39 +45,39 @@ public class BookService {
         }
 
         return savedBook;
-
     }
 
 
-    /* **
-         receive a String and returns a list of books containing it
+    /**
+         receives a String and returns a list of books containing it
          in the title. Uses BookRepository to find the books.
     */
     protected List<BookDTO> findByTitle(String title){
         List<Book> books = bookRepository.findByTitle(title);
-        return books.stream().map(this::bookToDTO).toList();
+        return getBooksAndMapToDTO(books);
     }
 
-    /* **
-         receive a String and returns a list of books containing it
+
+    /**
+         receives a String and returns a list of books containing it
          in the author name. Uses BookRepository to find the books.
     */
     protected List<BookDTO> findByAuthor(String author){
         List<Book> books = bookRepository.findByAuthor(author);
-        return books.stream().map(this::bookToDTO).toList();
+        return getBooksAndMapToDTO(books);
     }
 
-    /* **
-      receive an int and returns a list of books containing it
+    /**
+      receives an int and returns a list of books containing it
       as its year. Uses BookRepository to find the books.
    */
     protected List<BookDTO> findByYear(int year) {
         List<Book> books = bookRepository.findByYear(year);
-        return books.stream().map(this::bookToDTO).toList();
+        return getBooksAndMapToDTO(books);
     }
 
-    /* **
-     receive an int and returns the book that has this id.
+    /**
+     receives an int and returns the book that has this id.
      Uses BookRepository to find the book.
     */
     protected BookDTO findById(int id) {
@@ -94,16 +91,20 @@ public class BookService {
         }
 
         return bookDTO;
-
     }
 
 
-    protected UpdateStatus update(BookDTO bookToBeUpdated) {
+    /**
+         receives a BookDTO, check if any information is new, checks if the book already exists
+         and if there is no conflict, calls Repository to update information.
+         returns the status of operation
+     */
+    protected UpdateStatus updateStringFields(BookDTO bookToBeUpdated) {
 
         UpdateStatus updateStatus;
-        Book book = bookRepository.findById(bookToBeUpdated.getId());
+        Book bookInDatabase = bookRepository.findById(bookToBeUpdated.getId());
 
-        boolean bookIsTheSame = compareBooks(bookToBeUpdated, book);
+        boolean bookIsTheSame = compareBooks(bookToBeUpdated, bookInDatabase);
 
         if (bookIsTheSame){
 
@@ -114,80 +115,106 @@ public class BookService {
             updateStatus = UpdateStatus.BOOK_ALREADY_EXISTS;
 
         } else {
-            book.setTitle(bookToBeUpdated.getTitle());
-            book.setAuthor(bookToBeUpdated.getAuthor());
-            book.setYear(bookToBeUpdated.getYear());
+            bookInDatabase.setTitle(bookToBeUpdated.getTitle());
+            bookInDatabase.setAuthor(bookToBeUpdated.getAuthor());
+            bookInDatabase.setYear(bookToBeUpdated.getYear());
 
-            bookRepository.update(book);
+            bookRepository.update(bookInDatabase);
             updateStatus = UpdateStatus.SUCCESS;
         }
         return updateStatus;
     }
 
+
+
+     /**
+        receives a BookDTO, checks if new year is different from the saved one,
+        if it is, calls Repository to update information.
+        returns the status of operation
+     */
     protected UpdateStatus updateYear(BookDTO bookToBeUpdated) {
 
-        Book book = bookRepository.findById(bookToBeUpdated.getId());
+        UpdateStatus updateStatus;
+        Book bookInDatabase = bookRepository.findById(bookToBeUpdated.getId());
 
-        book.setYear(bookToBeUpdated.getYear());
-        Book bookUpdated = bookRepository.update(book);
+        boolean bookYearIsTheSame = bookToBeUpdated.getYear() == bookInDatabase.getYear();
 
-        return UpdateStatus.SUCCESS;
+        if (bookYearIsTheSame){
+            updateStatus = UpdateStatus.SAME_BOOK;
+        } else {
+            bookInDatabase.setYear(bookToBeUpdated.getYear());
+            bookRepository.update(bookInDatabase);
+            updateStatus = UpdateStatus.SUCCESS;
+        }
+
+        return updateStatus;
     }
 
 
-
+    /**
+        calls Repository to delete the book with the received id
+     */
     protected boolean delete(int id) {
-
         return bookRepository.delete(bookRepository.findById(id));
-
     }
 
 
-
-
+    /**
+         checks if there is some book saved in database
+     */
     public boolean libraryIsEmpty(){
         return bookRepository.libraryIsEmpty();
     }
 
 
+    /**
+        checks if the information of Book and BookDTO are equals
+     */
     private static boolean compareBooks(BookDTO bookToBeUpdated, Book book) {
-        String title = bookToBeUpdated.getTitle().toLowerCase();
-        String author = bookToBeUpdated.getAuthor().toLowerCase();
-        int year = bookToBeUpdated.getYear();
+        String titleToUpdate = bookToBeUpdated.getTitle().toLowerCase();
+        String authorToUpdate = bookToBeUpdated.getAuthor().toLowerCase();
+        int yearToUpdate = bookToBeUpdated.getYear();
 
-        // TODO: Is it possible to improve this check?
-        //Checking if the book is the same to the saved
-        return  (book.getTitle().toLowerCase()).equals(title) &&
-                (book.getAuthor().toLowerCase()).equals(author) &&
-                book.getYear() == year;
+        String titleInDatabase = book.getTitle().toLowerCase();
+        String authorInDatabase = book.getAuthor().toLowerCase();
+        int yearInDatabase = book.getYear();
+
+        return titleToUpdate.equalsIgnoreCase(titleInDatabase) &&
+                authorToUpdate.equalsIgnoreCase(authorInDatabase) &&
+                yearToUpdate == yearInDatabase;
     }
 
-    private boolean bookAlreadyExists(BookDTO bookDTO){
 
-        boolean bookAlreadyExists = false;
+    /**
+        checks if already exist a book with the same information in database
+     */
+    private boolean bookAlreadyExists(BookDTO bookDTO) {
+        String title = bookDTO.getTitle();
+        String author = bookDTO.getAuthor();
 
-        List<Book> booksByTitle = bookRepository.findByTitle(bookDTO.getTitle());
-        //System.err.println("ByTitle" + booksByTitle);
+        List<Book> matchingBooks = bookRepository.findByTitle(title).stream()
+                .filter(b -> b.getAuthor().equalsIgnoreCase(author))
+                .toList();
 
-        String author = bookDTO.getAuthor().toLowerCase();
-
-        // TODO: Is it possible to improve this check?
-        Book checkBook = booksByTitle.stream().filter(
-                        b -> (b.getAuthor().toLowerCase()).equals(author)
-                    )
-                    .findFirst()
-                    .orElse(null);
-
-        //System.err.println("CheckBook:" + checkBook);
-
-        if (checkBook != null){
-            bookAlreadyExists = true;
-        }
-        return bookAlreadyExists;
+        return !matchingBooks.isEmpty();
     }
 
-    public BookDTO bookToDTO(Book book){
+
+    /**
+        creates a BookDTO from a Book
+     */
+    private BookDTO bookToDTO(Book book){
         return new BookDTO(book.getBookId(), book.getTitle(), book.getAuthor(), book.getYear());
+    }
+
+
+    /**
+     creates a List of BookDTO from a List of Book
+     */
+    private List<BookDTO> getBooksAndMapToDTO(List<Book> books) {
+        return books.stream()
+                .map(this::bookToDTO)
+                .toList();
     }
 
 

@@ -197,13 +197,13 @@ public class BookController {
                     case "1":
 
                         bookToBeUpdate.setTitle(readAValidTitleOrAuthor(StringField.TITLE));
-                        updateStatus = bookService.update(bookToBeUpdate);
+                        updateStatus = bookService.updateStringFields(bookToBeUpdate);
                         break;
 
                     case "2":
 
                         bookToBeUpdate.setAuthor(readAValidTitleOrAuthor(StringField.AUTHOR));
-                        updateStatus = bookService.update(bookToBeUpdate);
+                        updateStatus = bookService.updateStringFields(bookToBeUpdate);
                         break;
 
                     case "3":

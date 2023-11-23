@@ -13,7 +13,6 @@ public class BookRepository {
     private static boolean hasBookList;
 
 
-
     /** Constructor:
         Ensures there is only one Book List (database)
     */
@@ -72,6 +71,7 @@ public class BookRepository {
 
     /**  receives a Book with an existent id, and replaces the information in database  */
     public Book update(Book bookToBeUpdated) {
+        // TODO: receives an id
         Book book = findById(bookToBeUpdated.getBookId());
 
         book.setTitle(bookToBeUpdated.getTitle());
@@ -94,8 +94,6 @@ public class BookRepository {
     public boolean libraryIsEmpty(){
         return books.isEmpty();
     }
-
-
 
 
     /** filters books by title content  */
