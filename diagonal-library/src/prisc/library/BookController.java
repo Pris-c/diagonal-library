@@ -15,7 +15,10 @@ public class BookController {
     private final BookService bookService = new BookService();
 
 
-
+    /**
+         shows the initial menu, read the user input
+         and calls the appropriated function
+     */
     public void mainMenu(){
 
         String option;
@@ -76,7 +79,11 @@ public class BookController {
 
 
 
-    public void listAll() {
+    /**
+        checks if database is empty.
+        if not, shows the books registered
+     */
+    private void listAll() {
 
         if (bookService.libraryIsEmpty()){
             LibraryPrinter.printMessage("There are no books registered.");
@@ -89,18 +96,14 @@ public class BookController {
     }
 
 
-    public void save(){
+    /**
+         reads the input from the user to a new book
+         and calls the Service to save it in database.
+         prints to user if the book was saved or if the operation failed
+     */
+    private void save(){
 
-        LibraryPrinter.printMessage("Insert the new book's information");
-
-        String title = readAValidTitleOrAuthor(StringField.TITLE);
-
-        String author = readAValidTitleOrAuthor(StringField.AUTHOR);
-
-        int year = readAValidYear();
-
-        BookDTO bookToBeSaved = new BookDTO(title, author, year);
-
+        BookDTO bookToBeSaved = readInformationToSaveBook();
         BookDTO savedBook = bookService.save( bookToBeSaved );
 
         int savedBookId = savedBook.getId();
@@ -110,18 +113,20 @@ public class BookController {
             System.out.println(savedBook);
 
         } else if (savedBookId < 0) {
-            //TODO: Check books information
             LibraryPrinter.printFailMessage("The Book " + bookToBeSaved.getTitle().toUpperCase() + " by " + bookToBeSaved.getAuthor().toUpperCase() + " already exists.");
 
-        }
-        else {
+        } else {
             LibraryPrinter.printFailMessage("The book could not be saved.");
         }
 
     }
 
 
-    public void  find(){
+    /**
+         shows the menu with options to find a book, read the user input
+         and calls the appropriated function
+     */
+    private void  find(){
         String option;
         boolean validOption = false;
 
@@ -165,6 +170,10 @@ public class BookController {
     }
 
 
+    /**
+        reads an id from user, check if there is a book with it in database
+        offers options to update the book and realize the operation picked
+     */
     private void update(){
 
         int id = readAValidId();
@@ -182,60 +191,26 @@ public class BookController {
             UpdateStatus updateStatus = null;
 
             do {
+                option = getAnUpdateOption();
 
-                LibraryPrinter.printMessage("Pick an option: ");
-                System.out.println("""
-                        1 - Update Title
-                        2 - Update Author
-                        3 - Update Year
-                        0 - Back to the main menu""");
-                LibraryPrinter.printEntryRequest();
+                if(!option.equals("0")){
+                    updateStatus = tryUpdate(option, bookToBeUpdate);
 
-                option = scan.nextLine();
+                    if (updateStatus != null) {
 
-                switch (option){
-                    case "1":
+                        if (updateStatus.equals(UpdateStatus.SUCCESS)) {
+                            LibraryPrinter.printMessage("Book updated successfully");
+                            System.out.println(bookService.findById(bookToBeUpdate.getId()));
 
-                        bookToBeUpdate.setTitle(readAValidTitleOrAuthor(StringField.TITLE));
-                        updateStatus = bookService.updateStringFields(bookToBeUpdate);
-                        break;
+                        } else if (updateStatus.equals(UpdateStatus.SAME_BOOK)) {
+                            LibraryPrinter.printFailMessage("The new book information is equals to the previous one.");
 
-                    case "2":
-
-                        bookToBeUpdate.setAuthor(readAValidTitleOrAuthor(StringField.AUTHOR));
-                        updateStatus = bookService.updateStringFields(bookToBeUpdate);
-                        break;
-
-                    case "3":
-
-                        bookToBeUpdate.setYear(readAValidYear());
-                        updateStatus = bookService.updateYear(bookToBeUpdate);
-                        break;
-
-                    case "0":
-                        break;
-                    default:
-                        LibraryPrinter.printInvalidOption();
-                        break;
-
-                }
-
-                if (updateStatus != null && !option.equals("0")) {
-
-                    if (updateStatus.equals(UpdateStatus.SUCCESS)) {
-                        LibraryPrinter.printMessage("Book updated successfully");
-                        System.out.println(bookService.findById(bookToBeUpdate.getId()));
-
-                    } else if (updateStatus.equals(UpdateStatus.SAME_BOOK)) {
-                        LibraryPrinter.printFailMessage("The new book information is equals to the previous one.");
-
-                    } else  { // if (updateStatus.equals(UpdateStatus.BOOK_ALREADY_EXISTS))
-                        //TODO: Fix books information
-                        LibraryPrinter.printFailMessage("One book with Title: " + book.getTitle() +
-                                " Author: " + book.getAuthor() + " already exists");
+                        } else  { // if (updateStatus.equals(UpdateStatus.BOOK_ALREADY_EXISTS))
+                            LibraryPrinter.printFailMessage("One book with Title: " + book.getTitle().toUpperCase() +
+                                    " Author: " + book.getAuthor().toUpperCase() + " already exists");
+                        }
                     }
                 }
-
 
             } while (!option.equals("0"));
 
@@ -245,6 +220,60 @@ public class BookController {
 
     }
 
+    /**
+        obtains the update option from the user
+     */
+    private String getAnUpdateOption(){
+
+        LibraryPrinter.printMessage("Pick an option: ");
+        System.out.println("""
+                        1 - Update Title
+                        2 - Update Author
+                        3 - Update Year
+                        0 - Back to the main menu""");
+        LibraryPrinter.printEntryRequest();
+
+        return scan.nextLine();
+
+    }
+
+
+    /**
+         call approprieted update method from Service
+     */
+    private UpdateStatus tryUpdate(String option, BookDTO bookToBeUpdate){
+        UpdateStatus updateStatus = null;
+
+        switch (option){
+            case "1":
+                bookToBeUpdate.setTitle(readAValidTitleOrAuthor(StringField.TITLE));
+                updateStatus = bookService.updateStringFields(bookToBeUpdate);
+                break;
+
+            case "2":
+                bookToBeUpdate.setAuthor(readAValidTitleOrAuthor(StringField.AUTHOR));
+                updateStatus = bookService.updateStringFields(bookToBeUpdate);
+                break;
+
+            case "3":
+                bookToBeUpdate.setYear(readAValidYear());
+                updateStatus = bookService.updateYear(bookToBeUpdate);
+                break;
+
+            default:
+                LibraryPrinter.printInvalidOption();
+                break;
+        }
+
+        return updateStatus;
+
+    }
+
+
+    /**
+        reads an id from user, check if there is a book with it in database
+        if there is, delete this book
+     */
     private void delete(){
         LibraryPrinter.printMessage("Type the book to be deleted");
         int id = readAValidId();
@@ -272,6 +301,9 @@ public class BookController {
 
     /*            ** FIND METHODS **                     */
 
+    /**
+        reads a String input from the user and returns the books that contains it in the title
+     */
     private void findByTitle(){
 
         String title = readAValidTitleOrAuthor(StringField.TITLE);
@@ -289,6 +321,9 @@ public class BookController {
     }
 
 
+    /**
+        reads a String input from the user and returns the books that contains it in the author name
+     */
     private void findByAuthor(){
 
         String author = readAValidTitleOrAuthor(StringField.AUTHOR);
@@ -304,6 +339,9 @@ public class BookController {
     }
 
 
+    /**
+        reads an int input from the user and returns the book that have it as id
+     */
     private void findById(){
 
         int id = readAValidId();
@@ -321,6 +359,9 @@ public class BookController {
 
 
 
+    /**
+        reads an int input from the user and returns the books that have it as year
+     */
     private void findByYear(){
 
         int year = readAValidYear();
@@ -339,12 +380,10 @@ public class BookController {
 
     /*            ** READ VALID INPUTS METHODS **                     */
 
-    /* **
-            Receives the StringField which must be validated,
-            read inputs from the user until be inserted a valid Title or Author String
-            or the user decide change the operation.
+    /**
+        reads inputs from the user until be inserted a valid Title or Author String
+        or the user decide change the operation.
     */
-
     private String readAValidTitleOrAuthor(StringField field){
 
         String fieldDescription = field.getFieldDescription();
@@ -375,9 +414,9 @@ public class BookController {
 
 
 
-    /* **
-            Read inputs from the user until be inserted a valid year
-            or the user decide change the operation.
+    /**
+        reads inputs from the user until be inserted a valid year
+        or the user decide change the operation.
     */
     private int readAValidYear() {
 
@@ -409,9 +448,9 @@ public class BookController {
     }
 
 
-    /* **
-           Read inputs from the user until be inserted a valid id
-           or the user decide change the operation.
+    /**
+       read inputs from the user until be inserted a valid id
+       or the user decide change the operation.
    */
     private int readAValidId() {
 
@@ -441,11 +480,25 @@ public class BookController {
     }
 
 
+    /**
+         read inputs from the user to save a new book
+     */
+    private BookDTO readInformationToSaveBook() {
+        LibraryPrinter.printMessage("Insert the new book's information");
+
+        String title = readAValidTitleOrAuthor(StringField.TITLE);
+        String author = readAValidTitleOrAuthor(StringField.AUTHOR);
+        int year = readAValidYear();
+
+        return new BookDTO(title, author, year);
+    }
+
+
     /*            ** VALIDATE INPUTS METHODS **                     */
 
-    /* **
-            Receives a String and returns it if is valid
-            or null if invalid
+    /**
+        receives a String and returns it if is valid
+        or null if invalid
     */
     private String validateTitleAndAuthorString(String inputtedString){
 
@@ -466,8 +519,8 @@ public class BookController {
     }
 
 
-    /* **
-          Receives a String and returns the Integer that represents the year
+    /**
+          receives a String and returns the Integer that represents the year
           if is valid, or null if is invalid
     */
     private Integer validateYear(String inputtedYear){
@@ -489,10 +542,10 @@ public class BookController {
 
     }
 
-    /* **
-         Receives a String and returns the Integer that represents the id
+    /**
+        receives a String and returns the Integer that represents the id
          if is valid, or null if is invalid
-   */
+    */
     private Integer validateId(String inputtedId){
 
         Integer validId = null;
@@ -513,7 +566,9 @@ public class BookController {
 
 
     /*            ** INVALID INPUTS MENUS  **                     */
-
+    /**
+         offers options to user when his input is invalid
+     */
     private void invalidInput() {
         boolean validOption = false;
 
