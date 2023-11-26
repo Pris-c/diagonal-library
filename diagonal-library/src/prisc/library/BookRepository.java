@@ -24,7 +24,7 @@ public class BookRepository {
 
 
     /**
-     * returns a list with all books saved in the database
+     * Returns a list with all books saved in the database
      */
     public List<Book> getAll() {
         return books;
@@ -32,7 +32,7 @@ public class BookRepository {
 
 
     /**
-     * inserts a new book in the database and returns it
+     * Inserts a new book in the database and returns it
      */
     public Book save(BookDTO bookToBeSaved) {
         Book book = new Book(++countId, bookToBeSaved.getTitle(), bookToBeSaved.getAuthor(), bookToBeSaved.getYear());
@@ -42,7 +42,7 @@ public class BookRepository {
 
 
     /**
-     * receives a String and returns a list of books containing it
+     * Receives a String and returns a list of books containing it
      * in the title.
      */
     public List<Book> findByTitle(String title) {
@@ -51,7 +51,7 @@ public class BookRepository {
 
 
     /**
-     * receives a String and returns a list of books containing it
+     * Receives a String and returns a list of books containing it
      * in the author name.
      */
     public List<Book> findByAuthor(String author) {
@@ -60,7 +60,7 @@ public class BookRepository {
 
 
     /**
-     * receives an int and returns a list of books containing it
+     * Receives an int and returns a list of books containing it
      * as its year
      */
     public List<Book> findByYear(int year) {
@@ -69,7 +69,7 @@ public class BookRepository {
 
 
     /**
-     * receives an int and returns the book that has this id
+     * Receives an int and returns the book that has this id
      */
     public Book findById(int id) {
         return getBookById(books, id);
@@ -77,7 +77,7 @@ public class BookRepository {
 
 
     /**
-     * receives a Book with an existent id, and replaces the information in database
+     * Receives a Book with an existent id, and replaces the information in database
      */
     public Book update(Book bookToBeUpdated) {
         Book book = findById(bookToBeUpdated.getBookId());

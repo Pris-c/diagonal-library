@@ -172,7 +172,6 @@ public class BookController {
         int id = readAValidId();
 
         BookDTO bookToBeUpdate = bookService.findById(id);
-        BookDTO book = bookToBeUpdate;
 
         int bookId = bookToBeUpdate.getId();
 
@@ -187,21 +186,21 @@ public class BookController {
                 option = getAnUpdateOption();
 
                 if (!option.equals("0")) {
-                    updateStatus = tryUpdate(option, bookToBeUpdate);
+                    updateStatus = handleUpdate(option, bookToBeUpdate);
 
-                    if (updateStatus != null) {
+                    if (updateStatus == null) {
+                        LibraryPrinter.printFailMessage("The book could not be updated.");
 
-                        if (updateStatus.equals(UpdateStatus.SUCCESS)) {
+                    } else if (updateStatus.equals(UpdateStatus.SUCCESS)) {
                             LibraryPrinter.printMessage("Book updated successfully");
                             System.out.println(bookService.findById(bookToBeUpdate.getId()));
 
-                        } else if (updateStatus.equals(UpdateStatus.SAME_BOOK)) {
+                    } else if (updateStatus.equals(UpdateStatus.SAME_BOOK)) {
                             LibraryPrinter.printFailMessage("The new book information is equals to the previous one.");
 
-                        } else { // if (updateStatus.equals(UpdateStatus.BOOK_ALREADY_EXISTS))
-                            LibraryPrinter.printFailMessage("One book with Title: " + book.getTitle().toUpperCase() +
-                                    " Author: " + book.getAuthor().toUpperCase() + " already exists");
-                        }
+                    } else { // if (updateStatus.equals(UpdateStatus.BOOK_ALREADY_EXISTS))
+                            LibraryPrinter.printFailMessage("One book with Title: " + bookToBeUpdate.getTitle().toUpperCase() +
+                                    " Author: " + bookToBeUpdate.getAuthor().toUpperCase() + " already exists");
                     }
                 }
 
@@ -233,7 +232,7 @@ public class BookController {
     /**
      * Calls appropriated update method from Service
      */
-    private UpdateStatus tryUpdate(String option, BookDTO bookToBeUpdate) {
+    private UpdateStatus handleUpdate(String option, BookDTO bookToBeUpdate) {
         UpdateStatus updateStatus = UpdateStatus.SAME_BOOK;
 
         switch (option) {

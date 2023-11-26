@@ -29,6 +29,7 @@ public class BookService {
                 yearToUpdate == yearInDatabase;
     }
 
+
     /**
      * Calls BookRepository and returns a list with all books saved in the database
      */
@@ -36,6 +37,7 @@ public class BookService {
         List<Book> books = bookRepository.getAll();
         return getBooksAndMapToDTO(books);
     }
+
 
     /**
      * Receives a BookDTO, check if it already exists in database,
@@ -57,6 +59,7 @@ public class BookService {
         return savedBook;
     }
 
+
     /**
      * Receives a String and returns a list of books containing it
      * in the title. Uses BookRepository to find the books.
@@ -65,6 +68,7 @@ public class BookService {
         List<Book> books = bookRepository.findByTitle(title);
         return getBooksAndMapToDTO(books);
     }
+
 
     /**
      * Receives a String and returns a list of books containing it
@@ -75,6 +79,7 @@ public class BookService {
         return getBooksAndMapToDTO(books);
     }
 
+
     /**
      * Receives an int and returns a list of books containing it
      * as its year. Uses BookRepository to find the books.
@@ -83,6 +88,7 @@ public class BookService {
         List<Book> books = bookRepository.findByYear(year);
         return getBooksAndMapToDTO(books);
     }
+
 
     /**
      * Receives an int and returns the book that has this id.
@@ -100,6 +106,7 @@ public class BookService {
         return bookDTO;
     }
 
+
     /**
      * Receives a BookDTO, check if any information is new, checks if the book already exists
      * and if there is no conflict, calls Repository to update information.
@@ -107,7 +114,7 @@ public class BookService {
      */
     protected UpdateStatus updateStringFields(BookDTO bookToBeUpdated) {
 
-        UpdateStatus updateStatus;
+        UpdateStatus updateStatus = null;
         Book bookInDatabase = bookRepository.findById(bookToBeUpdated.getId());
 
         boolean bookIsTheSame = compareBooks(bookToBeUpdated, bookInDatabase);
@@ -121,15 +128,14 @@ public class BookService {
             updateStatus = UpdateStatus.BOOK_ALREADY_EXISTS;
 
         } else {
-            bookInDatabase.setTitle(bookToBeUpdated.getTitle());
-            bookInDatabase.setAuthor(bookToBeUpdated.getAuthor());
-            bookInDatabase.setYear(bookToBeUpdated.getYear());
-
-            bookRepository.update(bookInDatabase);
-            updateStatus = UpdateStatus.SUCCESS;
+            Book bookUpdated = bookRepository.update(dtoToBook(bookToBeUpdated));
+            if(compareBooks(bookToBeUpdated, bookUpdated)){
+                updateStatus = UpdateStatus.SUCCESS;
+            }
         }
         return updateStatus;
     }
+
 
     /**
      * Receives a BookDTO, checks if new year is different from the saved one,
@@ -138,7 +144,7 @@ public class BookService {
      */
     protected UpdateStatus updateYear(BookDTO bookToBeUpdated) {
 
-        UpdateStatus updateStatus;
+        UpdateStatus updateStatus = null;
         Book bookInDatabase = bookRepository.findById(bookToBeUpdated.getId());
 
         boolean bookYearIsTheSame = bookToBeUpdated.getYear() == bookInDatabase.getYear();
@@ -146,12 +152,14 @@ public class BookService {
         if (bookYearIsTheSame) {
             updateStatus = UpdateStatus.SAME_BOOK;
         } else {
-            bookInDatabase.setYear(bookToBeUpdated.getYear());
-            bookRepository.update(bookInDatabase);
-            updateStatus = UpdateStatus.SUCCESS;
+            Book bookUpdated = bookRepository.update(dtoToBook(bookToBeUpdated));
+            if(compareBooks(bookToBeUpdated, bookUpdated)){
+                updateStatus = UpdateStatus.SUCCESS;
+            }
         }
         return updateStatus;
     }
+
 
     /**
      * Calls Repository to delete the book with the received id
@@ -160,12 +168,14 @@ public class BookService {
         return bookRepository.delete(bookRepository.findById(id));
     }
 
+
     /**
      * Checks if there is some book saved in database
      */
     public boolean libraryIsEmpty() {
         return bookRepository.libraryIsEmpty();
     }
+
 
     /**
      * Checks if already exist a book with the same information in database
@@ -188,6 +198,14 @@ public class BookService {
      */
     private BookDTO bookToDTO(Book book) {
         return new BookDTO(book.getBookId(), book.getTitle(), book.getAuthor(), book.getYear());
+    }
+
+
+    /**
+     * Creates a Book from a BookDTO
+     */
+    private Book dtoToBook(BookDTO bookDTO) {
+        return new Book(bookDTO.getId(), bookDTO.getTitle(), bookDTO.getAuthor(), bookDTO.getYear());
     }
 
 
