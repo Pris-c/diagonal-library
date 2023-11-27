@@ -8,14 +8,11 @@ The Library Management System project is an evolving system that will undergo se
 
 ## Current Version: Java Branch
 
-The current version of the project is in the ['**java**'](https://github.com/Pris-c/diagonal-library/tree/java/diagonal-library/src]branch). This version utilizes pure Java language to construct the system, simulating a database with a List.
+The current version of the project is in the [**maven-integration**](https://github.com/Pris-c/library-manager/tree/maven-integration) branch. This version utilizes Java language integrated to Maven for the improvement of project management, dependencies handling, documentations and unit tests.
 
 ## Upcoming Versions
 
 The project will be enhanced and improved in subsequent versions. Planned updates include:
-
-- **Incorporation of Maven:**
-   - Maven will be integrated for improved project management, dependency handling, documentation and unit tests.
 
 - **Integration of SQL Database:**
    - An SQL database will be incorporated to provide persistent data storage.
@@ -27,10 +24,10 @@ The project will be enhanced and improved in subsequent versions. Planned update
 
 Different versions of the project are organized into specific branches. To access a particular version, use the following branching strategy:
 
-1. ✔ **java:**  
+1.  [**java**](https://github.com/Pris-c/diagonal-library/tree/java/diagonal-library/src]branch) ✔ :
    - The initial version using only Java with a simulated List-based database.
     
-2. [_in progress_] **maven-integration:** 
+2.  [**maven-integration**](https://github.com/Pris-c/library-manager/tree/maven-integration) [_in progress_] :
    - Integration of Maven for improved project structure and dependency management.
 
 3. **sql-database-integration:**
