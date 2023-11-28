@@ -25,7 +25,7 @@ public class HibernateUtil {
     /**
      * Gets an instance of SessionFactory, Hibernate's main interface for creating sessions with the database.
      * A session is a unit of work that encapsulates read and write operations on the database.
-     * It implements the singleton pattern concept,checking if a session has already been created.
+     * It implements the singleton pattern concept, checking if a session has already been created.
      */
     public static SessionFactory getSessionFactory() {
 

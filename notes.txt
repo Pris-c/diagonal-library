@@ -1,5 +1,14 @@
+
+## Try with resources
  The try-with-resources is a more elegant and efficient way to guarantee that the resources witch implements the
  AutoCloseable interface be correctly closed, even an exception occurred during the try block.
  In this case, when the block try is finished, the session is automatically closed, even the session.close() is
  not called:
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {}
+
+
+## Transation
+        A transaction groups a set of database operations into an atomic unit. This means that all the operations
+         within the transaction are carried out successfully or, in the event of a failure, are undone (rollback).
+         For operations that alter the database, such as save, update or delete, it is crucial to initiate a transaction
+         to guarantee data integrity.
