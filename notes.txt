@@ -1,0 +1,5 @@
+ The try-with-resources is a more elegant and efficient way to guarantee that the resources witch implements the
+ AutoCloseable interface be correctly closed, even an exception occurred during the try block.
+ In this case, when the block try is finished, the session is automatically closed, even the session.close() is
+ not called:
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {}
