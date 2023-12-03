@@ -1,4 +1,4 @@
-package prisc.entity;
+package prisc.book;
 
 import jakarta.persistence.*;
 

@@ -21,7 +21,7 @@
 
         <!-- - Mapping files or annotated classes -->
         <!-- - Add your entity classes or mapping files here  for ex: entity used below -->
-        <mapping class="prisc.entity.Book"/>
+        <mapping class="prisc.book.Book"/>
 
     </session-factory>
 </hibernate-configuration>

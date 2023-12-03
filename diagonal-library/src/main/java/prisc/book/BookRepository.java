@@ -1,14 +1,19 @@
-package prisc.entity;
+package prisc.book;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import prisc.util.HibernateUtil;
+import prisc.util.LibraryPrinter;
 
 import java.util.List;
 
 public class BookRepository {
 
+
+    private static final Logger logger = LogManager.getLogger(BookRepository.class);
     /**
      * Retrieves all Book objects from the database.
      * This operation involves:
