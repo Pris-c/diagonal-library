@@ -6,6 +6,7 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
+//TODO: Update exceptions treatment
 
 /**
  * Configures Hibernate in the application, creating methods to get the Sessions Factory and to turn off
