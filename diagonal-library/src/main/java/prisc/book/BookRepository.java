@@ -1,5 +1,6 @@
 package prisc.book;
 
+import jakarta.persistence.NoResultException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
@@ -10,6 +11,20 @@ import prisc.util.LibraryPrinter;
 
 import java.util.List;
 
+/**
+ * BookRepository Class
+ *
+ * The BookRepository class serves as a repository for managing Book entities in the application.
+ * It encapsulates database operations related to books, including the creation, retrieval, updating,
+ * and deletion of book records. This class utilizes Hibernate, an Object-Relational Mapping (ORM)
+ * framework, to interact with the underlying database.
+ *
+ * Usage:
+ * The BookRepository class is used by the service layer  to perform CRUD (Create, Read, Update, Delete) operations
+ * on Book entities in the database. It acts as a bridge between the application and the underlying database,
+ * abstracting away the details of database interactions and providing a convenient interface for managing
+ * book-related data.
+ */
 public class BookRepository {
 
     private static final Logger logger = LogManager.getLogger(BookRepository.class);
@@ -26,16 +41,15 @@ public class BookRepository {
      *  - Prints a user-friendly error message using the LibraryPrinter class,
      *  - Returns null.
      *
-     * @return List<Book> A list containing all Book objects retrieved from the databas
-
+     * @return List<Book> A list containing all Book objects retrieved from the database
      */
     public List<Book> getAll() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createQuery("FROM Book", Book.class).list();
+
         } catch (Exception e) {
-            logger.error("Error while retrieving Book objects from the database: " + e.getMessage());
-            LibraryPrinter.printHibernateException();
-            return null;
+            logger.error("Error while retrieving Book objects from the database: " + e + e.getMessage());
+            throw e;
         }
     }
 
@@ -67,8 +81,8 @@ public class BookRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            logger.error("Error while saving Book to the database: " + e.getMessage());
-            LibraryPrinter.printHibernateException();
+            logger.error("Error while saving Book to the database: " + e + e.getMessage());
+            throw e;
         }
     }
 
@@ -99,9 +113,8 @@ public class BookRepository {
             query.setParameter("titleSubstring", "%" + title + "%");
             return query.getResultList();
         } catch (Exception e) {
-            logger.error("Error while searching for books with title containing '" + title + "': " + e.getMessage());
-            LibraryPrinter.printHibernateException();
-        return null;
+            logger.error("Error while searching for books with title containing '" + title + "': " + e + e.getMessage());
+            throw e;
         }
     }
 
@@ -132,9 +145,8 @@ public class BookRepository {
             query.setParameter("authorSubstring", "%" + author + "%");
             return query.getResultList();
         } catch (Exception e) {
-            logger.error("Error while searching for books with author containing '" + author + "': " +e.getMessage());
-            LibraryPrinter.printHibernateException();
-            return null;
+            logger.error("Error while searching for books with author containing '" + author + "': " + e + e.getMessage());
+            throw e;
         }
     }
 
@@ -165,9 +177,8 @@ public class BookRepository {
             query.setParameter("year", year);
             return query.getResultList();
         } catch (Exception e) {
-            logger.error("Error while searching for books from " + year + ": " + e.getMessage());
-            LibraryPrinter.printHibernateException();
-            return null;
+            logger.error("Error while searching for books from " + year + ": " + e + e.getMessage());
+            throw e;
         }
     }
 
@@ -192,9 +203,46 @@ public class BookRepository {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.get(Book.class, bookId);
         } catch (Exception e) {
-            logger.error("Error while searching for book id = " + bookId + ": " + e.getMessage());
-            LibraryPrinter.printHibernateException();
+            logger.error("Error while searching for book id = " + bookId + ": " + e + e.getMessage());
+            throw e;
+        }
+    }
+
+
+    /**
+     * Returns a Book object if this one is already persisted in database or null.
+     *
+     * This operation involves:
+     *   1. Opening a Hibernate session using HibernateUtil.getSessionFactory(),
+     *   2. Creating an HQL (Hibernate Query Language) query to select a Book object
+     *      where the title, author, and year match the specified Book entity,
+     *   3. Setting parameters in the query for the title, author, and year values,
+     *   4. Returning the existing Book object that matches the criteria.
+     *
+     * If no matching Book entity is found:
+     *   - The method catches a NoResultException and returns null, indicating that no result was found.
+     * If an exception occurs during the process:
+     *   - The method logs the error message using the logger,
+     *   - Prints a user-friendly error message using the LibraryPrinter class,
+     *   - Returns null.
+     *
+     * @param book The Book entity for which to search for an existing match based on title, author, and year.
+     * @return Book The existing Book object that matches the specified criteria.
+     */
+    public Book findExistingBook(Book book){
+        String hql = "FROM Book b WHERE b.title = :title AND b.author = :author AND b.year = :year";
+
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Query<Book> query = session.createQuery(hql, Book.class);
+            query.setParameter("title", book.getTitle());
+            query.setParameter("author", book.getAuthor());
+            query.setParameter("year", book.getYear());
+            return query.getSingleResult();
+        } catch (NoResultException ex){
             return null;
+        } catch (Exception e) {
+            logger.error("Error while searching for book equals to " + book + ": " + e + e.getMessage());
+            throw e;
         }
     }
 
@@ -226,8 +274,8 @@ public class BookRepository {
             if (transaction!= null){
                 transaction.rollback();
             }
-            logger.error("Error while updating Book to the database: " + e.getMessage());
-            LibraryPrinter.printHibernateException();
+            logger.error("Error while updating Book to the database: " + e + e.getMessage());
+            throw e;
         }
     }
 
@@ -264,8 +312,8 @@ public class BookRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            logger.error("Error while deleting Book to the database: " + e.getMessage());
-            LibraryPrinter.printHibernateException();
+            logger.error("Error while deleting Book to the database: " + e + e.getMessage());
+            throw e;
         }
 
     }
