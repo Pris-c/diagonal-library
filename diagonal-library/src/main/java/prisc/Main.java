@@ -3,19 +3,23 @@ package prisc;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import prisc.book.Book;
+import prisc.book.BookRepository;
+
+import java.util.List;
 
 public class Main {
 
     private static final Logger logger = LogManager.getLogger(Main.class);
 
+
     public static void main(String[] args) {
 
-        logger.trace("We've just greeted the user!");
-        logger.debug("We've just greeted the user!");
-        logger.info("We've just greeted the user!");
-        logger.warn("We've just greeted the user!");
-        logger.error("We've just greeted the user!");
-        logger.fatal("We've just greeted the user!");
+        BookRepository bookRepository = new BookRepository();
+
+        List<Book> books = bookRepository.getAll();
+
+        books.forEach(System.out::println);
 
     }
 

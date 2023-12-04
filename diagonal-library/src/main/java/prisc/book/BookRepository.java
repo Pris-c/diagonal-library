@@ -12,24 +12,29 @@ import java.util.List;
 
 public class BookRepository {
 
-
     private static final Logger logger = LogManager.getLogger(BookRepository.class);
+
     /**
      * Retrieves all Book objects from the database.
      * This operation involves:
      *   1. Opening a Hibernate session using HibernateUtil.getSessionFactory(),
      *   2. Creating an HQL (Hibernate Query Language) query to select all records from the Book entity,
      *   3. Returning a list of Book objects.
-     * If an exception occurs during the process, the method prints the exception stack trace
-     * and returns null.
      *
-     * @return List<Book> A list containing all Book objects retrieved from the database.
+     * If an exception occurs during the process:
+     *  - The method logs the error message using the logger,
+     *  - Prints a user-friendly error message using the LibraryPrinter class,
+     *  - Returns null.
+     *
+     * @return List<Book> A list containing all Book objects retrieved from the databas
+
      */
     public List<Book> getAll() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createQuery("FROM Book", Book.class).list();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error while retrieving Book objects from the database: " + e.getMessage());
+            LibraryPrinter.printHibernateException();
             return null;
         }
     }
@@ -37,12 +42,16 @@ public class BookRepository {
 
     /**
      * Saves a Book object to the database.
-     *   This operation involves:
-     *      1. Opening a Hibernate session using HibernateUtil.getSessionFactory(),
-     *      2. Starting a Hibernate transaction,
-     *      3. Persisting the Book using the `persist` method,
-     *      4. Committing the transaction, applying the database changes,
-     *      5. Rolling back the transaction in case of an exception.
+     * This operation involves:
+     *   1. Opening a Hibernate session using HibernateUtil.getSessionFactory(),
+     *   2. Starting a Hibernate transaction,
+     *   3. Persisting the Book using the `persist` method,
+     *   4. Committing the transaction, applying the database changes.
+     *
+     * If an exception occurs during the process:
+     *   - The method logs the error message using the logger,
+     *   - Prints a user-friendly error message using the LibraryPrinter class,
+     *   - Rolls back the transaction to maintain data consistency.
      *
      * @param book The Book object to be saved.
      */
@@ -58,7 +67,8 @@ public class BookRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            logger.error("Error while saving Book to the database: " + e.getMessage());
+            LibraryPrinter.printHibernateException();
         }
     }
 
@@ -72,8 +82,11 @@ public class BookRepository {
      *      where the title contains the specified substring (case-insensitive),
      *   3. Setting a parameter in the query for the title substring,
      *   4. Returning a list of Book objects matching the criteria.
-     * If an exception occurs during the process, the method prints the exception stack trace
-     * and returns null.
+     *
+     * If an exception occurs during the process:
+     *  - The method logs the error message using the logger,
+     *  - Prints a user-friendly error message using the LibraryPrinter class,
+     *  - Returns null.
      *
      * @param title The substring to search for in the titles of books.
      * @return List<Book> A list containing Book objects with titles matching the specified substring.
@@ -86,7 +99,8 @@ public class BookRepository {
             query.setParameter("titleSubstring", "%" + title + "%");
             return query.getResultList();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error while searching for books with title containing '" + title + "': " + e.getMessage());
+            LibraryPrinter.printHibernateException();
         return null;
         }
     }
@@ -101,8 +115,11 @@ public class BookRepository {
      *      where the author contains the specified substring (case-insensitive),
      *   3. Setting a parameter in the query for the author substring,
      *   4. Returning a list of Book objects matching the criteria.
-     * If an exception occurs during the process, the method prints the exception stack trace
-     * and returns null.
+     *
+     * If an exception occurs during the process:
+     *  - The method logs the error message using the logger,
+     *  - Prints a user-friendly error message using the LibraryPrinter class,
+     *  - Returns null.
      *
      * @param author The substring to search for in the titles of books.
      * @return List<Book> A list containing Book objects with authors matching the specified substring.
@@ -115,7 +132,8 @@ public class BookRepository {
             query.setParameter("authorSubstring", "%" + author + "%");
             return query.getResultList();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error while searching for books with author containing '" + author + "': " +e.getMessage());
+            LibraryPrinter.printHibernateException();
             return null;
         }
     }
@@ -130,8 +148,11 @@ public class BookRepository {
      *      where the publication year matches the specified year,
      *   3. Setting a parameter in the query for the year,
      *   4. Returning a list of Book objects matching the criteria.
-     * If an exception occurs during the process, the method prints the exception stack trace
-     * and returns null.
+     *
+     * If an exception occurs during the process:
+     *   - The method logs the error message using the logger,
+     *   - Prints a user-friendly error message using the LibraryPrinter class,
+     *   - Returns null.
      *
      * @param year The publication year to search for in the books.
      * @return List<Book> A list containing Book objects published in the specified year.
@@ -144,7 +165,8 @@ public class BookRepository {
             query.setParameter("year", year);
             return query.getResultList();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error while searching for books from " + year + ": " + e.getMessage());
+            LibraryPrinter.printHibernateException();
             return null;
         }
     }
@@ -157,8 +179,11 @@ public class BookRepository {
      *   1. Opening a Hibernate session using HibernateUtil.getSessionFactory(),
      *   2. Utilizing the built-in Hibernate method to directly retrieve a Book object by its unique identifier,
      *   3. Returning the Book object that matches the criteria.
-     * If an exception occurs during the process, the method prints the exception stack trace
-     * and returns null.
+     *
+     * If an exception occurs during the process:
+     *   - The method logs the error message using the logger,
+     *   - Prints a user-friendly error message using the LibraryPrinter class,
+     *   - Returns null.
      *
      * @param bookId The unique identifier of the book.
      * @return Book A Book object that corresponds to the specified ID.
@@ -167,7 +192,8 @@ public class BookRepository {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.get(Book.class, bookId);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error while searching for book id = " + bookId + ": " + e.getMessage());
+            LibraryPrinter.printHibernateException();
             return null;
         }
     }
@@ -181,7 +207,11 @@ public class BookRepository {
      *   2. Beginning a transaction,
      *   3. Merging the state of the provided Book object with the persistent state in the database,
      *   4. Committing the transaction.
-     * If an exception occurs during the process, the method rolls back the transaction and prints the exception stack trace.
+     *
+     * If an exception occurs during the process:
+     *   - The method logs the error message using the logger,
+     *   - Prints a user-friendly error message using the LibraryPrinter class,
+     *   - Rolls back the transaction to maintain data consistency.
      *
      * @param book The Book object to be updated.
      */
@@ -196,7 +226,8 @@ public class BookRepository {
             if (transaction!= null){
                 transaction.rollback();
             }
-            e.printStackTrace();
+            logger.error("Error while updating Book to the database: " + e.getMessage());
+            LibraryPrinter.printHibernateException();
         }
     }
 
@@ -210,8 +241,11 @@ public class BookRepository {
      *   3. Retrieving the Book object by its unique identifier (ID),
      *   4. Removing the specified Book object from the database,
      *   5. Committing the transaction if the Book object is found.
-     * If the Book object is not found or if an exception occurs during the process,
-     * the method rolls back the transaction and prints the exception stack trace.
+     *
+     * If an exception occurs during the process:
+     *   - The method logs the error message using the logger,
+     *   - Prints a user-friendly error message using the LibraryPrinter class,
+     *   - Rolls back the transaction to maintain data consistency.
      *
      * @param bookId The unique identifier of the Book object to be deleted.
      */
@@ -230,7 +264,8 @@ public class BookRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            logger.error("Error while deleting Book to the database: " + e.getMessage());
+            LibraryPrinter.printHibernateException();
         }
 
     }

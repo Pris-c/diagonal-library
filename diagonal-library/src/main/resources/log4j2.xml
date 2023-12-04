@@ -1,29 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Log4j2 Configuration File
+
+    This configuration file sets up logging using the Log4j2 framework.
+
+    Understanding the configuration:
+    - <Configuration status="INFO"> : Sets the log level of the Log4j configuration itself.
+                                      Logging status messages at INFO level during initialization.
+
+
+        -   <Appenders>     : Component responsible for sending or "attaching" log messages to a specific destination
+        <File name="FileAppender" fileName="application-${date:yyyyMMdd}.log" immediateFlush="false" append="true">
+                FileAppender:                                   Appends log messages to a file.
+                File Name = application-${date:yyyyMMdd}.log :  Log file named with the current date
+                Immediate Flush = false  :                      Does not force immediate writing to the file
+                                                                (improves performance)
+                Append: true  :                                 Adds logs to the end of the file if it already exists.
+
+            <PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+                   Defines the format of log messages.
+
+        <Console name="ConsoleAppender" target="SYSTEM_OUT">  : commented out
+                                        Appends log messages to the system console.
+                Target = SYSTEM_OUT :   Appends to the standard output
+
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+                    Defines the format of log messages.
+
+                    ###
+
+        -   <Loggers>
+           <Root level="debug">
+                The root logger for all loggers.
+                Log Level = DEBUG : Defines logs level.
+
+                <AppenderRef ref="FileAppender"/>
+                        FileAppender : Appends log messages to the specified file.
+
+                <AppenderRef ref="ConsoleAppender" level="error"/>\     : Currently commented out
+                        ConsoleAppender: Appends log messages to the system console.
+                        Log Level = error : Replace the log level defined in root
+                                            Logs only error-level messages to the console
+
+   Note: In this project, user interaction occurs through the terminal; therefore, logging to the console is disabled.
+-->
+
+
 <Configuration status="INFO">
 
 
     <Appenders>
+        <File name="FileAppender" fileName="application-${date:yyyyMMdd}.log" immediateFlush="false" append="true">
+            <PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </File>
+
         <!--
         <Console name="ConsoleAppender" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
         </Console>
         -->
 
-        <File name="FileAppender" fileName="application-${date:yyyyMMdd}.log" immediateFlush="false" append="true">
-            <PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
-        </File>
     </Appenders>
 
-
     <Loggers>
-        <Root level="trace">
+        <Root level="debug">
+            <AppenderRef ref="FileAppender"/>
+
             <!--
             <AppenderRef ref="ConsoleAppender" level="error"/>
             -->
 
-            <AppenderRef ref="FileAppender"/>
         </Root>
     </Loggers>
-
 
 </Configuration>
