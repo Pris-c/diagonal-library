@@ -11,6 +11,8 @@ import prisc.util.LibraryPrinter;
 
 import java.util.List;
 
+//TODO: Review documentation
+
 /**
  * BookRepository Class
  *
@@ -230,7 +232,7 @@ public class BookRepository {
      * @return Book The existing Book object that matches the specified criteria.
      */
     public Book findExistingBook(Book book){
-        String hql = "FROM Book b WHERE b.title = :title AND b.author = :author AND b.year = :year";
+        String hql = "FROM Book b WHERE lower(b.title) = lower(:title) AND lower(b.author) = lower(:author) AND b.year = :year";
 
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<Book> query = session.createQuery(hql, Book.class);
@@ -318,5 +320,22 @@ public class BookRepository {
 
     }
 
+    /**
+     * Returns the quantity of records in the Book table.
+     *
+     * @return The quantity of records in the Book table.
+     * @throws RuntimeException If an error occurs while counting books in the database.
+     */
+    public long contRegisters(){
+        String hql = "SELECT COUNT(b) FROM Book b";
+
+        try(Session session = HibernateUtil.getSessionFactory().openSession()){
+            Query<Long> query = session.createQuery(hql, Long.class);
+            return query.getSingleResult();
+        } catch (Exception e) {
+            logger.error("Error while contting book in database " + e + e.getMessage());
+            throw e;
+        }
+    }
 
 }

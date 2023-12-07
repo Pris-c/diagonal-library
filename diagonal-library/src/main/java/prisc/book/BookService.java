@@ -222,17 +222,26 @@ public class BookService {
             if (bookRepository.findById(id) != null) {
                 bookRepository.delete(id);
             } else {
-                throw new NoSuchElementException();
+                throw new NoSuchElementException("There is no book with id = " + id + " in database.");
             }
 
-
         } catch (NoSuchElementException noSuchElement){
+            logger.info(noSuchElement + noSuchElement.getMessage());
             throw noSuchElement;
         } catch (Exception e){
             throw new DatabaseOperationException("Error while deleting book from database");
         }
     }
 
+
+    /**
+     * Checks if the library is empty by verifying if there are no records in the Book table.
+     *
+     * @return True if the library is empty, false otherwise.
+     */
+    public boolean libraryIsEmpty(){
+        return bookRepository.contRegisters() == 0;
+    }
 
 
 

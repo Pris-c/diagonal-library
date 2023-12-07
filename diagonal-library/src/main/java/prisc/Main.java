@@ -3,10 +3,7 @@ package prisc;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import prisc.book.Book;
-import prisc.book.BookRepository;
-
-import java.util.List;
+import prisc.book.BookController;
 
 public class Main {
 
@@ -15,11 +12,10 @@ public class Main {
 
     public static void main(String[] args) {
 
-        BookRepository bookRepository = new BookRepository();
+        BookController controller = new BookController();
 
-        List<Book> books = bookRepository.getAll();
-
-        books.forEach(System.out::println);
+        System.out.println("\nWELCOME TO DIAGONAL LIBRARY");
+        controller.mainMenu();
 
     }
 
