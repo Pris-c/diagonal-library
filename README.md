@@ -4,8 +4,6 @@ This repository contains various versions of a Library Management System project
 
 ## Project Overview
 
-## Project Overview
-
 The Library Management System project is an evolving system that will undergo several versions, introducing new features and incorporating new technologies such as Maven, SQL databases, and  Spring Boot framework.
 
 ## Current Version: maven-sql-integration
