@@ -1,12 +1,14 @@
 # Diagonal Library
 
-This repository will contain different versions of a Library Management System project, using java language.
+This repository contains various versions of a Library Management System project implemented in Java.
+
+## Project Overview
 
 ## Project Overview
 
 The Library Management System project is an evolving system that will undergo several versions, introducing new features and incorporating new technologies such as Maven, SQL databases, and  Spring Boot framework.
 
-## Current Version: Java Branch
+## Current Version: maven-sql-integration
 
 The current version of the project is in the [**maven-sql-integration**](https://github.com/Pris-c/library-manager/tree/maven-sql-integration) branch. This version utilizes Java language integrated to Maven for the improvement of project management, dependencies handling, documentations and unit tests.
 
@@ -29,7 +31,7 @@ Different versions of the project are organized into specific branches. To acces
    - This branch focuses on integrating Maven to enhance project structure and dependency management. Additionally, it includes the integration of an SQL database for establishing persistent and efficient data storage.
 
 3. **spring-boot-migration:**
-   - Migration to the Spring Boot framework for advanced features and architecture.
+   - The project will undergoing a transition to the Spring Boot framework to leverage advanced features and realize architectural enhancements. The replacement entails the adoption of a RESTful API paradigm.
 
 ## How to Access Different Versions
 
