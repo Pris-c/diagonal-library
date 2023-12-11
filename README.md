@@ -1,4 +1,4 @@
-# Diagonal Library
+# Library Management System
 
 This repository contains various versions of a Library Management System project implemented in Java.
 
