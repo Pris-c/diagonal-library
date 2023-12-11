@@ -1,18 +1,21 @@
 package prisc.util;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-
-//TODO: Update exceptions treatment
+import prisc.book.BookControllerHelper;
 
 /**
  * Configures Hibernate in the application, creating methods to get the Sessions Factory and to turn off
  * the register when the application is closed.
  */
 public class HibernateUtil {
+
+    private static final Logger logger = LogManager.getLogger(HibernateUtil.class);
 
     /* Storing and managing the configurations needed to run hibernate. */
     private static StandardServiceRegistry registry;
@@ -47,7 +50,6 @@ public class HibernateUtil {
                  */
                 MetadataSources sources = new MetadataSources(registry);
 
-
                 /*
                  Metadata creation
                  The metadata represents the actual Hibernate metadata after it has been built from the sources.
@@ -70,10 +72,11 @@ public class HibernateUtil {
                 sessionFactory = metadata.getSessionFactoryBuilder().build();
 
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("Erro while creating a SessionFactory " + e + e.getMessage());
                 if (registry != null) {
                     StandardServiceRegistryBuilder.destroy(registry);
                 }
+                throw e;
             }
         }
         return sessionFactory;

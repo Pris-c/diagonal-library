@@ -7,11 +7,8 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import prisc.util.HibernateUtil;
-import prisc.util.LibraryPrinter;
 
 import java.util.List;
-
-//TODO: Review documentation
 
 /**
  * BookRepository Class
@@ -31,21 +28,23 @@ public class BookRepository {
 
     private static final Logger logger = LogManager.getLogger(BookRepository.class);
 
+
     /**
      * Retrieves all Book objects from the database.
-     * This operation involves:
-     *   1. Opening a Hibernate session using HibernateUtil.getSessionFactory(),
-     *   2. Creating an HQL (Hibernate Query Language) query to select all records from the Book entity,
-     *   3. Returning a list of Book objects.
      *
-     * If an exception occurs during the process:
-     *  - The method logs the error message using the logger,
-     *  - Prints a user-friendly error message using the LibraryPrinter class,
-     *  - Returns null.
+     * This method performs the following steps:
+     *   1. Opens a Hibernate session using HibernateUtil.getSessionFactory(),
+     *   2. Creates and executes an HQL (Hibernate Query Language) query to select all records from the Book entity,
+     *   3. Returns a list of Book objects.
      *
-     * @return List<Book> A list containing all Book objects retrieved from the database
+     * In case of an exception during the process:
+     *   - Logs the error message using the logger,
+     *   - Throws the exception.
+     *
+     * @return List<Book> A list containing all Book objects retrieved from the database.
+     * @throws Exception If an error occurs during the retrieval process.
      */
-    public List<Book> getAll() {
+    public List<Book> getAll() throws Exception{
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createQuery("FROM Book", Book.class).list();
 
@@ -58,21 +57,22 @@ public class BookRepository {
 
     /**
      * Saves a Book object to the database.
-     * This operation involves:
-     *   1. Opening a Hibernate session using HibernateUtil.getSessionFactory(),
-     *   2. Starting a Hibernate transaction,
-     *   3. Persisting the Book using the `persist` method,
-     *   4. Committing the transaction, applying the database changes.
+     *
+     * This method performs the following steps:
+     *   1. Opens a Hibernate session using HibernateUtil.getSessionFactory(),
+     *   2. Starts a Hibernate transaction,
+     *   3. Persists the Book object using the `persist` method,
+     *   4. Commits the transaction, applying the changes to the database.
      *
      * If an exception occurs during the process:
-     *   - The method logs the error message using the logger,
-     *   - Prints a user-friendly error message using the LibraryPrinter class,
-     *   - Rolls back the transaction to maintain data consistency.
+     *   - Rolls back the transaction to maintain data consistency,
+     *   - Logs the error message using the logger,
+     *   - Throws the exception.
      *
      * @param book The Book object to be saved.
+     * @throws Exception If an error occurs during the saving process.
      */
-    public void save(Book book) {
-
+    public void save(Book book) throws Exception{
         Transaction transaction = null;
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -92,22 +92,22 @@ public class BookRepository {
     /**
      * Retrieves a list of Book objects containing the specified title substring.
      *
-     * This operation involves:
-     *   1. Opening a Hibernate session using HibernateUtil.getSessionFactory(),
-     *   2. Creating an HQL (Hibernate Query Language) query to select Book objects
+     * This method performs the following steps:
+     *   1. Opens a Hibernate session using HibernateUtil.getSessionFactory(),
+     *   2. Creates an HQL (Hibernate Query Language) query to select Book objects
      *      where the title contains the specified substring (case-insensitive),
-     *   3. Setting a parameter in the query for the title substring,
-     *   4. Returning a list of Book objects matching the criteria.
+     *   3. Sets a parameter in the query for the title substring,
+     *   4. Returns a list of Book objects matching the criteria.
      *
      * If an exception occurs during the process:
-     *  - The method logs the error message using the logger,
-     *  - Prints a user-friendly error message using the LibraryPrinter class,
-     *  - Returns null.
+     *   - Logs the error message using the logger,
+     *   - Throws the exception.
      *
      * @param title The substring to search for in the titles of books.
      * @return List<Book> A list containing Book objects with titles matching the specified substring.
+     * @throws Exception If an error occurs during the search process.
      */
-    public List<Book> findByTitle(String title) {
+    public List<Book> findByTitle(String title) throws Exception{
         String hql = "FROM Book b WHERE lower(b.title) like lower(:titleSubstring)";
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -124,22 +124,22 @@ public class BookRepository {
     /**
      * Retrieves a list of Book objects containing the specified author substring.
      *
-     * This operation involves:
-     *   1. Opening a Hibernate session using HibernateUtil.getSessionFactory(),
-     *   2. Creating an HQL (Hibernate Query Language) query to select Book objects
+     * This method performs the following steps:
+     *   1. Opens a Hibernate session using HibernateUtil.getSessionFactory(),
+     *   2. Creates an HQL (Hibernate Query Language) query to select Book objects
      *      where the author contains the specified substring (case-insensitive),
-     *   3. Setting a parameter in the query for the author substring,
-     *   4. Returning a list of Book objects matching the criteria.
+     *   3. Sets a parameter in the query for the author substring,
+     *   4. Returns a list of Book objects matching the criteria.
      *
      * If an exception occurs during the process:
-     *  - The method logs the error message using the logger,
-     *  - Prints a user-friendly error message using the LibraryPrinter class,
-     *  - Returns null.
+     *   - Logs the error message using the logger,
+     *   - Throws the exception.
      *
-     * @param author The substring to search for in the titles of books.
+     * @param author The substring to search for in the authors of books.
      * @return List<Book> A list containing Book objects with authors matching the specified substring.
+     * @throws Exception If an error occurs during the search process.
      */
-    public List<Book> findByAuthor(String author){
+    public List<Book> findByAuthor(String author) throws Exception{
         String hql = "FROM Book b WHERE lower(b.author) like lower(:authorSubstring)";
 
         try(Session session = HibernateUtil.getSessionFactory().openSession()){
@@ -156,22 +156,22 @@ public class BookRepository {
     /**
      * Retrieves a list of Book objects published in the specified year.
      *
-     * This operation involves:
-     *   1. Opening a Hibernate session using HibernateUtil.getSessionFactory(),
-     *   2. Creating an HQL (Hibernate Query Language) query to select Book objects
+     * This method performs the following steps:
+     *   1. Opens a Hibernate session using HibernateUtil.getSessionFactory(),
+     *   2. Creates an HQL (Hibernate Query Language) query to select Book objects
      *      where the publication year matches the specified year,
-     *   3. Setting a parameter in the query for the year,
-     *   4. Returning a list of Book objects matching the criteria.
+     *   3. Sets a parameter in the query for the publication year,
+     *   4. Returns a list of Book objects matching the criteria.
      *
      * If an exception occurs during the process:
-     *   - The method logs the error message using the logger,
-     *   - Prints a user-friendly error message using the LibraryPrinter class,
-     *   - Returns null.
+     *   - Logs the error message using the logger,
+     *   - Throws the exception.
      *
      * @param year The publication year to search for in the books.
      * @return List<Book> A list containing Book objects published in the specified year.
+     * @throws Exception If an error occurs during the search process.
      */
-    public List<Book> findByYear(int year){
+    public List<Book> findByYear(int year) throws Exception{
         String hql = "FROM Book b WHERE b.year = :year";
 
         try(Session session = HibernateUtil.getSessionFactory().openSession()){
@@ -188,20 +188,20 @@ public class BookRepository {
     /**
      * Retrieves a Book object that corresponds to the specified ID.
      *
-     * This operation involves:
-     *   1. Opening a Hibernate session using HibernateUtil.getSessionFactory(),
-     *   2. Utilizing the built-in Hibernate method to directly retrieve a Book object by its unique identifier,
-     *   3. Returning the Book object that matches the criteria.
+     * This method performs the following steps:
+     *   1. Opens a Hibernate session using HibernateUtil.getSessionFactory(),
+     *   2. Utilizes the built-in Hibernate method to directly retrieve a Book object by its unique identifier,
+     *   3. Returns the Book object that matches the criteria.
      *
      * If an exception occurs during the process:
-     *   - The method logs the error message using the logger,
-     *   - Prints a user-friendly error message using the LibraryPrinter class,
-     *   - Returns null.
+     *   - Logs the error message using the logger,
+     *   - Throws the exception.
      *
      * @param bookId The unique identifier of the book.
      * @return Book A Book object that corresponds to the specified ID.
+     * @throws Exception If an error occurs during the search process.
      */
-    public Book findById(int bookId) {
+    public Book findById(int bookId) throws Exception{
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.get(Book.class, bookId);
         } catch (Exception e) {
@@ -212,26 +212,26 @@ public class BookRepository {
 
 
     /**
-     * Returns a Book object if this one is already persisted in database or null.
+     * Returns a Book object if it is already persisted in the database or null.
      *
-     * This operation involves:
-     *   1. Opening a Hibernate session using HibernateUtil.getSessionFactory(),
-     *   2. Creating an HQL (Hibernate Query Language) query to select a Book object
+     * This method performs the following steps:
+     *   1. Opens a Hibernate session using HibernateUtil.getSessionFactory(),
+     *   2. Creates an HQL (Hibernate Query Language) query to select a Book object
      *      where the title, author, and year match the specified Book entity,
-     *   3. Setting parameters in the query for the title, author, and year values,
-     *   4. Returning the existing Book object that matches the criteria.
+     *   3. Sets parameters in the query for the title, author, and year values,
+     *   4. Returns the existing Book object that matches the criteria.
      *
      * If no matching Book entity is found:
-     *   - The method catches a NoResultException and returns null, indicating that no result was found.
+     *   - Catches a NoResultException and returns null, indicating that no result was found.
      * If an exception occurs during the process:
-     *   - The method logs the error message using the logger,
-     *   - Prints a user-friendly error message using the LibraryPrinter class,
-     *   - Returns null.
+     *   - Logs the error message using the logger,
+     *   - Throws the exception.
      *
      * @param book The Book entity for which to search for an existing match based on title, author, and year.
-     * @return Book The existing Book object that matches the specified criteria.
+     * @return Book The existing Book object that matches the specified criteria, or null if no match is found.
+     * @throws Exception If an error occurs during the search process.
      */
-    public Book findExistingBook(Book book){
+    public Book findExistingBook(Book book) throws Exception{
         String hql = "FROM Book b WHERE lower(b.title) = lower(:title) AND lower(b.author) = lower(:author) AND b.year = :year";
 
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -252,20 +252,21 @@ public class BookRepository {
     /**
      * Updates a Book object in the database.
      *
-     * This operation involves:
-     *   1. Opening a Hibernate session using HibernateUtil.getSessionFactory(),
-     *   2. Beginning a transaction,
-     *   3. Merging the state of the provided Book object with the persistent state in the database,
-     *   4. Committing the transaction.
+     * This method performs the following steps:
+     *   1. Opens a Hibernate session using HibernateUtil.getSessionFactory(),
+     *   2. Begins a transaction,
+     *   3. Merges the state of the provided Book object with the persistent state in the database,
+     *   4. Commits the transaction.
      *
      * If an exception occurs during the process:
-     *   - The method logs the error message using the logger,
-     *   - Prints a user-friendly error message using the LibraryPrinter class,
-     *   - Rolls back the transaction to maintain data consistency.
+     *   - Logs the error message using the logger,
+     *   - Rolls back the transaction to maintain data consistency,
+     *   - Throws the exception.
      *
      * @param book The Book object to be updated.
+     * @throws Exception If an error occurs during the update process.
      */
-    public void update(Book book){
+    public void update(Book book) throws Exception{
         Transaction transaction = null;
 
         try(Session session = HibernateUtil.getSessionFactory().openSession()){
@@ -285,21 +286,22 @@ public class BookRepository {
     /**
      * Deletes a Book object from the database based on its unique identifier.
      *
-     * This operation involves:
-     *   1. Opening a Hibernate session using HibernateUtil.getSessionFactory(),
-     *   2. Beginning a transaction,
-     *   3. Retrieving the Book object by its unique identifier (ID),
-     *   4. Removing the specified Book object from the database,
-     *   5. Committing the transaction if the Book object is found.
+     * This method performs the following steps:
+     *   1. Opens a Hibernate session using HibernateUtil.getSessionFactory(),
+     *   2. Begins a transaction,
+     *   3. Retrieves the Book object by its unique identifier (ID),
+     *   4. Removes the specified Book object from the database,
+     *   5. Commits the transaction if the Book object is found.
      *
-     * If an exception occurs during the process:
-     *   - The method logs the error message using the logger,
-     *   - Prints a user-friendly error message using the LibraryPrinter class,
-     *   - Rolls back the transaction to maintain data consistency.
+     * If no matching Book object is found or an exception occurs during the process:
+     *   - Logs the error message using the logger,
+     *   - Rolls back the transaction to maintain data consistency,
+     *   - Throws the exception.
      *
      * @param bookId The unique identifier of the Book object to be deleted.
+     * @throws Exception If an error occurs during the deletion process.
      */
-    public void delete(int bookId){
+    public void delete(int bookId) throws Exception{
         Transaction transaction = null;
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()){
@@ -317,23 +319,32 @@ public class BookRepository {
             logger.error("Error while deleting Book to the database: " + e + e.getMessage());
             throw e;
         }
-
     }
+
 
     /**
      * Returns the quantity of records in the Book table.
      *
+     * This method performs the following steps:
+     *   1. Opens a Hibernate session using HibernateUtil.getSessionFactory(),
+     *   2. Creates an HQL (Hibernate Query Language) query to count the number of records in the Book table,
+     *   3. Retrieves and returns the count of Book records.
+     *
+     * If an exception occurs during the process:
+     *   - Logs the error message using the logger,
+     *   - Throws a RuntimeException with a descriptive error message.
+     *
      * @return The quantity of records in the Book table.
      * @throws RuntimeException If an error occurs while counting books in the database.
      */
-    public long contRegisters(){
+    public long contRegisters() throws Exception{
         String hql = "SELECT COUNT(b) FROM Book b";
 
         try(Session session = HibernateUtil.getSessionFactory().openSession()){
             Query<Long> query = session.createQuery(hql, Long.class);
             return query.getSingleResult();
         } catch (Exception e) {
-            logger.error("Error while contting book in database " + e + e.getMessage());
+            logger.error("Error while counting book in database " + e + e.getMessage());
             throw e;
         }
     }

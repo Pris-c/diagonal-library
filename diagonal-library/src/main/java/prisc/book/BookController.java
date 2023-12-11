@@ -10,6 +10,11 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+
+/**
+ * Controller class for managing book-related operations in the library application.
+ * Provides methods for interacting with the library, including listing, saving, finding, updating, and deleting books.
+ */
 public class BookController {
 
     BookControllerHelper helper = new BookControllerHelper();
@@ -19,71 +24,86 @@ public class BookController {
 
 
     /**
-     * Shows the initial menu, read the user input and calls the appropriated function
+     * Displays the initial menu, reads user input, and invokes the appropriate function based on the selected option.
+     * The menu options include:
+     *  - Option 1: Lists all books in the library if it is not empty; otherwise, displays a message indicating an empty library.
+     *  - Option 2: Saves a new book to the library.
+     *  - Option 3: Searches for a book in the library if it is not empty; otherwise, displays a message indicating an empty library.
+     *  - Option 4: Updates information for an existing book in the library if it is not empty; otherwise, displays a message indicating an empty library.
+     *  - Option 5: Deletes an existing book from the library if it is not empty; otherwise, displays a message indicating an empty library.
+     *  - Option 0: Exits the menu loop.
+     * Invalid options prompt a message indicating an invalid choice.
      */
     public void mainMenu() {
         String option;
         boolean validOption = false;
 
         do {
-            LibraryPrinter.printMainMenu();
-            option = scan.nextLine();
+            try {
 
-            switch (option) {
-                case "1":
-                    listAll();
-                    break;
-                case "2":
-                    save();
-                    break;
-                case "3":
-                    if (bookService.libraryIsEmpty()) {
-                        LibraryPrinter.printLibraryIsEmpty();
-                    } else {
-                        find();
-                    }
-                    break;
-                case "4":
-                    if (bookService.libraryIsEmpty()) {
-                        LibraryPrinter.printMessage("There are no books registered.");
-                    } else {
-                        update();
-                    }
-                    break;
-                case "5":
-                   if (bookService.libraryIsEmpty()) {
-                        LibraryPrinter.printMessage("There are no books registered.");
-                    } else {
-                        delete();
-                    }
-                    break;
-                case "0":
-                    validOption = true;
-                    break;
-                default:
-                    LibraryPrinter.printInvalidOption();
+
+                LibraryPrinter.printMainMenu();
+                option = scan.nextLine();
+
+                switch (option) {
+                    case "1":
+                        if (bookService.libraryIsEmpty()) {
+                            LibraryPrinter.printLibraryIsEmpty();
+                        } else {
+                            listAll();
+                        }
+                        break;
+                    case "2":
+                        save();
+                        break;
+                    case "3":
+                        if (bookService.libraryIsEmpty()) {
+                            LibraryPrinter.printLibraryIsEmpty();
+
+                        } else {
+                            find();
+                        }
+                        break;
+                    case "4":
+                        if (bookService.libraryIsEmpty()) {
+                            LibraryPrinter.printLibraryIsEmpty();
+                        } else {
+                            update();
+                        }
+                        break;
+                    case "5":
+                        if (bookService.libraryIsEmpty()) {
+                            LibraryPrinter.printLibraryIsEmpty();
+                        } else {
+                            delete();
+                        }
+                        break;
+                    case "0":
+                        validOption = true;
+                        break;
+                    default:
+                        LibraryPrinter.printInvalidOption();
+                }
+
+
+            } catch (Exception e){
+            logger.error("Error in main menu method " + e + e.getMessage());
+            LibraryPrinter.printExceptionMessageToUser();
             }
-
         } while (!validOption);
     }
-
 
 
     /**
      * Checks if the database is empty. If not, displays the registered books.
      * If the library is empty, a corresponding message is printed.
-     * In case of any exception, an exception message is printed to the user.
+     * In case of any exception during the process, an exception message is printed to the user.
      */
     public void listAll() {
 
         try {
-            if (bookService.libraryIsEmpty()) {
-                LibraryPrinter.printLibraryIsEmpty();
-
-            } else {
-                List<BookDTO> books = bookService.getAll();
-                LibraryPrinter.printBookList(books);
-            }
+            List<BookDTO> books = bookService.getAll();
+            LibraryPrinter.printBookList(books);
 
         } catch (Exception e){
             LibraryPrinter.printExceptionMessageToUser();
@@ -92,8 +112,16 @@ public class BookController {
 
 
     /**
-     * Reads the input from the user to a new book and calls the Service to save it in database.
-     * Prints to user if the book was saved or if the operation failed
+     * Prompts the user to insert the new book's information and attempts to save the book to the library.
+     * Displays success or error messages accordingly.
+     *
+     * The process includes the following steps:
+     * 1. Reads and validates the new book's title, author, and publication year.
+     * 2. Creates a new BookDTO object with the provided information.
+     * 3. Attempts to save the book using the BookService's save method.
+     * 4. Displays a success message with the saved book's information if the save is successful.
+     * 5. Handles BookAlreadyExistsException by logging the exception and printing an error message to the user.
+     * 6. Handles other exceptions by logging detailed error information and printing a general exception message to the user.
      */
     public void save() {
 
@@ -124,14 +152,21 @@ public class BookController {
             LibraryPrinter.printMessage(e.getMessage());
 
         } catch (Exception e){
+            logger.error("Something went wrong while saving book" + e + e.getMessage());
             LibraryPrinter.printExceptionMessageToUser();
         }
     }
 
 
     /**
-     * Shows the menu with options to find a book, read the user input
-     * and calls the appropriated function
+     * Invokes various find methods based on user input after presenting the find menu.
+     * The find menu options include:
+     *  - Option 0: Returns to the mainMenu.
+     *  - Option 1: Invokes the findByTitle method to search for books by title.
+     *  - Option 2: Invokes the findByAuthor method to search for books by author.
+     *  - Option 3: Invokes the findByYear method to search for books by publication year.
+     *  - Option 4: Invokes the findById method to search for a book by its unique identifier.
+     * Invalid options prompt a message indicating an invalid choice.
      */
     private void find() {
 
@@ -160,8 +195,6 @@ public class BookController {
     }
 
 
-
-
     /**
      * Reads a String input from the user and returns the books that contains it in the title
      */
@@ -180,6 +213,7 @@ public class BookController {
                 LibraryPrinter.printNoBooksFound();
             }
         } catch (Exception e){
+            logger.error("Something went wrong while fetching book by title " + e + e.getMessage());
             LibraryPrinter.printExceptionMessageToUser();
         }
 
@@ -187,7 +221,16 @@ public class BookController {
 
 
     /**
-     * Reads a String input from the user and returns the books that contains it in the author name
+     * Prompts the user to enter a valid book title and attempts to find books with matching titles.
+     * Displays the list of found books or a message indicating no books were found.
+     *
+     * The process includes the following steps:
+     * 1. Reads and validates the user-inputted title using the helper method.
+     * 2. Calls the BookService's findByTitle method to retrieve a list of books with matching titles.
+     * 3. Prints the list of found books using LibraryPrinter if the list is not empty.
+     * 4. Prints a message indicating no books were found if the list is empty.
+     * 5. Handles any exceptions during the process by logging detailed error information and printing a general
+     *              exception message to the user.
      */
     private void findByAuthor() {
         try {
@@ -204,13 +247,22 @@ public class BookController {
                 LibraryPrinter.printNoBooksFound();
             }
         } catch (Exception e){
+            logger.error("Something went wrong while fetching book by author " + e + e.getMessage());
             LibraryPrinter.printExceptionMessageToUser();
         }
     }
 
 
     /**
-     * Reads an int input from the user and returns the books that have it as year
+     * Prompts the user to enter a valid year and attempts to find books with matching publication years.
+     * Displays the list of found books or a message indicating no books were found.
+     *
+     * The process includes the following steps:
+     * 1. Reads and validates the user-inputted year using the helper method.
+     * 2. Calls the BookService's findByYear method to retrieve a list of books with matching publication years.
+     * 3. Prints the list of found books using LibraryPrinter if the list is not empty.
+     * 4. Prints a message indicating no books were found if the list is empty.
+     * 5. Handles any exceptions during the process by logging detailed error information and printing a general exception message to the user.
      */
     private void findByYear() {
 
@@ -228,12 +280,22 @@ public class BookController {
                 LibraryPrinter.printNoBooksFound();
             }
         } catch (Exception e){
+            logger.error("Something went wrong while fetching book by year " + e + e.getMessage());
             LibraryPrinter.printExceptionMessageToUser();
         }
     }
 
+
     /**
-     * Reads an int input from the user and returns the book that have it as id
+     * Prompts the user to enter a valid book ID and attempts to find a book with a matching identifier.
+     * Displays the found book or a message indicating no books were found.
+     *
+     * The process includes the following steps:
+     * 1. Reads and validates the user-inputted book ID using the helper method.
+     * 2. Calls the BookService's findById method to retrieve a book with the matching identifier.
+     * 3. Prints the found book using LibraryPrinter if it is not null.
+     * 4. Prints a message indicating no books were found if the book is null.
+     * 5. Handles any exceptions during the process by logging detailed error information and printing a general exception message to the user.
      */
     private void findById() {
 
@@ -251,11 +313,27 @@ public class BookController {
                 LibraryPrinter.printNoBooksFound();
             }
         } catch (Exception e){
+            logger.error("Something went wrong while fetching book by id " + e + e.getMessage());
             LibraryPrinter.printExceptionMessageToUser();
         }
     }
 
 
+    /**
+     * Prompts the user to enter a valid book ID and updates the corresponding book's information based on user choices.
+     * Displays success or error messages accordingly.
+     *
+     * The process includes the following steps:
+     * 1. Reads and validates the user-inputted book ID using the helper method.
+     * 2. Retrieves the book information from the database using the BookService's findById method.
+     * 3. Displays the current book information using LibraryPrinter or prints a message if no books are found.
+     * 4. Creates a copy of the book to update (bookToUpdate) with the same information as the book in the database.
+     * 5. Presents an update menu to the user for choosing which information to update (title, author, or year).
+     * 6. Reads and validates the new information based on the user's choice and updates the bookToUpdate object.
+     * 7. Calls the BookService's update method to update the book in the database with the new information.
+     * 8. Displays a success message with the updated book's information if the update is successful.
+     * 9. Handles any exceptions during the process by logging detailed error information and printing a general exception message to the user.
+     */
     public void update(){
         //TODO: Check success
 
@@ -263,7 +341,6 @@ public class BookController {
         if (id == null){
             return;
         }
-
 
         BookDTO bookInDatabase = bookService.findById(id);
         if (bookInDatabase == null){
@@ -311,6 +388,7 @@ public class BookController {
                         LibraryPrinter.printInvalidOption();
                 }
             } catch (Exception e){
+                logger.error("Something went wrong while updating book " + e + e.getMessage());
                 LibraryPrinter.printExceptionMessageToUser();
             }
         }
@@ -318,8 +396,17 @@ public class BookController {
 
 
     /**
-     * Reads an id from user, check if there is a book with it in database;
-     * if there is, delete this book.
+     * Prompts the user to enter a valid book ID and deletes the corresponding book from the library.
+     * Displays success or error messages accordingly.
+     *
+     * The process includes the following steps:
+     * 1. Prints a message instructing the user to type the book ID to be deleted.
+     * 2. Reads and validates the user-inputted book ID using the helper method.
+     * 3. Calls the BookService's delete method to delete the book with the specified ID from the library.
+     * 4. Displays a success message if the deletion is successful.
+     * 5. Handles NoSuchElementException by printing an error message with the exception's message.
+     * 6. Handles other exceptions during the process by logging detailed error information and printing a general
+     *              exception message to the user.
      */
     private void delete() {
 
@@ -337,6 +424,7 @@ public class BookController {
             LibraryPrinter.printErrorMessage(e.getMessage());
 
         } catch (Exception e){
+            logger.error("Something went wrong while deleting book " + e + e.getMessage());
             LibraryPrinter.printExceptionMessageToUser();
         }
     }

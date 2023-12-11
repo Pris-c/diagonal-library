@@ -6,17 +6,31 @@ import prisc.exceptions.BookAlreadyExistsException;
 import prisc.exceptions.DatabaseOperationException;
 import prisc.exceptions.InvalidIdException;
 import prisc.exceptions.NoUpdatedInfoException;
+import prisc.util.BookMapper;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
+
+/**
+ * BookService Class
+ *
+ * The BookService class acts as a service layer for managing Book entities in the application.
+ * It orchestrates the business logic related to books and interacts with the BookRepository
+ * to perform CRUD (Create, Read, Update, Delete) operations. This class is responsible for handling
+ * operations such as retrieving all books, saving a new book, deleting a book by ID, and checking
+ * if the library is empty.
+ *
+ * Usage:
+ * The BookService class is utilized by other components of the application, such as controllers or
+ * other services, to perform high-level operations on Book entities. It abstracts away the details of
+ * database interactions, encapsulates business logic, and provides a clean and organized interface for
+ * managing book-related functionality.
+ */
 public class BookService {
 
     private static final Logger logger = LogManager.getLogger(BookService.class);
     private final BookRepository bookRepository = new BookRepository();
-
-    public BookService() {
-    }
 
     /**
      * Retrieves and returns a list of all books saved in the database.
@@ -25,15 +39,16 @@ public class BookService {
      * @return A list of BookDTO objects representing all books in the database.
      * @throws DatabaseOperationException If an error occurs while retrieving Book objects from the database.
      */
-    public List<BookDTO> getAll() {
+    public List<BookDTO> getAll() throws DatabaseOperationException {
         List<Book> books;
 
         try {
             books = bookRepository.getAll();
-            return getBooksAndMapToDTO(books);
+            return BookMapper.bookListToDTOList(books);
 
         } catch (Exception e){
-            throw new DatabaseOperationException("Error while retrieving Book objects from database");
+            logger.error("Error while retrieving Book from database: " + e.getMessage(), e);
+            throw new DatabaseOperationException("Error while retrieving Book objects from database" + e);
         }
     }
 
@@ -49,8 +64,8 @@ public class BookService {
      * @throws BookAlreadyExistsException If a book with the same title, author, and year already exists in the database.
      * @throws DatabaseOperationException If an error occurs while interacting with the database.
      */
-    public void save(BookDTO dtoToBeSaved) {
-        Book bookToBeSaved = dtoToBook(dtoToBeSaved);
+    public void save(BookDTO dtoToBeSaved) throws DatabaseOperationException, BookAlreadyExistsException {
+        Book bookToBeSaved = BookMapper.dtoToBook(dtoToBeSaved);
         Book existingBook;
 
         try {
@@ -60,15 +75,16 @@ public class BookService {
                 bookRepository.save(bookToBeSaved);
 
             } else {
-                throw new BookAlreadyExistsException(bookToDTO(existingBook));
+                throw new BookAlreadyExistsException(BookMapper.bookToDTO(existingBook));
             }
 
         } catch (BookAlreadyExistsException ex){
-            logger.error("Error while saving Book: " + ex + ex.getMessage());
+            logger.error("Error while saving Book: " + ex.getMessage(), ex);
             throw ex;
 
         } catch (Exception e){
-            throw new DatabaseOperationException("Error while saving Book in database");
+            logger.error("Error while saving Book in database: " + e.getMessage(), e);
+            throw new DatabaseOperationException("Error while saving Book in database" + e);
         }
     }
 
@@ -81,16 +97,17 @@ public class BookService {
      * @return A list of BookDTO objects containing the specified title.
      * @throws DatabaseOperationException If an error occurs while searching for books in the database.
      */
-    public List<BookDTO> findByTitle(String title) {
+    public List<BookDTO> findByTitle(String title) throws DatabaseOperationException {
         List<Book> books;
 
         try{
             books = bookRepository.findByTitle(title);
 
         } catch (Exception e){
-            throw new DatabaseOperationException("Error while searching books in database");
+            logger.error("Error while searching books in database: " + e.getMessage(), e);
+            throw new DatabaseOperationException("Error while searching books in database:" + e);
         }
-        return getBooksAndMapToDTO(books);
+        return BookMapper.bookListToDTOList(books);
     }
 
 
@@ -102,7 +119,7 @@ public class BookService {
      * @return A list of BookDTO objects containing the specified author.
      * @throws DatabaseOperationException If an error occurs while searching for books in the database.
      */
-    public List<BookDTO> findByAuthor(String author) {
+    public List<BookDTO> findByAuthor(String author) throws DatabaseOperationException {
         List<Book> books;
 
         try{
@@ -111,7 +128,7 @@ public class BookService {
         } catch (Exception e){
             throw new DatabaseOperationException("Error while searching books in database");
         }
-        return getBooksAndMapToDTO(books);
+        return BookMapper.bookListToDTOList(books);
     }
 
 
@@ -130,9 +147,10 @@ public class BookService {
             books = bookRepository.findByYear(year);
 
         } catch (Exception e){
-            throw new DatabaseOperationException("Error while searching books in database");
+            logger.error("Error while searching books in database: " + e.getMessage(), e);
+            throw new DatabaseOperationException("Error while searching books in database:" + e);
         }
-        return getBooksAndMapToDTO(books);
+        return BookMapper.bookListToDTOList(books);
     }
 
 
@@ -144,7 +162,7 @@ public class BookService {
      * @return A BookDTO object representing the book with the specified ID.
      * @throws DatabaseOperationException If an error occurs while searching for the book in the database.
      */
-    public BookDTO findById(int id) {
+    public BookDTO findById(int id) throws DatabaseOperationException {
         Book book;
 
         try {
@@ -153,17 +171,19 @@ public class BookService {
             if (book == null){
                 return null;
             } else {
-                return bookToDTO(book);
+                return BookMapper.bookToDTO(book);
             }
 
         } catch (Exception e){
-            throw new DatabaseOperationException("Error while searching books in database");
+            logger.error("Error while searching books in database: " + e.getMessage(), e);
+            throw new DatabaseOperationException("Error while searching books in database:" + e);
         }
     }
 
 
     /**
      * Updates the information of a book in the database based on the provided BookDTO.
+     *
      * This method verifies the integrity of ID information, checks for new information to update,
      * ensures that the updated book does not already exist in the database, and then calls
      * BookRepository to perform the update operation.
@@ -175,7 +195,8 @@ public class BookService {
      * @throws BookAlreadyExistsException If a book with the updated information already exists in the database.
      * @throws DatabaseOperationException If an error occurs while updating the book in the database.
      */
-    public void update(BookDTO bookFromDatabase, BookDTO dtoToBeUpdated){
+    public void update(BookDTO bookFromDatabase, BookDTO dtoToBeUpdated) throws NoUpdatedInfoException,
+            BookAlreadyExistsException, InvalidIdException, DatabaseOperationException {
 
         try {
             int dtoID = dtoToBeUpdated.getId();
@@ -188,36 +209,33 @@ public class BookService {
             if (compareBooks(bookFromDatabase, dtoToBeUpdated)){
                 throw new NoUpdatedInfoException("There is no new information to be updated");
             }
-            boolean bookAlredyExists = bookRepository.findExistingBook(dtoToBook(dtoToBeUpdated)) != null;
+            boolean bookAlredyExists = bookRepository.findExistingBook(BookMapper.dtoToBook(dtoToBeUpdated)) != null;
             if (bookAlredyExists){
                 throw new BookAlreadyExistsException(dtoToBeUpdated);
             }
-            bookRepository.update(dtoToBook(dtoToBeUpdated));
+            bookRepository.update(BookMapper.dtoToBook(dtoToBeUpdated));
 
-        } catch (NoUpdatedInfoException | BookAlreadyExistsException e){
-            logger.info(e + e.getMessage());
-            throw e;
-
-        } catch (InvalidIdException e){
-            logger.error(e);
+        } catch (NoUpdatedInfoException | BookAlreadyExistsException | InvalidIdException e){
+            logger.error("The book could not be updated: " + e.getMessage(), e);
             throw e;
 
         } catch (Exception e){
-            throw e;
+            logger.error("Error while updating books in database: " + e.getMessage(), e);
+            throw new DatabaseOperationException(e + e.getMessage());
         }
     }
 
 
-
     /**
      * Deletes the book with the specified ID from the database.
+     *
      * This method calls the BookRepository to find and delete the book.
      *
      * @param id The ID of the book to be deleted.
      * @throws NoSuchElementException If no book with the specified ID is found in the database.
      * @throws DatabaseOperationException If an error occurs while deleting the book from the database.
      */
-    public void delete(int id) {
+    public void delete(int id) throws NoSuchElementException, DatabaseOperationException{
         try {
             if (bookRepository.findById(id) != null) {
                 bookRepository.delete(id);
@@ -225,10 +243,11 @@ public class BookService {
                 throw new NoSuchElementException("There is no book with id = " + id + " in database.");
             }
 
-        } catch (NoSuchElementException noSuchElement){
-            logger.info(noSuchElement + noSuchElement.getMessage());
-            throw noSuchElement;
+        } catch (NoSuchElementException e){
+            logger.error("The book could not be deletd: " + e.getMessage(), e);
+            throw e;
         } catch (Exception e){
+            logger.error("The book could not be deletd: " + e.getMessage(), e);
             throw new DatabaseOperationException("Error while deleting book from database");
         }
     }
@@ -238,47 +257,27 @@ public class BookService {
      * Checks if the library is empty by verifying if there are no records in the Book table.
      *
      * @return True if the library is empty, false otherwise.
+     * @throws DatabaseOperationException If an error occurs while counting books in the database.
      */
-    public boolean libraryIsEmpty(){
-        return bookRepository.contRegisters() == 0;
-    }
-
-
-
-
-
-
-
-
-
-    // TODO: Refactoring to BookMapper
-
-    /**
-     * Creates a BookDTO from a Book
-     */
-    private BookDTO bookToDTO(Book book) {
-        return new BookDTO(book.getBookId(), book.getTitle(), book.getAuthor(), book.getYear());
+    public boolean libraryIsEmpty() throws DatabaseOperationException{
+        try {
+            return bookRepository.contRegisters() == 0;
+        } catch (Exception e){
+            logger.error("Error while checking database content: " + e.getMessage(), e);
+            throw new DatabaseOperationException("Error while counting books in database");
+        }
     }
 
 
     /**
-     * Creates a Book from a BookDTO
-     */
-    private Book dtoToBook(BookDTO bookDTO) {
-        return new Book(bookDTO.getId(), bookDTO.getTitle(), bookDTO.getAuthor(), bookDTO.getYear());
-    }
-
-
-    /**
-     * Creates a List of BookDTO from a List of Book
-     */
-    private List<BookDTO> getBooksAndMapToDTO(List<Book> books) {
-        return books.stream().map(this::bookToDTO).toList();
-    }
-
-
-    /**
-     * Checks if the information of Book and BookDTO are equals
+     * Checks if the information of BookDTO objects is equal.
+     *
+     * This method compares the title, author, and year attributes of two BookDTO objects
+     * to determine if their information is equal, ignoring case for the title and author.
+     *
+     * @param bookFromDatabase The BookDTO object representing the book's information from the database.
+     * @param bookToBeUpdated The BookDTO object representing the book's information to be updated.
+     * @return True if the information is equal, false otherwise.
      */
     private static boolean compareBooks(BookDTO bookFromDatabase, BookDTO bookToBeUpdated) {
 

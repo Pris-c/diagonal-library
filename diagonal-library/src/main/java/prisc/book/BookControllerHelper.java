@@ -10,8 +10,11 @@ import prisc.util.LibraryPrinter;
 import java.time.Year;
 import java.util.Scanner;
 
-public class BookControllerHelper {
-    //TODO: Check for possible exceptions
+/**
+ * Helper class for assisting the BookController in managing user input and interaction during book-related operations.
+ * Provides methods for reading valid input for book titles, authors, years, and IDs, as well as displaying update and find menus.
+ */
+ public class BookControllerHelper {
 
     private final Scanner scan = new Scanner(System.in);
     private static final Logger logger = LogManager.getLogger(BookControllerHelper.class);
@@ -41,12 +44,9 @@ public class BookControllerHelper {
 
             } else {
                 LibraryPrinter.printInvalidInputtedString(fieldDescription);
-                returnToMainMenu = invalidInputMenu();
-
+                returnToMainMenu = handleInvalidInput();
             }
-
         } while (!stringIsValid  && !returnToMainMenu);
-
         return validString;
     }
 
@@ -74,18 +74,17 @@ public class BookControllerHelper {
             } catch (InvalidValueToYearException e){
                 yearIsValid = false;
                 LibraryPrinter.printInvalidInputtedYear();
-                returnToMainMenu = invalidInputMenu();
+                returnToMainMenu = handleInvalidInput();
             }
-
         } while (!yearIsValid && !returnToMainMenu);
-
         return validYear;
     }
 
 
     /**
-     * Reads inputs from the user until be inserted a valid id
-     * or the user decide change the operation.
+     * Reads inputs from the user until a valid ID is inserted or the user decides to change the operation.
+     *
+     * @return A valid integer representing the entered ID or null if the user chooses to return to the main menu.
      */
     public Integer readAValidId() {
 
@@ -105,23 +104,26 @@ public class BookControllerHelper {
             } catch (InvalidValueToIdException e) {
                 idIsValid = false;
                 LibraryPrinter.printInvalidInputtedId();
-                returnToMainMenu = invalidInputMenu();
+                returnToMainMenu = handleInvalidInput();
             }
 
         } while (!idIsValid && !returnToMainMenu);
-
         return validId;
     }
 
 
-
     /**
-     * Receives a String and returns it if is valid or null if invalid
+     * Validates a given string, returning true if it is valid or false if invalid.
+     * The string is considered valid if it is not empty, not blank, and its length does not exceed a predefined maximum length.
+     *
+     * @param inputtedString The string to be validated.
+     * @return True if the string is valid; otherwise, false.
      */
     private boolean validateTitleAndAuthorString(String inputtedString) {
 
         boolean stringIsValid = false;
 
+        //TODO: Define a final value to Strings maximum size ?
         int maxLength = 100;
 
         boolean stringLengthIsValid = inputtedString.length() <= maxLength;
@@ -131,13 +133,17 @@ public class BookControllerHelper {
         if (stringIsNotEmpty && stringIsNotBlank && stringLengthIsValid) {
             stringIsValid = true;
         }
-
         return stringIsValid;
     }
 
+
     /**
-     * Receives a String and returns the Integer that represents the year
-     * if is valid, or null if is invalid
+     * Validates a given string as a year and returns the corresponding integer if it is valid or throws an exception if invalid.
+     * The year is considered valid if it can be parsed into an integer, is not negative, and does not exceed the current year.
+     *
+     * @param inputtedYear The string representing the year to be validated.
+     * @return The valid integer representation of the entered year.
+     * @throws InvalidValueToYearException If the inputted year is not a valid value for a publication year.
      */
     private int validateYear(String inputtedYear) {
 
@@ -159,14 +165,18 @@ public class BookControllerHelper {
             logger.info("Error to validate year: " + exception.getMessage());
             throw new InvalidValueToYearException( inputtedYear + " is not a valid value to publication year.");
         }
-
         return validYear;
     }
 
 
     /**
-     * Receives a String and returns the Integer that represents the id
-     * if is valid, or null if is invalid
+     * Validates a given string as an ID and returns the corresponding integer if it is valid or throws an exception
+     *                                                                                                  if invalid.
+     * The ID is considered valid if it can be parsed into an integer and is not negative.
+     *
+     * @param inputtedId The string representing the ID to be validated.
+     * @return The valid integer representation of the entered ID.
+     * @throws InvalidValueToIdException If the inputted ID is not a valid value.
      */
     private int validateId(String inputtedId) {
 
@@ -191,18 +201,17 @@ public class BookControllerHelper {
     }
 
 
-
-
     /**
-     * Offers options to user when his input is invalid
+     * Offers options to the user when their input is invalid.
+     *
+     * @return True if the user chooses to return to the main menu; otherwise, false.
      */
-    public boolean invalidInputMenu() {
+    public boolean handleInvalidInput() {
 
         boolean returnToMainMenu = false;
-
         boolean validOption = false;
-        do {
 
+        do {
             LibraryPrinter.printInvalidInputMenu();
             String option = scan.nextLine();
 
@@ -221,21 +230,28 @@ public class BookControllerHelper {
                     break;
             }
         } while (!validOption);
-
         return returnToMainMenu;
     }
 
 
     /**
-     * Shows the menu with options to find a book, read the user input
-     * and calls the appropriated function
+     * Displays a menu with options to find a book, reads the user input,
+     * and calls the appropriate function based on the selected option.
+     *
+     * The menu options include:
+     *  - Option 1: Find by Title
+     *  - Option 2: Find by Author
+     *  - Option 3: Find by Year
+     *  - Option 4: Find by ID
+     *  - Option 0: Return to the main menu
+     *
+     * @return The user-selected option as a string.
      */
     public String findMenu() {
         String option;
         boolean validOption = false;
 
         do {
-
             LibraryPrinter.printFindMenu();
             option = scan.nextLine();
 
@@ -252,11 +268,22 @@ public class BookControllerHelper {
             }
 
         } while (!validOption);
-
         return option;
     }
 
 
+    /**
+     * Displays a menu with options to update a book, reads the user input,
+     * and calls the appropriate function based on the selected option.
+     *
+     * The menu options include:
+     *  - Option 1: Update Title
+     *  - Option 2: Update Author
+     *  - Option 3: Update Year
+     *  - Option 0: Return to the main menu
+     *
+     * @return The user-selected option as a string.
+     */
     public String updateMenu() {
 
         String option;
@@ -276,13 +303,9 @@ public class BookControllerHelper {
                 default:
                     LibraryPrinter.printInvalidOption();
             }
-
         } while (!validOption);
-
         return option;
-
-
-
-
     }
+
+
 }
