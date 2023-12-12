@@ -7,11 +7,6 @@ project uses PostgreSQL as the database, integrates with Hibernate for database 
 dependency management and project build, and employs Log4j for logging, ensuring logs are recorded in a file for better
 user experience.
 
-
-## Status
-
-This project is currently in progress, testing using JUnit is being incorporated.
-
 ## Features
 
 - **Main Menu:** The main menu provides an intuitive interface for users to perform various actions, including listing

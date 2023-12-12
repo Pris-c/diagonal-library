@@ -143,7 +143,6 @@ public class BookController {
 
             BookDTO bookToBeSaved = new BookDTO(title, author, year);
             bookService.save(bookToBeSaved);
-            //TODO: Confirm that book was saved
             LibraryPrinter.printSavedSuccessfullyMessage(bookToBeSaved);
 
         } catch (BookAlreadyExistsException e){
@@ -335,7 +334,6 @@ public class BookController {
      * 9. Handles any exceptions during the process by logging detailed error information and printing a general exception message to the user.
      */
     public void update(){
-        //TODO: Check success
 
         Integer id = helper.readAValidId();
         if (id == null){

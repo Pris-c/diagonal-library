@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import prisc.enums.StringField;
 import prisc.exceptions.InvalidValueToIdException;
 import prisc.exceptions.InvalidValueToYearException;
+import prisc.util.LibraryStaticValues;
 import prisc.util.LibraryPrinter;
 
 import java.time.Year;
@@ -123,8 +124,7 @@ import java.util.Scanner;
 
         boolean stringIsValid = false;
 
-        //TODO: Define a final value to Strings maximum size ?
-        int maxLength = 100;
+        int maxLength = LibraryStaticValues.MAX_STRING_LENGTH;
 
         boolean stringLengthIsValid = inputtedString.length() <= maxLength;
         boolean stringIsNotEmpty = !inputtedString.isEmpty();
