@@ -25,10 +25,10 @@ Different versions of the project are organized into specific branches. To acces
 1.  [**java**](https://github.com/Pris-c/diagonal-library/tree/java/diagonal-library/src]branch) ✔ :
    - The initial version using only Java with a simulated List-based database.
     
-2.  [**maven-sql-integration**](https://github.com/Pris-c/library-manager/tree/maven-sql-integration) [_in progress_] :
+2.  [**maven-sql-integration**](https://github.com/Pris-c/library-manager/tree/maven-sql-integration)  ✔ :
    - This branch focuses on integrating Maven to enhance project structure and dependency management. Additionally, it includes the integration of an SQL database for establishing persistent and efficient data storage.
 
-3. **spring-boot-migration:**
+3. [**spring-boot-migration**](https://github.com/Pris-c/library-manager/tree/spring-boot-migration) [_in progress_] :
    - The project will undergoing a transition to the Spring Boot framework to leverage advanced features and realize architectural enhancements. The replacement entails the adoption of a RESTful API paradigm.
 
 ## How to Access Different Versions
