@@ -4,6 +4,8 @@ import prisc.diagonallibrary.controller.request.BookPostRequestBody;
 import prisc.diagonallibrary.controller.response.BookResponse;
 import prisc.diagonallibrary.entity.Book;
 
+import java.util.List;
+
 public class BookMapper {
 
     public static Book toBook(BookPostRequestBody bookPostRequestBody){
@@ -15,5 +17,8 @@ public class BookMapper {
         return new BookResponse(book.getBookId(), book.getTitle(), book.getAuthor(), book.getYear());
     }
 
+    public static List<BookResponse> toBookResponseList(List<Book> bookList){
+        return bookList.stream().map(BookMapper::toBookResponse).toList();
+    }
 
 }

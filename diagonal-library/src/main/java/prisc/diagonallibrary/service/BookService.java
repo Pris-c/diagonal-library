@@ -11,7 +11,7 @@ import prisc.diagonallibrary.exception.BookAlreadyExistsException;
 import prisc.diagonallibrary.mapper.BookMapper;
 import prisc.diagonallibrary.repository.BookRepository;
 
-
+import java.util.List;
 
 
 @Service
@@ -21,6 +21,11 @@ public class BookService {
 
     @Autowired
     BookRepository bookRepository;
+
+
+    public List<BookResponse> getAll(){
+        return BookMapper.toBookResponseList(bookRepository.findAll());
+    }
 
     public BookResponse save(BookPostRequestBody bookPostRequestBody) throws BookAlreadyExistsException{
         Book bookToSave = BookMapper.toBook(bookPostRequestBody);
@@ -32,6 +37,7 @@ public class BookService {
 
         return BookMapper.toBookResponse(bookRepository.save(bookToSave));
     }
+
 
 
 
