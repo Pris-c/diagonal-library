@@ -19,7 +19,6 @@ import java.util.List;
 @Service
 public class BookService {
 
-
     @Autowired
     BookRepository bookRepository;
 
@@ -52,6 +51,9 @@ public class BookService {
     }
     public List<BookResponse> findByAuthor(String author){
         return BookMapper.toBookResponseList(bookRepository.findByAuthorIgnoreCaseContaining(author));
+    }
+    public List<BookResponse> findByYear(int year){
+        return BookMapper.toBookResponseList(bookRepository.findByYear(year));
     }
 
 

@@ -1,10 +1,17 @@
 package prisc.diagonallibrary.controller.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import prisc.diagonallibrary.annotation.ValidYear;
 
 import java.time.Year;
 
+@Getter
+@Setter
+@ToString
 public class BookPostRequestBody {
 
     private int currentYear = Year.now().getValue();
@@ -22,38 +29,4 @@ public class BookPostRequestBody {
     @ValidYear
     private int year;
 
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-
-    @Override
-    public String toString() {
-        return "BookPostRequest{" +
-                "title='" + title + '\'' +
-                ", author='" + author + '\'' +
-                ", year=" + year +
-                '}';
-    }
 }

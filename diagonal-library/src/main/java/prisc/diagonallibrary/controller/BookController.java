@@ -1,8 +1,6 @@
 package prisc.diagonallibrary.controller;
 
 import jakarta.validation.Valid;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +15,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/books")
 public class BookController {
-    //TODO: Validate Path Variables
-    private static final Logger logger = LogManager.getLogger(BookController.class);
-
     @Autowired
     BookService bookService;
 
@@ -34,20 +29,24 @@ public class BookController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<BookResponse> findById(@Valid @PathVariable Long id){
+    public ResponseEntity<BookResponse> findById(@PathVariable Long id){
         return new ResponseEntity<>(bookService.findById(id), HttpStatus.OK);
     }
     @GetMapping(path = "/title/{title}")
-    public ResponseEntity<List<BookResponse>> findByTitle(@Valid @PathVariable String title){
+    public ResponseEntity<List<BookResponse>> findByTitle(@PathVariable String title){
         return new ResponseEntity<>(bookService.findByTitle(title), HttpStatus.OK);
     }
     @GetMapping(path = "/author/{author}")
-    public ResponseEntity<List<BookResponse>> findByAuthor(@Valid @PathVariable String author){
+    public ResponseEntity<List<BookResponse>> findByAuthor(@PathVariable String author){
         return new ResponseEntity<>(bookService.findByAuthor(author), HttpStatus.OK);
+    }
+    @GetMapping(path = "/year/{year}")
+    public ResponseEntity<List<BookResponse>> findByYear(@PathVariable int year){
+        return new ResponseEntity<>(bookService.findByYear(year), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<Void> delete(@Valid @PathVariable Long id){
+    public ResponseEntity<Void> delete(@PathVariable Long id){
         bookService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -56,6 +55,7 @@ public class BookController {
     public ResponseEntity<BookResponse> update(@Valid @RequestBody BookPutRequestBody bookPutRequestBody){
         return new ResponseEntity<>(bookService.update(bookPutRequestBody), HttpStatus.OK);
     }
+
 
 
 }

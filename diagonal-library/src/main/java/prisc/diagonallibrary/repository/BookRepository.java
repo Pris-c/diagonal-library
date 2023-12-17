@@ -20,5 +20,5 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     List<Book> findByAuthorIgnoreCaseContaining(String author);
 
-
+    List<Book> findByYear(int year);
 }
