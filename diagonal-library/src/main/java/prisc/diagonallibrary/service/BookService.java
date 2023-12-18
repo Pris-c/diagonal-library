@@ -24,49 +24,57 @@ public class BookService {
 
 
     public List<BookResponse> getAll(){
-        return BookMapper.toBookResponseList(bookRepository.findAll());
+        return BookMapper.INSTANCE.toBookResponseList(bookRepository.findAll());
     }
 
     @Transactional
     public BookResponse save(BookPostRequestBody bookPostRequestBody) throws BookAlreadyExistsException{
-        Book bookToSave = BookMapper.toBook(bookPostRequestBody);
-
+        Book bookToSave = BookMapper.INSTANCE.toBook(bookPostRequestBody);
         if (bookRepository.existsByAttributes(bookToSave.getTitle(), bookToSave.getAuthor(), bookToSave.getYear())){
             throw new BookAlreadyExistsException("The book " + bookPostRequestBody + " is already in database");
         }
 
-        return BookMapper.toBookResponse(bookRepository.save(bookToSave));
+        return BookMapper.INSTANCE.toBookResponse(bookRepository.save(bookToSave));
     }
 
 
     public BookResponse findById(Long id){
-        return BookMapper.toBookResponse(
+        return BookMapper.INSTANCE.toBookResponse(
                 bookRepository.findById(id)
                 .orElseThrow( () -> new BookIdNotFoundException("Id " + id + " not found."))
                 );
     }
 
     public List<BookResponse> findByTitle(String title){
-        return BookMapper.toBookResponseList(bookRepository.findByTitleIgnoreCaseContaining(title));
+        return BookMapper.INSTANCE.toBookResponseList(bookRepository.findByTitleIgnoreCaseContaining(title));
     }
     public List<BookResponse> findByAuthor(String author){
-        return BookMapper.toBookResponseList(bookRepository.findByAuthorIgnoreCaseContaining(author));
+        return BookMapper.INSTANCE.toBookResponseList(bookRepository.findByAuthorIgnoreCaseContaining(author));
     }
     public List<BookResponse> findByYear(int year){
-        return BookMapper.toBookResponseList(bookRepository.findByYear(year));
+        return BookMapper.INSTANCE.toBookResponseList(bookRepository.findByYear(year));
     }
 
 
     @Transactional
     public BookResponse update(BookPutRequestBody bookPutRequestBody){
-        Book savedBook = BookMapper.toBook(findById(bookPutRequestBody.getBookId()));
-        Book updatedBook = bookRepository.save(BookMapper.toBook(bookPutRequestBody));
-        return BookMapper.toBookResponse(updatedBook);
+        //Verify if the id exists or throw exception in method findById
+        Book savedBook = BookMapper.INSTANCE.toBook(findById(bookPutRequestBody.getBookId()));
+
+        //Check if there is an identical book in the database
+        if (bookRepository.existsByAttributes(bookPutRequestBody.getTitle(), bookPutRequestBody.getAuthor(), bookPutRequestBody.getYear())){
+            throw new BookAlreadyExistsException("The book " + bookPutRequestBody + " is already in database");
+        }
+
+        bookPutRequestBody.setBookId(savedBook.getBookId());
+        Book updatedBook = bookRepository.save(BookMapper.INSTANCE.toBook(bookPutRequestBody));
+
+        return BookMapper.INSTANCE.toBookResponse(updatedBook);
     }
 
     @Transactional
     public void delete(Long id){
-        bookRepository.delete(BookMapper.toBook(findById(id)));
+        bookRepository.delete(BookMapper.INSTANCE.toBook(findById(id)));
     }
 
 

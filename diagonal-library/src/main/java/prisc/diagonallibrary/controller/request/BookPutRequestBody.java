@@ -14,9 +14,6 @@ import java.time.Year;
 @ToString
 public class BookPutRequestBody {
 
-    private int currentYear = Year.now().getValue();
-
-
     @NotNull
     @Min(0)
     private Long bookId;

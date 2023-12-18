@@ -1,5 +1,8 @@
 package prisc.diagonallibrary.mapper;
 
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 import prisc.diagonallibrary.controller.request.BookPostRequestBody;
 import prisc.diagonallibrary.controller.request.BookPutRequestBody;
 import prisc.diagonallibrary.controller.response.BookResponse;
@@ -7,27 +10,20 @@ import prisc.diagonallibrary.entity.Book;
 
 import java.util.List;
 
-public class BookMapper {
+@Mapper(componentModel = "spring")
+public abstract class BookMapper {
 
-    public static Book toBook(BookPostRequestBody bookPostRequestBody){
-        return new Book(bookPostRequestBody.getTitle(), bookPostRequestBody.getAuthor(), bookPostRequestBody.getYear());
-    }
+    public static final BookMapper INSTANCE = Mappers.getMapper(BookMapper.class);
 
-    public static Book toBook(BookPutRequestBody bookPutRequestBody) {
-        return new Book(bookPutRequestBody.getBookId(), bookPutRequestBody.getTitle(), bookPutRequestBody.getAuthor(), bookPutRequestBody.getYear());
-    }
-    public static Book toBook(BookResponse bookResponse){
-        return new Book(bookResponse.getBookId(), bookResponse.getTitle(), bookResponse.getAuthor(), bookResponse.getYear());
-    }
+    //@Mapping(target = "bookId", ignore = true)
+    public abstract Book toBook(BookPostRequestBody bookPostRequestBody);
 
+    public abstract Book toBook(BookPutRequestBody bookPutRequestBody);
+    public abstract Book toBook(BookResponse bookResponse);
 
-    public static BookResponse toBookResponse(Book book){
-        return new BookResponse(book.getBookId(), book.getTitle(), book.getAuthor(), book.getYear());
-    }
+    public abstract BookResponse toBookResponse(Book book);
 
-    public static List<BookResponse> toBookResponseList(List<Book> bookList){
-        return bookList.stream().map(BookMapper::toBookResponse).toList();
-    }
+    public abstract List<BookResponse> toBookResponseList(List<Book> bookList);
 
 
 }

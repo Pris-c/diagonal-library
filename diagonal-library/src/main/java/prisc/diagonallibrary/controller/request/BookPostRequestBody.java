@@ -14,8 +14,6 @@ import java.time.Year;
 @ToString
 public class BookPostRequestBody {
 
-    private int currentYear = Year.now().getValue();
-
     @Size(min=1, max=50)
     @NotEmpty
     @NotBlank
