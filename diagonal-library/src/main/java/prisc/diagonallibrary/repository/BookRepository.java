@@ -12,7 +12,7 @@ import java.util.List;
 public interface BookRepository extends JpaRepository<Book, Long> {
 
 
-    @Query(value = "SELECT EXISTS (SELECT 1 FROM Book WHERE title = :title AND author = :author AND year = :year)", nativeQuery = true)
+    @Query(value = "SELECT EXISTS (SELECT 1 FROM Book WHERE title = :title AND author = :author AND publication_year = :year)", nativeQuery = true)
     boolean existsByAttributes(@Param("title") String title, @Param("author") String author, @Param("year") int year);
 
 

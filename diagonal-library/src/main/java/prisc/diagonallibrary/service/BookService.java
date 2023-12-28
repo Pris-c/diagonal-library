@@ -1,6 +1,5 @@
 package prisc.diagonallibrary.service;
 
-import org.apache.catalina.mapper.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +37,7 @@ public class BookService {
     }
 
 
-    public BookResponse findById(Long id){
+    public BookResponse findById_OrThrowBookIdNotFoundException(Long id){
         return BookMapper.INSTANCE.toBookResponse(
                 bookRepository.findById(id)
                 .orElseThrow( () -> new BookIdNotFoundException("Id " + id + " not found."))
@@ -59,7 +58,7 @@ public class BookService {
     @Transactional
     public BookResponse update(BookPutRequestBody bookPutRequestBody){
         //Verify if the id exists or throw exception in method findById
-        Book savedBook = BookMapper.INSTANCE.toBook(findById(bookPutRequestBody.getBookId()));
+        Book savedBook = BookMapper.INSTANCE.toBook(findById_OrThrowBookIdNotFoundException(bookPutRequestBody.getBookId()));
 
         //Check if there is an identical book in the database
         if (bookRepository.existsByAttributes(bookPutRequestBody.getTitle(), bookPutRequestBody.getAuthor(), bookPutRequestBody.getYear())){
@@ -72,9 +71,11 @@ public class BookService {
         return BookMapper.INSTANCE.toBookResponse(updatedBook);
     }
 
+
     @Transactional
-    public void delete(Long id){
-        bookRepository.delete(BookMapper.INSTANCE.toBook(findById(id)));
+    public void deleteById(Long id){
+        Book foundBook = BookMapper.INSTANCE.toBook(this.findById_OrThrowBookIdNotFoundException(id));
+        bookRepository.deleteById(id);
     }
 
 
