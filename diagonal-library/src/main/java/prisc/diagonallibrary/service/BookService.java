@@ -60,13 +60,16 @@ public class BookService {
         //Verify if the id exists or throw exception in method findById
         Book savedBook = BookMapper.INSTANCE.toBook(findById_OrThrowBookIdNotFoundException(bookPutRequestBody.getBookId()));
 
+
         //Check if there is an identical book in the database
         if (bookRepository.existsByAttributes(bookPutRequestBody.getTitle(), bookPutRequestBody.getAuthor(), bookPutRequestBody.getYear())){
             throw new BookAlreadyExistsException("The book " + bookPutRequestBody + " is already in database");
         }
 
-        bookPutRequestBody.setBookId(savedBook.getBookId());
-        Book updatedBook = bookRepository.save(BookMapper.INSTANCE.toBook(bookPutRequestBody));
+        savedBook.setYear(bookPutRequestBody.getYear());
+        savedBook.setAuthor(bookPutRequestBody.getAuthor());
+        savedBook.setTitle(bookPutRequestBody.getTitle());
+        Book updatedBook = bookRepository.save(savedBook);
 
         return BookMapper.INSTANCE.toBookResponse(updatedBook);
     }
