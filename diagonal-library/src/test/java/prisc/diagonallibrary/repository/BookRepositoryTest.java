@@ -7,11 +7,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import prisc.diagonallibrary.entity.Book;
+import prisc.diagonallibrary.util.BookCreator;
 
 import java.util.List;
 import java.util.Optional;
 
-@DataJpaTest
+@DataJpaTest        // Requires active database
 @DisplayName("Test for Book Repository")
 class BookRepositoryTest {
 
@@ -30,9 +31,11 @@ class BookRepositoryTest {
 
         List<Book> bookList = this.bookRepository.findAll();
 
-        Assertions.assertThat(bookList).isNotEmpty();
-        Assertions.assertThat(bookList.size()).isEqualTo(3);
-        Assertions.assertThat( bookList.get(0).getBookId()).isNotNull();
+        Assertions.assertThat(bookList)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(3)
+                .contains(book1, book2, book3);
     }
 
     @Test
@@ -57,7 +60,9 @@ class BookRepositoryTest {
     void findById_ReturnsAnEmptyOptional_WhenIdIsNotFound(){
 
         Optional<Book> foundBook = this.bookRepository.findById(3L);
-        Assertions.assertThat(foundBook).isEmpty();
+        Assertions.assertThat(foundBook)
+                .isNotNull()
+                .isEmpty();
     }
 
     @Test
@@ -66,9 +71,9 @@ class BookRepositoryTest {
         this.createBookDatabase();
 
         List<Book> foundBooksByTitle = this.bookRepository.findByTitleIgnoreCaseContaining("title");
-        Assertions.assertThat(foundBooksByTitle.size()).isEqualTo(2);
-        Assertions.assertThat(foundBooksByTitle).contains(book1);
-        Assertions.assertThat(foundBooksByTitle).contains(book2);
+        Assertions.assertThat(foundBooksByTitle)
+                .hasSize(2)
+                .contains(book1, book2);
    }
 
     @Test
@@ -76,7 +81,9 @@ class BookRepositoryTest {
     void findByTitle_ReturnAnEmptyList_WhenNoBookIsFound(){
 
         List<Book> foundBooksByTitle = this.bookRepository.findByTitleIgnoreCaseContaining("title");
-        Assertions.assertThat(foundBooksByTitle).isEmpty();
+        Assertions.assertThat(foundBooksByTitle)
+                .isNotNull()
+                .isEmpty();
    }
 
     @Test
@@ -85,9 +92,9 @@ class BookRepositoryTest {
         this.createBookDatabase();
 
         List<Book> foundBooksByAuthor = this.bookRepository.findByAuthorIgnoreCaseContaining("author");
-        Assertions.assertThat(foundBooksByAuthor.size()).isEqualTo(2);
-        Assertions.assertThat(foundBooksByAuthor).contains(book2);
-        Assertions.assertThat(foundBooksByAuthor).contains(book3);
+        Assertions.assertThat(foundBooksByAuthor)
+                .hasSize(2)
+                .contains(book2, book3);
    }
 
 
@@ -96,7 +103,9 @@ class BookRepositoryTest {
     void findByAuthor_ReturnAnEmptyList_WhenNoBookIsFound(){
 
         List<Book> foundBooksByAuthor = this.bookRepository.findByAuthorIgnoreCaseContaining("author");
-        Assertions.assertThat(foundBooksByAuthor).isEmpty();
+        Assertions.assertThat(foundBooksByAuthor)
+                .isNotNull()
+                .isEmpty();
     }
 
     @Test
@@ -106,8 +115,9 @@ class BookRepositoryTest {
 
         List<Book> foundBooksByYear = this.bookRepository.findByYear(1900);
         Assertions.assertThat(foundBooksByYear.size()).isEqualTo(2);
-        Assertions.assertThat(foundBooksByYear).contains(book1);
-        Assertions.assertThat(foundBooksByYear).contains(book3);
+        Assertions.assertThat(foundBooksByYear)
+                .hasSize(2)
+                .contains(book1, book3);
    }
 
     @Test
@@ -115,24 +125,27 @@ class BookRepositoryTest {
     void findByYear_ReturnAnEmptyList_WhenNoBookIsFound(){
 
         List<Book> foundBooksByYear = this.bookRepository.findByYear(1900);
-        Assertions.assertThat(foundBooksByYear).isEmpty();
+        Assertions.assertThat(foundBooksByYear)
+                .isNotNull()
+                .isEmpty();
     }
 
     @Test
     @DisplayName("save: Persists book when successful")
     void save_PersistsBook_WhenSuccessful(){
-        Book book = createBook();
+        Book book = BookCreator.createBookToBeSaved();
         Book savedBook = this.bookRepository.save(book);
 
-        Assertions.assertThat(savedBook).isNotNull();
+        Assertions.assertThat(savedBook)
+                .isNotNull()
+                .isEqualTo(book);
         Assertions.assertThat(savedBook.getBookId()).isNotNull();
-        Assertions.assertThat(savedBook).isEqualTo(book);
     }
 
     @Test
-    @DisplayName("update: Replaces book when successful")
-    void update_UpdatesBook_WhenSuccessful(){
-        Book book = createBook();
+    @DisplayName("save: Replaces book when successful")
+    void save_UpdatesBook_WhenSuccessful(){
+        Book book = BookCreator.createBookToBeSaved();
         Book savedBook = this.bookRepository.save(book);
 
         savedBook.setTitle("Updated Title");
@@ -141,7 +154,7 @@ class BookRepositoryTest {
         Book updatedBook = this.bookRepository.save(savedBook);
 
         Assertions.assertThat(updatedBook).isNotNull();
-        Assertions.assertThat(this.bookRepository.findAll().size()).isEqualTo(1);
+        Assertions.assertThat(this.bookRepository.findAll()).hasSize(1);
         Assertions.assertThat(updatedBook.getBookId()).isEqualTo(savedBook.getBookId());
         Assertions.assertThat(updatedBook.getTitle()).isEqualTo("Updated Title");
         Assertions.assertThat(updatedBook.getAuthor()).isEqualTo("Updated Author");
@@ -152,7 +165,7 @@ class BookRepositoryTest {
     @Test
     @DisplayName("deleteById: Removes book when successful")
     void deleteById_RemovesBook_WhenSuccessful(){
-        Book book = createBook();
+        Book book = BookCreator.createBookToBeSaved();
         Book savedBook = this.bookRepository.save(book);
 
         this.bookRepository.deleteById(savedBook.getBookId());
@@ -162,14 +175,6 @@ class BookRepositoryTest {
     }
 
 
-
-    private Book createBook(){
-        return Book.builder()
-                .title("Book Test")
-                .author("Author Test")
-                .year(2021)
-                .build();
-    }
 
     private void createBookDatabase(){
         this.bookRepository.save(book1);
