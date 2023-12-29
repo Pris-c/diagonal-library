@@ -2,6 +2,7 @@ package prisc.diagonallibrary.controller.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -12,6 +13,7 @@ import java.time.Year;
 @Getter
 @Setter
 @ToString
+@Builder
 public class BookPostRequestBody {
 
     @Size(min=1, max=50)

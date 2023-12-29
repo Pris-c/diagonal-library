@@ -1,5 +1,16 @@
 package prisc.diagonallibrary.controller.response;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.Objects;
+
+@Builder
+@Getter
+@Setter
+@AllArgsConstructor
 public class BookResponse {
 
     private Long bookId;
@@ -7,26 +18,16 @@ public class BookResponse {
     private String author;
     private int year;
 
-    public BookResponse(Long bookId, String title, String author, int year) {
-        this.bookId = bookId;
-        this.title = title;
-        this.author = author;
-        this.year = year;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BookResponse that = (BookResponse) o;
+        return year == that.year && Objects.equals(bookId, that.bookId) && Objects.equals(title, that.title) && Objects.equals(author, that.author);
     }
 
-    public Long getBookId() {
-        return bookId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public int getYear() {
-        return year;
+    @Override
+    public int hashCode() {
+        return Objects.hash(bookId, title, author, year);
     }
 }

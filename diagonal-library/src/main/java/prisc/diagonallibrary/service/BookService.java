@@ -21,13 +21,12 @@ public class BookService {
     @Autowired
     BookRepository bookRepository;
 
-
     public List<BookResponse> getAll(){
         return BookMapper.INSTANCE.toBookResponseList(bookRepository.findAll());
     }
 
     @Transactional
-    public BookResponse save(BookPostRequestBody bookPostRequestBody) throws BookAlreadyExistsException{
+    public BookResponse save(BookPostRequestBody bookPostRequestBody) throws BookAlreadyExistsException {
         Book bookToSave = BookMapper.INSTANCE.toBook(bookPostRequestBody);
         if (bookRepository.existsByAttributes(bookToSave.getTitle(), bookToSave.getAuthor(), bookToSave.getYear())){
             throw new BookAlreadyExistsException("The book " + bookPostRequestBody + " is already in database");

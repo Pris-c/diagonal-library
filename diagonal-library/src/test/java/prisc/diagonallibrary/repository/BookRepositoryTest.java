@@ -46,6 +46,37 @@ class BookRepositoryTest {
     }
 
     @Test
+    @DisplayName("save: Persists book when successful")
+    void save_PersistsBook_WhenSuccessful(){
+        Book book = BookCreator.createBookToBeSaved();
+        Book savedBook = this.bookRepository.save(book);
+
+        Assertions.assertThat(savedBook)
+                .isNotNull()
+                .isEqualTo(book);
+        Assertions.assertThat(savedBook.getBookId()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("save: Replaces book when successful")
+    void save_UpdatesBook_WhenSuccessful(){
+        Book book = BookCreator.createBookToBeSaved();
+        Book savedBook = this.bookRepository.save(book);
+
+        savedBook.setTitle("Updated Title");
+        savedBook.setAuthor("Updated Author");
+        savedBook.setYear(1813);
+        Book updatedBook = this.bookRepository.save(savedBook);
+
+        Assertions.assertThat(updatedBook).isNotNull();
+        Assertions.assertThat(this.bookRepository.findAll()).hasSize(1);
+        Assertions.assertThat(updatedBook.getBookId()).isEqualTo(savedBook.getBookId());
+        Assertions.assertThat(updatedBook.getTitle()).isEqualTo("Updated Title");
+        Assertions.assertThat(updatedBook.getAuthor()).isEqualTo("Updated Author");
+        Assertions.assertThat(updatedBook.getYear()).isEqualTo(1813);
+    }
+
+    @Test
     @DisplayName("findById: Returns the unique Book that correspond to informed id")
     void findById_ReturnTheUniqueBook_WhenSuccessful(){
         this.createBookDatabase();
@@ -129,39 +160,6 @@ class BookRepositoryTest {
                 .isNotNull()
                 .isEmpty();
     }
-
-    @Test
-    @DisplayName("save: Persists book when successful")
-    void save_PersistsBook_WhenSuccessful(){
-        Book book = BookCreator.createBookToBeSaved();
-        Book savedBook = this.bookRepository.save(book);
-
-        Assertions.assertThat(savedBook)
-                .isNotNull()
-                .isEqualTo(book);
-        Assertions.assertThat(savedBook.getBookId()).isNotNull();
-    }
-
-    @Test
-    @DisplayName("save: Replaces book when successful")
-    void save_UpdatesBook_WhenSuccessful(){
-        Book book = BookCreator.createBookToBeSaved();
-        Book savedBook = this.bookRepository.save(book);
-
-        savedBook.setTitle("Updated Title");
-        savedBook.setAuthor("Updated Author");
-        savedBook.setYear(1813);
-        Book updatedBook = this.bookRepository.save(savedBook);
-
-        Assertions.assertThat(updatedBook).isNotNull();
-        Assertions.assertThat(this.bookRepository.findAll()).hasSize(1);
-        Assertions.assertThat(updatedBook.getBookId()).isEqualTo(savedBook.getBookId());
-        Assertions.assertThat(updatedBook.getTitle()).isEqualTo("Updated Title");
-        Assertions.assertThat(updatedBook.getAuthor()).isEqualTo("Updated Author");
-        Assertions.assertThat(updatedBook.getYear()).isEqualTo(1813);
-    }
-
-
     @Test
     @DisplayName("deleteById: Removes book when successful")
     void deleteById_RemovesBook_WhenSuccessful(){
