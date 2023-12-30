@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @DataJpaTest        // Requires active database
-@DisplayName("Test for Book Repository")
+@DisplayName("Test for BookRepository")
 class BookRepositoryTest {
 
     @Autowired

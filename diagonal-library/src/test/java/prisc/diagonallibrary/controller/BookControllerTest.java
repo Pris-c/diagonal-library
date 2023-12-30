@@ -25,6 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)  // Uses Spring with JUnit
+@DisplayName("Test for BookController")
 class BookControllerTest {
 
     private final BookResponse book1 = new BookResponse(1L, "One Title", "One person", 1900);
@@ -79,11 +80,13 @@ class BookControllerTest {
         Assertions.assertThat(savedBook)
                 .isNotNull()
                 .isEqualTo(bookResponse);
+
+        Assertions.assertThat(savedBook.getBookId()).isNotNull();
     }
 
     @Test
     @DisplayName("save: throws BookAlreadyExistsException when there is a equal book in database")
-    void save_ThowsBookAlreadyExistsException_WhenBookAlreadyExistsInDatabase() {
+    void save_ThrowsBookAlreadyExistsException_WhenBookAlreadyExistsInDatabase() {
         when(bookServiceMock.save(ArgumentMatchers.any(BookPostRequestBody.class)))
                 .thenThrow(BookAlreadyExistsException.class);
 
@@ -94,7 +97,7 @@ class BookControllerTest {
 
     @Test
     @DisplayName("findById: Returns the unique book that correspond to id informed when successful")
-    void findById_RetunrsTheUniqueBook_WhenSuccessful() {
+    void findById_ReturnsTheUniqueBook_WhenSuccessful() {
         BookResponse bookResponse = BookCreator.createBookResponse();
         when(bookServiceMock.findById_OrThrowBookIdNotFoundException(any(Long.class)))
                 .thenReturn(bookResponse);
@@ -109,9 +112,6 @@ class BookControllerTest {
     @Test
     @DisplayName("findById: Throws BookIdNotFoundException when there is no book correspondent to informed id")
     void findById_ThrowsBookIdNotFoundException_WhenNoBookIsFound() {
-
-        when(bookServiceMock.findById_OrThrowBookIdNotFoundException(any(Long.class)))
-                .thenThrow(BookIdNotFoundException.class);
 
         Assertions.assertThatExceptionOfType(BookIdNotFoundException.class)
                 .isThrownBy(() -> this.bookController.findById(1L));
@@ -207,7 +207,7 @@ class BookControllerTest {
 
     @Test
     @DisplayName("delete: Deletes the book with the id informed if it exists")
-    void delete_RemovesBookWithInformedId_WhenSuccessful() {
+    void deleteById_RemovesBookWithInformedId_WhenSuccessful() {
         doNothing()
                 .when(bookServiceMock).deleteById(ArgumentMatchers.any(Long.class));
 
@@ -222,7 +222,7 @@ class BookControllerTest {
 
     @Test
     @DisplayName("delete: Throws BookIdNotFoundException if the bookId does not exists in database")
-    void delete_ThrowsBookIdNotFoundException_IfBookIdDoesNotExistsInDatabase() {
+    void deleteById_ThrowsBookIdNotFoundException_IfBookIdDoesNotExistsInDatabase() {
         doThrow(BookIdNotFoundException.class)
                 .when(bookServiceMock).deleteById(ArgumentMatchers.any(Long.class));
 
