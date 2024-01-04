@@ -11,6 +11,7 @@ import prisc.diagonallibrary.controller.response.BookResponse;
 import prisc.diagonallibrary.service.BookService;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/books")
@@ -29,7 +30,7 @@ public class BookController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<BookResponse> findById(@PathVariable Long id){
+    public ResponseEntity<BookResponse> findById(@PathVariable UUID id){
         return new ResponseEntity<>(bookService.findById_OrThrowBookIdNotFoundException(id), HttpStatus.OK);
     }
     @GetMapping(path = "/title/{title}")
@@ -46,7 +47,7 @@ public class BookController {
     }
 
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id){
+    public ResponseEntity<Void> delete(@PathVariable UUID id){
         bookService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

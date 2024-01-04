@@ -13,6 +13,7 @@ import prisc.diagonallibrary.mapper.BookMapper;
 import prisc.diagonallibrary.repository.BookRepository;
 
 import java.util.List;
+import java.util.UUID;
 
 
 @Service
@@ -28,7 +29,7 @@ public class BookService {
     @Transactional
     public BookResponse save(BookPostRequestBody bookPostRequestBody) throws BookAlreadyExistsException {
         Book bookToSave = BookMapper.INSTANCE.toBook(bookPostRequestBody);
-        if (bookRepository.existsByAttributes(bookToSave.getTitle(), bookToSave.getAuthor(), bookToSave.getYear())){
+        if (bookRepository.existsByAttributesIgnoreCase(bookToSave.getTitle(), bookToSave.getAuthor(), bookToSave.getYear())){
             throw new BookAlreadyExistsException("The book " + bookPostRequestBody + " is already in database");
         }
 
@@ -36,7 +37,7 @@ public class BookService {
     }
 
 
-    public BookResponse findById_OrThrowBookIdNotFoundException(Long id){
+    public BookResponse findById_OrThrowBookIdNotFoundException(UUID id){
         return BookMapper.INSTANCE.toBookResponse(
                 bookRepository.findById(id)
                 .orElseThrow( () -> new BookIdNotFoundException("Id " + id + " not found."))
@@ -61,7 +62,7 @@ public class BookService {
 
 
         //Check if there is an identical book in the database
-        if (bookRepository.existsByAttributes(bookPutRequestBody.getTitle(), bookPutRequestBody.getAuthor(), bookPutRequestBody.getYear())){
+        if (bookRepository.existsByAttributesIgnoreCase(bookPutRequestBody.getTitle(), bookPutRequestBody.getAuthor(), bookPutRequestBody.getYear())){
             throw new BookAlreadyExistsException("The book " + bookPutRequestBody + " is already in database");
         }
 
@@ -75,7 +76,7 @@ public class BookService {
 
 
     @Transactional
-    public void deleteById(Long id){
+    public void deleteById(UUID id){
         Book foundBook = BookMapper.INSTANCE.toBook(this.findById_OrThrowBookIdNotFoundException(id));
         bookRepository.deleteById(id);
     }

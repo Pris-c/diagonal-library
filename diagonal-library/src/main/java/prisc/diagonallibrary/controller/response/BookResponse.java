@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Objects;
+import java.util.UUID;
 
 @Builder
 @Getter
@@ -13,7 +14,7 @@ import java.util.Objects;
 @AllArgsConstructor
 public class BookResponse {
 
-    private Long bookId;
+    private UUID bookId;
     private String title;
     private String author;
     private int year;

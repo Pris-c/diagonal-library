@@ -11,6 +11,7 @@ import prisc.diagonallibrary.util.BookCreator;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @DataJpaTest        // Requires active database
 @DisplayName("Test for BookRepository")
@@ -90,7 +91,7 @@ class BookRepositoryTest {
     @DisplayName("findById: Returns an Empty Optional when id is not found")
     void findById_ReturnsAnEmptyOptional_WhenIdIsNotFound(){
 
-        Optional<Book> foundBook = this.bookRepository.findById(3L);
+        Optional<Book> foundBook = this.bookRepository.findById(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95"));
         Assertions.assertThat(foundBook)
                 .isNotNull()
                 .isEmpty();

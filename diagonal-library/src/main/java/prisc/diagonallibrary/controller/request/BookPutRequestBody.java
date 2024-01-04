@@ -1,6 +1,5 @@
 package prisc.diagonallibrary.controller.request;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,7 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 import prisc.diagonallibrary.annotation.ValidYear;
 
-import java.time.Year;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -16,9 +15,7 @@ import java.time.Year;
 @Builder
 public class BookPutRequestBody {
 
-    @NotNull
-    @Min(0)
-    private Long bookId;
+    private UUID bookId;
 
     @Size(min=1, max=50)
     @NotEmpty

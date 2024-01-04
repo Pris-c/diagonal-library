@@ -7,10 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import prisc.diagonallibrary.controller.request.BookPostRequestBody;
 import prisc.diagonallibrary.controller.response.BookResponse;
 import prisc.diagonallibrary.entity.Book;
 import prisc.diagonallibrary.exception.BookAlreadyExistsException;
@@ -22,6 +19,7 @@ import prisc.diagonallibrary.util.BookCreator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -30,9 +28,9 @@ import static org.mockito.Mockito.*;
 @DisplayName("Test for BookService")
 class BookServiceTest {
 
-    private final Book book1 = new Book(1L, "One Title", "One person", 1900);
-    private final Book book2 = new Book(2L, "Other TitLE", "Some author", 2020);
-    private final Book book3 = new Book(3L, "The Two", "Another AUTHOR", 1900);
+    private final Book book1 = new Book(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95"), "One Title", "One person", 1900);
+    private final Book book2 = new Book(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d96"), "Other TitLE", "Some author", 2020);
+    private final Book book3 = new Book(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d97"), "The Two", "Another AUTHOR", 1900);
     @InjectMocks
     private BookService bookService;
     @Mock
@@ -102,10 +100,10 @@ class BookServiceTest {
     void findById_OrThrowBookIdNotFoundException_ReturnsTheUniqueBook_WhenSuccessful() {
         Book validBook = BookCreator.createValidBook();
 
-        when(bookRepositoryMock.findById(any(Long.class)))
+        when(bookRepositoryMock.findById(any(UUID.class)))
                 .thenReturn(Optional.of(validBook));
 
-        BookResponse bookById = this.bookService.findById_OrThrowBookIdNotFoundException(1L);
+        BookResponse bookById = this.bookService.findById_OrThrowBookIdNotFoundException(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95"));
 
         Assertions.assertThat(bookById)
                 .isNotNull();
@@ -116,11 +114,11 @@ class BookServiceTest {
     @DisplayName("findById: Throws BookIdNotFoundException when there is no book correspondent to informed id")
     void findById_ThrowsBookIdNotFoundException_WhenNoBookIsFound() {
 
-        when(bookRepositoryMock.findById(any(Long.class)))
+        when(bookRepositoryMock.findById(any(UUID.class)))
                 .thenReturn(Optional.empty());
 
         Assertions.assertThatExceptionOfType(BookIdNotFoundException.class)
-                .isThrownBy(() -> this.bookService.findById_OrThrowBookIdNotFoundException(1L));
+                .isThrownBy(() -> this.bookService.findById_OrThrowBookIdNotFoundException(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95")));
 
     }
 
@@ -224,16 +222,16 @@ class BookServiceTest {
     @DisplayName("delete: Deletes the book with the id informed if it exists")
     void delete_RemovesBookWithInformedId_WhenSuccessful() {
         Book validBook = BookCreator.createValidBook();
-        when(bookRepositoryMock.findById(any(Long.class)))
+        when(bookRepositoryMock.findById(any(UUID.class)))
                 .thenReturn(Optional.of(validBook));
 
-        doNothing().when(bookRepositoryMock).deleteById(any(Long.class));
+        doNothing().when(bookRepositoryMock).deleteById(any(UUID.class));
 
-        bookService.deleteById(1L);
-        verify(bookRepositoryMock).findById(any(Long.class));
-        verify(bookRepositoryMock).deleteById(any(Long.class));
+        bookService.deleteById(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95"));
+        verify(bookRepositoryMock).findById(any(UUID.class));
+        verify(bookRepositoryMock).deleteById(any(UUID.class));
 
-        Assertions.assertThatCode(() -> bookService.deleteById(1L))
+        Assertions.assertThatCode(() -> bookService.deleteById(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95")))
                 .doesNotThrowAnyException();
     }
 
@@ -241,10 +239,10 @@ class BookServiceTest {
     @DisplayName("delete: Throws BookIdNotFoundException if the bookId does not exists in database")
     void deleteById_ThrowsBookIdNotFoundException_IfBookIdDoesNotExistsInDatabase() {
         doThrow(BookIdNotFoundException.class)
-                .when(bookRepositoryMock).deleteById(ArgumentMatchers.any(Long.class));
+                .when(bookRepositoryMock).deleteById(any(UUID.class));
 
         Assertions.assertThatExceptionOfType(BookIdNotFoundException.class)
-                .isThrownBy(() -> this.bookService.deleteById(1L));
+                .isThrownBy(() -> this.bookService.deleteById(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95")));
 
     }
 

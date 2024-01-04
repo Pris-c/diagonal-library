@@ -9,6 +9,7 @@ import lombok.ToString;
 import prisc.diagonallibrary.annotation.ValidYear;
 
 import java.util.Objects;
+import java.util.UUID;
 
 
 @Entity
@@ -18,10 +19,10 @@ import java.util.Objects;
 @Builder
 public class Book {
 
-    @Min(0)
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long bookId;
+    private UUID bookId;
+
 
     @Size(min=1, max=50)
     @NotEmpty
@@ -37,7 +38,7 @@ public class Book {
     @ValidYear
     private int year;
 
-    public Book(Long bookId, String title, String author, int year) {
+    public Book(UUID bookId, String title, String author, int year) {
         this.bookId = bookId;
         this.title = title;
         this.author = author;

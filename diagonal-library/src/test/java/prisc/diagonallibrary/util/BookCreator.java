@@ -4,8 +4,8 @@ import prisc.diagonallibrary.controller.request.BookPostRequestBody;
 import prisc.diagonallibrary.controller.request.BookPutRequestBody;
 import prisc.diagonallibrary.controller.response.BookResponse;
 import prisc.diagonallibrary.entity.Book;
-import java.util.List;
 
+import java.util.UUID;
 
 
 public class BookCreator {
@@ -20,7 +20,7 @@ public class BookCreator {
 
     public static BookResponse createBookResponse(){
         return BookResponse.builder()
-                .bookId(1L)
+                .bookId(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95"))
                 .title("Book")
                 .author("Author")
                 .year(2021)
@@ -36,7 +36,7 @@ public class BookCreator {
 
     public static BookPutRequestBody createBookPutRequestBody(){
         return BookPutRequestBody.builder()
-                .bookId(1L)
+                .bookId(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95"))
                 .title("Book")
                 .author("Author")
                 .year(2021)
@@ -46,7 +46,7 @@ public class BookCreator {
 
     public static Book createValidBook(){
         return Book.builder()
-                .bookId(1L)
+                .bookId(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95"))
                 .title("Book")
                 .author("Author")
                 .year(2021)

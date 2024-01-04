@@ -20,6 +20,7 @@ import prisc.diagonallibrary.util.BookCreator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -28,9 +29,9 @@ import static org.mockito.Mockito.*;
 @DisplayName("Test for BookController")
 class BookControllerTest {
 
-    private final BookResponse book1 = new BookResponse(1L, "One Title", "One person", 1900);
-    private final BookResponse book2 = new BookResponse(2L, "Other TitLE", "Some author", 2020);
-    private final BookResponse book3 = new BookResponse(3L, "The Two", "Another AUTHOR", 1900);
+    private final BookResponse book1 = new BookResponse(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95"), "One Title", "One person", 1900);
+    private final BookResponse book2 = new BookResponse(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d96"), "Other TitLE", "Some author", 2020);
+    private final BookResponse book3 = new BookResponse(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d97"), "The Two", "Another AUTHOR", 1900);
     @InjectMocks
     private BookController bookController;
     @Mock
@@ -99,10 +100,10 @@ class BookControllerTest {
     @DisplayName("findById: Returns the unique book that correspond to id informed when successful")
     void findById_ReturnsTheUniqueBook_WhenSuccessful() {
         BookResponse bookResponse = BookCreator.createBookResponse();
-        when(bookServiceMock.findById_OrThrowBookIdNotFoundException(any(Long.class)))
+        when(bookServiceMock.findById_OrThrowBookIdNotFoundException(any(UUID.class)))
                 .thenReturn(bookResponse);
 
-        BookResponse bookById = this.bookController.findById(1L).getBody();
+        BookResponse bookById = this.bookController.findById(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95")).getBody();
 
         Assertions.assertThat(bookById)
                 .isNotNull()
@@ -112,9 +113,11 @@ class BookControllerTest {
     @Test
     @DisplayName("findById: Throws BookIdNotFoundException when there is no book correspondent to informed id")
     void findById_ThrowsBookIdNotFoundException_WhenNoBookIsFound() {
+        doThrow(BookIdNotFoundException.class)
+                .when(bookServiceMock).findById_OrThrowBookIdNotFoundException(any(UUID.class));
 
         Assertions.assertThatExceptionOfType(BookIdNotFoundException.class)
-                .isThrownBy(() -> this.bookController.findById(1L));
+                .isThrownBy(() -> this.bookController.findById(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95")));
 
     }
 
@@ -209,12 +212,12 @@ class BookControllerTest {
     @DisplayName("delete: Deletes the book with the id informed if it exists")
     void deleteById_RemovesBookWithInformedId_WhenSuccessful() {
         doNothing()
-                .when(bookServiceMock).deleteById(ArgumentMatchers.any(Long.class));
+                .when(bookServiceMock).deleteById(any(UUID.class));
 
-        Assertions.assertThatCode(() -> this.bookController.delete(1L))
+        Assertions.assertThatCode(() -> this.bookController.delete(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95")))
                         .doesNotThrowAnyException();
 
-        ResponseEntity<Void> response = this.bookController.delete(1L);
+        ResponseEntity<Void> response = this.bookController.delete(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95"));
         Assertions.assertThat(response).isNotNull();
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
@@ -224,10 +227,10 @@ class BookControllerTest {
     @DisplayName("delete: Throws BookIdNotFoundException if the bookId does not exists in database")
     void deleteById_ThrowsBookIdNotFoundException_IfBookIdDoesNotExistsInDatabase() {
         doThrow(BookIdNotFoundException.class)
-                .when(bookServiceMock).deleteById(ArgumentMatchers.any(Long.class));
+                .when(bookServiceMock).deleteById(any(UUID.class));
 
         Assertions.assertThatExceptionOfType(BookIdNotFoundException.class)
-                .isThrownBy(() -> this.bookController.delete(1L));
+                .isThrownBy(() -> this.bookController.delete(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95")));
 
     }
 
