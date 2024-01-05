@@ -3,7 +3,7 @@ package prisc.diagonallibrary.annotation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-import prisc.diagonallibrary.validator.YearValidator;
+import prisc.diagonallibrary.validations.validator.YearValidator;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

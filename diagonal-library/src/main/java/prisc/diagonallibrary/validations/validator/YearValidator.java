@@ -1,4 +1,4 @@
-package prisc.diagonallibrary.validator;
+package prisc.diagonallibrary.validations.validator;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

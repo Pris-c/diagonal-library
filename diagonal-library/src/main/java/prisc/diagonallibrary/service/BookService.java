@@ -3,8 +3,7 @@ package prisc.diagonallibrary.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import prisc.diagonallibrary.controller.request.BookPostRequestBody;
-import prisc.diagonallibrary.controller.request.BookPutRequestBody;
+import prisc.diagonallibrary.controller.request.BookRequest;
 import prisc.diagonallibrary.controller.response.BookResponse;
 import prisc.diagonallibrary.entity.Book;
 import prisc.diagonallibrary.exception.BookAlreadyExistsException;
@@ -38,18 +37,18 @@ public class BookService {
     /**
      * Saves a new book in the database.
      *
-     * @param bookPostRequestBody Request body containing book information.
+     * @param bookRequest Request body containing book information.
      * @return Book response representing the saved book.
      * @throws BookAlreadyExistsException If a book with the same attributes already exists in the database.
      */
     @Transactional
-    public BookResponse save(BookPostRequestBody bookPostRequestBody) throws BookAlreadyExistsException {
-        Book bookToSave = BookMapper.INSTANCE.toBook(bookPostRequestBody);
+    public BookResponse save(BookRequest bookRequest) throws BookAlreadyExistsException {
+        Book bookToSave = BookMapper.INSTANCE.toBook(bookRequest);
         if (bookRepository.existsByAttributesIgnoreCase(
                 bookToSave.getTitle(),
                 bookToSave.getAuthor(),
                 bookToSave.getYear())) {
-            throw new BookAlreadyExistsException("The book " + bookPostRequestBody + " is already in database");
+            throw new BookAlreadyExistsException("The book " + bookRequest + " is already in database");
         }
 
         return BookMapper.INSTANCE.toBookResponse(bookRepository.save(bookToSave));
@@ -102,27 +101,27 @@ public class BookService {
     /**
      * Updates an existing book in the database.
      *
-     * @param bookPutRequestBody Request body containing updated book information.
+     * @param bookRequest Request body containing updated book information.
      * @return BookResponse representing the updated book.
      * @throws BookAlreadyExistsException If a book with the same attributes already exists in the database.
      */
     @Transactional
-    public BookResponse update(BookPutRequestBody bookPutRequestBody) {
+    public BookResponse update(BookRequest bookRequest) {
         //Verify if the id exists or throw exception in method findById
         Book savedBook = BookMapper.INSTANCE
-                .toBook(findById_OrThrowBookIdNotFoundException(bookPutRequestBody.getBookId()));
+                .toBook(findById_OrThrowBookIdNotFoundException(bookRequest.getBookId()));
 
         //Check if there is an identical book in the database
         if (bookRepository.existsByAttributesIgnoreCase(
-                bookPutRequestBody.getTitle(),
-                bookPutRequestBody.getAuthor(),
-                bookPutRequestBody.getYear())) {
-            throw new BookAlreadyExistsException("The book " + bookPutRequestBody + " is already in database");
+                bookRequest.getTitle(),
+                bookRequest.getAuthor(),
+                bookRequest.getYear())) {
+            throw new BookAlreadyExistsException("The book " + bookRequest + " is already in database");
         }
 
-        savedBook.setYear(bookPutRequestBody.getYear());
-        savedBook.setAuthor(bookPutRequestBody.getAuthor());
-        savedBook.setTitle(bookPutRequestBody.getTitle());
+        savedBook.setYear(bookRequest.getYear());
+        savedBook.setAuthor(bookRequest.getAuthor());
+        savedBook.setTitle(bookRequest.getTitle());
         Book updatedBook = bookRepository.save(savedBook);
 
         return BookMapper.INSTANCE.toBookResponse(updatedBook);
@@ -135,7 +134,7 @@ public class BookService {
      */
     @Transactional
     public void deleteById(UUID id) {
-        Book foundBook = BookMapper.INSTANCE.toBook(this.findById_OrThrowBookIdNotFoundException(id));
+        BookMapper.INSTANCE.toBook(this.findById_OrThrowBookIdNotFoundException(id));
         bookRepository.deleteById(id);
     }
 

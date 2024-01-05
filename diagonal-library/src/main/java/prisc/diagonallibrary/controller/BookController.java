@@ -1,14 +1,15 @@
 package prisc.diagonallibrary.controller;
 
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import prisc.diagonallibrary.controller.request.BookPostRequestBody;
-import prisc.diagonallibrary.controller.request.BookPutRequestBody;
+import prisc.diagonallibrary.controller.request.BookRequest;
 import prisc.diagonallibrary.controller.response.BookResponse;
 import prisc.diagonallibrary.service.BookService;
+import prisc.diagonallibrary.validations.groups.PostValidation;
+import prisc.diagonallibrary.validations.groups.PutValidation;
 
 import java.util.List;
 import java.util.UUID;
@@ -35,12 +36,12 @@ public class BookController {
     /**
      * Handles HTTP POST request to save a new book.
      *
-     * @param bookPostRequestBody Request body containing book information.
+     * @param bookRequest Request body containing book information.
      * @return ResponseEntity with the saved book response and HTTP status CREATED.
      */
     @PostMapping
-    public ResponseEntity<BookResponse> save(@Valid @RequestBody BookPostRequestBody bookPostRequestBody) {
-        return new ResponseEntity<>(bookService.save(bookPostRequestBody), HttpStatus.CREATED);
+    public ResponseEntity<BookResponse> save(@RequestBody @Validated(PostValidation.class) BookRequest bookRequest) {
+        return new ResponseEntity<>(bookService.save(bookRequest), HttpStatus.CREATED);
     }
 
     /**
@@ -102,12 +103,12 @@ public class BookController {
     /**
      * Handles HTTP PUT request to update an existing book.
      *
-     * @param bookPutRequestBody Request body containing updated book information.
+     * @param bookRequest Request body containing updated book information.
      * @return ResponseEntity with the updated book response and HTTP status OK.
      */
     @PutMapping
-    public ResponseEntity<BookResponse> update(@Valid @RequestBody BookPutRequestBody bookPutRequestBody) {
-        return new ResponseEntity<>(bookService.update(bookPutRequestBody), HttpStatus.OK);
+    public ResponseEntity<BookResponse> update(@RequestBody @Validated(PutValidation.class) BookRequest bookRequest) {
+        return new ResponseEntity<>(bookService.update(bookRequest), HttpStatus.OK);
     }
 
 }

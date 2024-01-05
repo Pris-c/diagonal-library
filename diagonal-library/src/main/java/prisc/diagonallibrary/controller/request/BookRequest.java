@@ -1,13 +1,13 @@
 package prisc.diagonallibrary.controller.request;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import prisc.diagonallibrary.annotation.ValidYear;
+import prisc.diagonallibrary.validations.groups.PostValidation;
+import prisc.diagonallibrary.validations.groups.PutValidation;
 
 import java.util.UUID;
 
@@ -19,17 +19,19 @@ import java.util.UUID;
 @Setter
 @ToString
 @Builder
-public class BookPutRequestBody {
+public class BookRequest {
 
     /**
      * Unique identifier of the book to be updated.
      */
+    @NotNull(groups = PutValidation.class)
+    @Null(groups = PostValidation.class)
     private UUID bookId;
 
     /**
      * Title of the book. Should have between 1 and 50 characters.
      */
-    @Size(min = 1, max = 50)
+    @Size(min=1, max=50)
     @NotEmpty
     @NotBlank
     private String title;
@@ -37,7 +39,7 @@ public class BookPutRequestBody {
     /**
      * Author of the book. Should have between 1 and 50 characters.
      */
-    @Size(min = 1, max = 50)
+    @Size(min=1, max=50)
     @NotEmpty
     @NotBlank
     private String author;

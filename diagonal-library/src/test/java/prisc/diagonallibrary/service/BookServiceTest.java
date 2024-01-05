@@ -7,7 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import prisc.diagonallibrary.controller.request.BookPutRequestBody;
+import prisc.diagonallibrary.controller.request.BookRequest;
 import prisc.diagonallibrary.controller.response.BookResponse;
 import prisc.diagonallibrary.entity.Book;
 import prisc.diagonallibrary.exception.BookAlreadyExistsException;
@@ -84,7 +84,7 @@ class BookServiceTest {
         when(bookRepositoryMock.save(any(Book.class)))
                 .thenReturn(book);
 
-        BookResponse savedBook = this.bookService.save(BookCreator.createBookPostRequesBody());
+        BookResponse savedBook = this.bookService.save(BookCreator.createBookRequestToSave());
 
         Assertions.assertThat(savedBook.getBookId()).isNotNull();
 
@@ -105,8 +105,7 @@ class BookServiceTest {
                 .thenReturn(true);
 
         Assertions.assertThatExceptionOfType(BookAlreadyExistsException.class)
-                .isThrownBy(() -> this.bookService.save(BookCreator.createBookPostRequesBody()));
-
+                .isThrownBy(() -> this.bookService.save(BookCreator.createBookRequestToSave()));
     }
 
     @Test
@@ -133,8 +132,8 @@ class BookServiceTest {
                 .thenReturn(Optional.empty());
 
         Assertions.assertThatExceptionOfType(BookIdNotFoundException.class)
-            .isThrownBy(() -> this.bookService
-               .findById_OrThrowBookIdNotFoundException(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95")));
+                .isThrownBy(() -> this.bookService
+                        .findById_OrThrowBookIdNotFoundException(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95")));
 
     }
 
@@ -225,15 +224,15 @@ class BookServiceTest {
     @Test
     @DisplayName("update: Replaces book's information when successful")
     void update_ReplaceBookInformation_WhenSuccesful() {
-        BookPutRequestBody bookPutRequestBody = BookCreator.createBookPutRequestBody();
+        BookRequest bookRequestToUpdate = BookCreator.createBookRequestToUpdate();
         Book savedBook = BookCreator.createValidBook();
 
         when(bookRepositoryMock.findById(any(UUID.class)))
                 .thenReturn(Optional.of(savedBook));
 
         when(bookRepositoryMock
-                .existsByAttributesIgnoreCase(bookPutRequestBody.getTitle(), bookPutRequestBody.getAuthor(),
-                        bookPutRequestBody.getYear()))
+                .existsByAttributesIgnoreCase(bookRequestToUpdate.getTitle(), bookRequestToUpdate.getAuthor(),
+                        bookRequestToUpdate.getYear()))
                 .thenReturn(false);
 
         when(bookRepositoryMock.save(any(Book.class)))
@@ -241,7 +240,7 @@ class BookServiceTest {
 
         savedBook.setAuthor("New Author");
 
-        BookResponse bookUpdated = this.bookService.update(bookPutRequestBody);
+        BookResponse bookUpdated = this.bookService.update(bookRequestToUpdate);
         Assertions.assertThat(bookUpdated).isNotNull();
         Assertions.assertThat(bookUpdated.getBookId()).isEqualTo(savedBook.getBookId());
         Assertions.assertThat(bookUpdated.getAuthor()).isEqualTo(savedBook.getAuthor());
@@ -250,7 +249,7 @@ class BookServiceTest {
     @Test
     @DisplayName("update: Throws BookIdNotFoundException if the bookId does not exists in database")
     void update_ThrowsBookIdNotFoundException_IfBookIdDoesNotExistsInDatabase() {
-        BookPutRequestBody book = BookCreator.createBookPutRequestBody();
+        BookRequest book = BookCreator.createBookRequestToUpdate();
         when(bookRepositoryMock.findById(any(UUID.class)))
                 .thenReturn(Optional.empty());
 
@@ -263,18 +262,17 @@ class BookServiceTest {
     @DisplayName("update: Throws BookAlreadyExistsException if book with equals attributes already exists in database")
     void update_ThrowsBookAlreadyExistsException_IfEqualBookAlreadyExistsInDatabase() {
         Book book = BookCreator.createValidBook();
-        BookPutRequestBody bookPutRequestBody = BookCreator.createBookPutRequestBody();
+        BookRequest bookToBeUpdated = BookCreator.createBookRequestToUpdate();
         when(bookRepositoryMock.findById(any(UUID.class)))
                 .thenReturn(Optional.of(book));
 
         when(bookRepositoryMock
-                .existsByAttributesIgnoreCase(bookPutRequestBody.getTitle(), bookPutRequestBody.getAuthor(),
-                        bookPutRequestBody.getYear()))
+                .existsByAttributesIgnoreCase(bookToBeUpdated.getTitle(), bookToBeUpdated.getAuthor(),
+                        bookToBeUpdated.getYear()))
                 .thenReturn(true);
 
         Assertions.assertThatExceptionOfType(BookAlreadyExistsException.class)
-                .isThrownBy(() -> this.bookService.update(bookPutRequestBody));
-
+                .isThrownBy(() -> this.bookService.update(bookToBeUpdated));
     }
 
     @Test
