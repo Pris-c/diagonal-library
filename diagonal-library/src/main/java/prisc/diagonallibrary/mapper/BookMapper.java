@@ -1,7 +1,6 @@
 package prisc.diagonallibrary.mapper;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 import prisc.diagonallibrary.controller.request.BookPostRequestBody;
 import prisc.diagonallibrary.controller.request.BookPutRequestBody;

@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public class BookCreator {
 
-    public static Book createBookToBeSaved(){
+    public static Book createBookToBeSaved() {
         return Book.builder()
                 .title("Book")
                 .author("Author")
@@ -18,7 +18,7 @@ public class BookCreator {
                 .build();
     }
 
-    public static BookResponse createBookResponse(){
+    public static BookResponse createBookResponse() {
         return BookResponse.builder()
                 .bookId(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95"))
                 .title("Book")
@@ -26,7 +26,8 @@ public class BookCreator {
                 .year(2021)
                 .build();
     }
-    public static BookPostRequestBody createBookPostRequesBody(){
+
+    public static BookPostRequestBody createBookPostRequesBody() {
         return BookPostRequestBody.builder()
                 .title("Book")
                 .author("Author")
@@ -34,7 +35,7 @@ public class BookCreator {
                 .build();
     }
 
-    public static BookPutRequestBody createBookPutRequestBody(){
+    public static BookPutRequestBody createBookPutRequestBody() {
         return BookPutRequestBody.builder()
                 .bookId(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95"))
                 .title("Book")
@@ -44,7 +45,7 @@ public class BookCreator {
     }
 
 
-    public static Book createValidBook(){
+    public static Book createValidBook() {
         return Book.builder()
                 .bookId(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95"))
                 .title("Book")

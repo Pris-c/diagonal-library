@@ -32,7 +32,7 @@ public class JacksonConfig implements InitializingBean {
     private void configureJacksonToFailOnUnknownProperties() {
         MappingJackson2HttpMessageConverter httpMessageConverter = converter.getMessageConverters().stream()
                 .filter(mc -> mc.getClass().equals(MappingJackson2HttpMessageConverter.class))
-                .map(mc -> (MappingJackson2HttpMessageConverter)mc)
+                .map(mc -> (MappingJackson2HttpMessageConverter) mc)
                 .findFirst()
                 .get();
 

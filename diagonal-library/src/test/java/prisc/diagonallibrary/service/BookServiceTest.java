@@ -58,7 +58,7 @@ class BookServiceTest {
                 .isNotNull()
                 .isNotEmpty()
                 .hasSize(3)
-                .contains(  BookMapper.INSTANCE.toBookResponse(book1),
+                .contains(BookMapper.INSTANCE.toBookResponse(book1),
                         BookMapper.INSTANCE.toBookResponse(book2),
                         BookMapper.INSTANCE.toBookResponse(book3));
     }
@@ -99,7 +99,9 @@ class BookServiceTest {
         Book bookToSave = BookCreator.createBookToBeSaved();
         when(
                 bookRepositoryMock
-                    .existsByAttributesIgnoreCase(bookToSave.getTitle(), bookToSave.getAuthor(), bookToSave.getYear()))
+                        .existsByAttributesIgnoreCase(bookToSave.getTitle(),
+                                bookToSave.getAuthor(),
+                                bookToSave.getYear()))
                 .thenReturn(true);
 
         Assertions.assertThatExceptionOfType(BookAlreadyExistsException.class)
@@ -132,7 +134,7 @@ class BookServiceTest {
 
         Assertions.assertThatExceptionOfType(BookIdNotFoundException.class)
             .isThrownBy(() -> this.bookService
-            .findById_OrThrowBookIdNotFoundException(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95")));
+               .findById_OrThrowBookIdNotFoundException(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95")));
 
     }
 

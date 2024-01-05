@@ -25,8 +25,14 @@ public interface BookRepository extends JpaRepository<Book, UUID> {
      * @param year   Year of publication of the book.
      * @return True if a book with the specified attributes exists; false otherwise.
      */
-    @Query(value = "SELECT EXISTS (SELECT 1 FROM Book WHERE LOWER(title) = LOWER(:title) AND LOWER(author) = LOWER(:author) AND publication_year = :year)", nativeQuery = true)
-    boolean existsByAttributesIgnoreCase(@Param("title") String title, @Param("author") String author, @Param("year") int year);
+    @Query(value = "SELECT EXISTS (SELECT 1 FROM Book WHERE" +
+            " LOWER(title) = LOWER(:title) " +
+            "AND LOWER(author) = LOWER(:author) " +
+            "AND publication_year = :year)",
+            nativeQuery = true)
+    boolean existsByAttributesIgnoreCase(@Param("title") String title,
+                                         @Param("author") String author,
+                                         @Param("year") int year);
 
     /**
      * Retrieves a list of books whose titles contain the specified substring, ignoring case.

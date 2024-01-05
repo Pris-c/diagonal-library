@@ -21,18 +21,21 @@ public @interface ValidYear {
 
     /**
      * Default error message when the year is invalid.
+     *
      * @return Error message
      */
     String message() default "Invalid year";
 
     /**
      * Groups targeted for validation.
+     *
      * @return Array of groups.
      */
     Class<?>[] groups() default {};
 
     /**
      * Payload type to associate with the constraint.
+     *
      * @return Array of payload classes.
      */
     Class<? extends Payload>[] payload() default {};

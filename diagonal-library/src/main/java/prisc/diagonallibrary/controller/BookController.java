@@ -28,7 +28,7 @@ public class BookController {
      * @return ResponseEntity with a list of book responses and HTTP status OK.
      */
     @GetMapping
-    public ResponseEntity<List<BookResponse>> getAll(){
+    public ResponseEntity<List<BookResponse>> getAll() {
         return new ResponseEntity<>(bookService.getAll(), HttpStatus.OK);
     }
 
@@ -39,7 +39,7 @@ public class BookController {
      * @return ResponseEntity with the saved book response and HTTP status CREATED.
      */
     @PostMapping
-    public ResponseEntity<BookResponse> save(@Valid @RequestBody BookPostRequestBody bookPostRequestBody){
+    public ResponseEntity<BookResponse> save(@Valid @RequestBody BookPostRequestBody bookPostRequestBody) {
         return new ResponseEntity<>(bookService.save(bookPostRequestBody), HttpStatus.CREATED);
     }
 
@@ -50,7 +50,7 @@ public class BookController {
      * @return ResponseEntity with the book response and HTTP status OK.
      */
     @GetMapping(path = "/{id}")
-    public ResponseEntity<BookResponse> findById(@PathVariable UUID id){
+    public ResponseEntity<BookResponse> findById(@PathVariable UUID id) {
         return new ResponseEntity<>(bookService.findById_OrThrowBookIdNotFoundException(id), HttpStatus.OK);
     }
 
@@ -61,7 +61,7 @@ public class BookController {
      * @return ResponseEntity with a list of book responses and HTTP status OK.
      */
     @GetMapping(path = "/title/{title}")
-    public ResponseEntity<List<BookResponse>> findByTitle(@PathVariable String title){
+    public ResponseEntity<List<BookResponse>> findByTitle(@PathVariable String title) {
         return new ResponseEntity<>(bookService.findByTitle(title), HttpStatus.OK);
     }
 
@@ -72,7 +72,7 @@ public class BookController {
      * @return ResponseEntity with a list of book responses and HTTP status OK.
      */
     @GetMapping(path = "/author/{author}")
-    public ResponseEntity<List<BookResponse>> findByAuthor(@PathVariable String author){
+    public ResponseEntity<List<BookResponse>> findByAuthor(@PathVariable String author) {
         return new ResponseEntity<>(bookService.findByAuthor(author), HttpStatus.OK);
     }
 
@@ -83,7 +83,7 @@ public class BookController {
      * @return ResponseEntity with a list of book responses and HTTP status OK.
      */
     @GetMapping(path = "/year/{year}")
-    public ResponseEntity<List<BookResponse>> findByYear(@PathVariable int year){
+    public ResponseEntity<List<BookResponse>> findByYear(@PathVariable int year) {
         return new ResponseEntity<>(bookService.findByYear(year), HttpStatus.OK);
     }
 
@@ -94,7 +94,7 @@ public class BookController {
      * @return ResponseEntity with HTTP status NO_CONTENT.
      */
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id){
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
         bookService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -106,7 +106,7 @@ public class BookController {
      * @return ResponseEntity with the updated book response and HTTP status OK.
      */
     @PutMapping
-    public ResponseEntity<BookResponse> update(@Valid @RequestBody BookPutRequestBody bookPutRequestBody){
+    public ResponseEntity<BookResponse> update(@Valid @RequestBody BookPutRequestBody bookPutRequestBody) {
         return new ResponseEntity<>(bookService.update(bookPutRequestBody), HttpStatus.OK);
     }
 

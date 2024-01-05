@@ -25,13 +25,32 @@ import java.util.UUID;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+/**
+ * Test class for validating the functionality of the {@link BookController}.
+ */
 @ExtendWith(SpringExtension.class)  // Uses Spring with JUnit
 @DisplayName("Test for BookController")
 class BookControllerTest {
 
-    private final BookResponse book1 = new BookResponse(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95"), "One Title", "One person", 1900);
-    private final BookResponse book2 = new BookResponse(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d96"), "Other TitLE", "Some author", 2020);
-    private final BookResponse book3 = new BookResponse(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d97"), "The Two", "Another AUTHOR", 1900);
+    /**
+     * Creates sample data in the database for testing purposes.
+     */
+    private final BookResponse book1 =
+            new BookResponse(UUID.fromString(
+                    "a7669e4c-4420-43c8-9b90-81e149d37d95"),
+                    "One Title",
+                    "One person",
+                    1900);
+    private final BookResponse book2 = new BookResponse(UUID.fromString(
+            "a7669e4c-4420-43c8-9b90-81e149d37d96"),
+            "Other TitLE",
+            "Some author",
+            2020);
+    private final BookResponse book3 = new BookResponse(UUID.fromString(
+            "a7669e4c-4420-43c8-9b90-81e149d37d97"),
+            "The Two",
+            "Another AUTHOR",
+            1900);
     @InjectMocks
     private BookController bookController;
     @Mock
@@ -103,7 +122,8 @@ class BookControllerTest {
         when(bookServiceMock.findById_OrThrowBookIdNotFoundException(any(UUID.class)))
                 .thenReturn(bookResponse);
 
-        BookResponse bookById = this.bookController.findById(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95")).getBody();
+        BookResponse bookById = this.bookController
+                .findById(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95")).getBody();
 
         Assertions.assertThat(bookById)
                 .isNotNull()
@@ -117,7 +137,8 @@ class BookControllerTest {
                 .when(bookServiceMock).findById_OrThrowBookIdNotFoundException(any(UUID.class));
 
         Assertions.assertThatExceptionOfType(BookIdNotFoundException.class)
-                .isThrownBy(() -> this.bookController.findById(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95")));
+                .isThrownBy(() -> this.bookController
+                        .findById(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95")));
 
     }
 
@@ -151,7 +172,8 @@ class BookControllerTest {
     }
 
     @Test
-    @DisplayName("findByAuthor: Returns a list of Books (as BookResponse) that contains the string informed in its author name")
+    @DisplayName("findByAuthor: Returns a list of Books (as BookResponse) that " +
+            "contains the string informed in its author name")
     void findByAuthor_ReturnsAListOfBooks_WhenSuccessful() {
         List<BookResponse> books = List.of(book2, book3);
         when(bookServiceMock.findByAuthor(any(String.class)))
@@ -214,10 +236,12 @@ class BookControllerTest {
         doNothing()
                 .when(bookServiceMock).deleteById(any(UUID.class));
 
-        Assertions.assertThatCode(() -> this.bookController.delete(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95")))
-                        .doesNotThrowAnyException();
+        Assertions.assertThatCode(() -> this.bookController
+                        .delete(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95")))
+                .doesNotThrowAnyException();
 
-        ResponseEntity<Void> response = this.bookController.delete(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95"));
+        ResponseEntity<Void> response = this.bookController
+                .delete(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95"));
         Assertions.assertThat(response).isNotNull();
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
@@ -230,7 +254,8 @@ class BookControllerTest {
                 .when(bookServiceMock).deleteById(any(UUID.class));
 
         Assertions.assertThatExceptionOfType(BookIdNotFoundException.class)
-                .isThrownBy(() -> this.bookController.delete(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95")));
+                .isThrownBy(() -> this.bookController
+                        .delete(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95")));
 
     }
 

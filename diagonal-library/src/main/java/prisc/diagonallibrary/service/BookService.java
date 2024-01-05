@@ -31,7 +31,7 @@ public class BookService {
      *
      * @return List of book responses representing all books.
      */
-    public List<BookResponse> getAll(){
+    public List<BookResponse> getAll() {
         return BookMapper.INSTANCE.toBookResponseList(bookRepository.findAll());
     }
 
@@ -45,7 +45,10 @@ public class BookService {
     @Transactional
     public BookResponse save(BookPostRequestBody bookPostRequestBody) throws BookAlreadyExistsException {
         Book bookToSave = BookMapper.INSTANCE.toBook(bookPostRequestBody);
-        if (bookRepository.existsByAttributesIgnoreCase(bookToSave.getTitle(), bookToSave.getAuthor(), bookToSave.getYear())){
+        if (bookRepository.existsByAttributesIgnoreCase(
+                bookToSave.getTitle(),
+                bookToSave.getAuthor(),
+                bookToSave.getYear())) {
             throw new BookAlreadyExistsException("The book " + bookPostRequestBody + " is already in database");
         }
 
@@ -59,11 +62,11 @@ public class BookService {
      * @return Book response representing the found book.
      * @throws BookIdNotFoundException If a book with the specified identifier is not found.
      */
-    public BookResponse findById_OrThrowBookIdNotFoundException(UUID id){
+    public BookResponse findById_OrThrowBookIdNotFoundException(UUID id) {
         return BookMapper.INSTANCE.toBookResponse(
                 bookRepository.findById(id)
-                .orElseThrow( () -> new BookIdNotFoundException("Id " + id + " not found."))
-                );
+                        .orElseThrow(() -> new BookIdNotFoundException("Id " + id + " not found."))
+        );
     }
 
     /**
@@ -72,7 +75,7 @@ public class BookService {
      * @param title Substring to search for in book titles.
      * @return List of book responses matching the criteria.
      */
-    public List<BookResponse> findByTitle(String title){
+    public List<BookResponse> findByTitle(String title) {
         return BookMapper.INSTANCE.toBookResponseList(bookRepository.findByTitleIgnoreCaseContaining(title));
     }
 
@@ -82,7 +85,7 @@ public class BookService {
      * @param author Substring to search for in book authors' names.
      * @return List of book responses matching the criteria.
      */
-    public List<BookResponse> findByAuthor(String author){
+    public List<BookResponse> findByAuthor(String author) {
         return BookMapper.INSTANCE.toBookResponseList(bookRepository.findByAuthorIgnoreCaseContaining(author));
     }
 
@@ -92,7 +95,7 @@ public class BookService {
      * @param year Year of publication.
      * @return List of book responses matching the criteria.
      */
-    public List<BookResponse> findByYear(int year){
+    public List<BookResponse> findByYear(int year) {
         return BookMapper.INSTANCE.toBookResponseList(bookRepository.findByYear(year));
     }
 
@@ -104,12 +107,16 @@ public class BookService {
      * @throws BookAlreadyExistsException If a book with the same attributes already exists in the database.
      */
     @Transactional
-    public BookResponse update(BookPutRequestBody bookPutRequestBody){
+    public BookResponse update(BookPutRequestBody bookPutRequestBody) {
         //Verify if the id exists or throw exception in method findById
-        Book savedBook = BookMapper.INSTANCE.toBook(findById_OrThrowBookIdNotFoundException(bookPutRequestBody.getBookId()));
+        Book savedBook = BookMapper.INSTANCE
+                .toBook(findById_OrThrowBookIdNotFoundException(bookPutRequestBody.getBookId()));
 
         //Check if there is an identical book in the database
-        if (bookRepository.existsByAttributesIgnoreCase(bookPutRequestBody.getTitle(), bookPutRequestBody.getAuthor(), bookPutRequestBody.getYear())){
+        if (bookRepository.existsByAttributesIgnoreCase(
+                bookPutRequestBody.getTitle(),
+                bookPutRequestBody.getAuthor(),
+                bookPutRequestBody.getYear())) {
             throw new BookAlreadyExistsException("The book " + bookPutRequestBody + " is already in database");
         }
 
@@ -127,7 +134,7 @@ public class BookService {
      * @param id Unique identifier of the book to be deleted.
      */
     @Transactional
-    public void deleteById(UUID id){
+    public void deleteById(UUID id) {
         Book foundBook = BookMapper.INSTANCE.toBook(this.findById_OrThrowBookIdNotFoundException(id));
         bookRepository.deleteById(id);
     }

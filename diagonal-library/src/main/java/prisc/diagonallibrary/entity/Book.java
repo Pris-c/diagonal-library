@@ -1,7 +1,9 @@
 package prisc.diagonallibrary.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,11 +15,10 @@ import java.util.UUID;
 
 /**
  * Book Class
- *
+ * <p>
  * This class represents a Book entity in the application. It is annotated with JPA annotations
  * to indicate its mapping to a database table.
- *
-*/
+ */
 @Entity
 @Getter
 @Setter
@@ -35,7 +36,7 @@ public class Book {
     /**
      * Title of the book. Should have between 1 and 50 characters.
      */
-    @Size(min=1, max=50)
+    @Size(min = 1, max = 50)
     @NotEmpty
     @NotBlank
     private String title;
@@ -43,7 +44,7 @@ public class Book {
     /**
      * Author of the book. Should have between 1 and 50 characters.
      */
-    @Size(min=1, max=50)
+    @Size(min = 1, max = 50)
     @NotEmpty
     @NotBlank
     private String author;
