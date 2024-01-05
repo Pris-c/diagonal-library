@@ -32,9 +32,6 @@ import static org.mockito.Mockito.*;
 @DisplayName("Test for BookController")
 class BookControllerTest {
 
-    /**
-     * Creates sample data in the database for testing purposes.
-     */
     private final BookResponse book1 =
             new BookResponse(UUID.fromString(
                     "a7669e4c-4420-43c8-9b90-81e149d37d95"),
@@ -51,6 +48,7 @@ class BookControllerTest {
             "The Two",
             "Another AUTHOR",
             1900);
+
     @InjectMocks
     private BookController bookController;
     @Mock
@@ -72,7 +70,6 @@ class BookControllerTest {
                 .hasSize(3);
     }
 
-
     @Test
     @DisplayName("getAll: Returns an empty list when database is empty")
     void getAll_ReturnsAEmpty_WhenDatabaseIsEmpty() {
@@ -86,13 +83,12 @@ class BookControllerTest {
                 .isEmpty();
     }
 
-
     @Test
     @DisplayName("save: Returns the persisted Book (in BookResponse format) when successful")
     void save_ReturnsThePersistedBook_WhenSuccessful() {
         BookResponse bookResponse = BookCreator.createBookResponse();
 
-        when(bookServiceMock.save(ArgumentMatchers.any(BookPostRequestBody.class)))
+        when(bookServiceMock.save(any(BookPostRequestBody.class)))
                 .thenReturn(bookResponse);
 
         BookResponse savedBook = this.bookController.save(BookCreator.createBookPostRequesBody()).getBody();
@@ -107,12 +103,11 @@ class BookControllerTest {
     @Test
     @DisplayName("save: throws BookAlreadyExistsException when there is a equal book in database")
     void save_ThrowsBookAlreadyExistsException_WhenBookAlreadyExistsInDatabase() {
-        when(bookServiceMock.save(ArgumentMatchers.any(BookPostRequestBody.class)))
+        when(bookServiceMock.save(any(BookPostRequestBody.class)))
                 .thenThrow(BookAlreadyExistsException.class);
 
         Assertions.assertThatExceptionOfType(BookAlreadyExistsException.class)
                 .isThrownBy(() -> this.bookController.save(BookCreator.createBookPostRequesBody()));
-
     }
 
     @Test
@@ -139,7 +134,6 @@ class BookControllerTest {
         Assertions.assertThatExceptionOfType(BookIdNotFoundException.class)
                 .isThrownBy(() -> this.bookController
                         .findById(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95")));
-
     }
 
     @Test
@@ -155,7 +149,6 @@ class BookControllerTest {
                 .isNotNull()
                 .hasSize(2)
                 .contains(book1, book2);
-
     }
 
     @Test
@@ -164,7 +157,7 @@ class BookControllerTest {
         when(bookServiceMock.findByTitle(any(String.class)))
                 .thenReturn(new ArrayList<>());
 
-        List<BookResponse> booksByTitle = this.bookController.findByTitle("title").getBody();
+        List<BookResponse> booksByTitle = this.bookController.findByTitle("NoTitle").getBody();
 
         Assertions.assertThat(booksByTitle)
                 .isNotNull()
@@ -194,7 +187,7 @@ class BookControllerTest {
         when(bookServiceMock.findByAuthor(any(String.class)))
                 .thenReturn(new ArrayList<>());
 
-        List<BookResponse> booksByAuthor = this.bookController.findByAuthor("author").getBody();
+        List<BookResponse> booksByAuthor = this.bookController.findByAuthor("NoAuthor").getBody();
 
         Assertions.assertThat(booksByAuthor)
                 .isNotNull()
@@ -222,7 +215,7 @@ class BookControllerTest {
         when(bookServiceMock.findByYear(any(Integer.class)))
                 .thenReturn(new ArrayList<>());
 
-        List<BookResponse> booksByYear = this.bookController.findByYear(2000).getBody();
+        List<BookResponse> booksByYear = this.bookController.findByYear(20).getBody();
 
         Assertions.assertThat(booksByYear)
                 .isNotNull()
@@ -236,16 +229,11 @@ class BookControllerTest {
         doNothing()
                 .when(bookServiceMock).deleteById(any(UUID.class));
 
-        Assertions.assertThatCode(() -> this.bookController
-                        .delete(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95")))
-                .doesNotThrowAnyException();
-
         ResponseEntity<Void> response = this.bookController
                 .delete(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95"));
         Assertions.assertThat(response).isNotNull();
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
-
 
     @Test
     @DisplayName("delete: Throws BookIdNotFoundException if the bookId does not exists in database")
@@ -256,7 +244,6 @@ class BookControllerTest {
         Assertions.assertThatExceptionOfType(BookIdNotFoundException.class)
                 .isThrownBy(() -> this.bookController
                         .delete(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95")));
-
     }
 
     @Test
@@ -275,10 +262,19 @@ class BookControllerTest {
     @DisplayName("update: Throws BookIdNotFoundException if the bookId does not exists in database")
     void update_ThrowsBookIdNotFoundException_IfBookIdDoesNotExistsInDatabase() {
         doThrow(BookIdNotFoundException.class)
-                .when(bookServiceMock).update(ArgumentMatchers.any(BookPutRequestBody.class));
+                .when(bookServiceMock).update(any(BookPutRequestBody.class));
 
         Assertions.assertThatExceptionOfType(BookIdNotFoundException.class)
                 .isThrownBy(() -> this.bookController.update(BookCreator.createBookPutRequestBody()));
 
+    }
+    @Test
+    @DisplayName("update: Throws BookAlreadyExistsException if book with equals attributes already exists in database")
+    void update_ThrowsBookAlreadyExistsException_IfEqualBookAlreadyExistsInDatabase() {
+        doThrow(BookAlreadyExistsException.class)
+                .when(bookServiceMock).update(any(BookPutRequestBody.class));
+
+        Assertions.assertThatExceptionOfType(BookAlreadyExistsException.class)
+                .isThrownBy(() -> this.bookController.update(BookCreator.createBookPutRequestBody()));
     }
 }
