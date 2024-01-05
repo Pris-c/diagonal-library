@@ -1,39 +1,147 @@
 # Library Management System
 
-This repository contains various versions of a Library Management System project implemented in Java.
+## Overview
 
-## Project Overview
+Diagonal Library Management System is an application designed to manage a library's book inventory. It provides functionalities to add, update, delete, and retrieve information about books in the library.
 
-The Library Management System project is an evolving system that will undergo several versions, introducing new features and incorporating new technologies such as Maven, SQL databases, and  Spring Boot framework.
+## Table of Contents
 
-## Current Version: maven-sql-integration
+- [Prerequisites](#prerequisites)
+- [Getting Started](#getting-started)
+- [Project Structure](#project-structure)
+- [Dependencies](#dependencies)
+- [Configuration](#configuration)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [Author](#author)
 
-The current version of the project is in the [**maven-sql-integration**](https://github.com/Pris-c/library-manager/tree/maven-sql-integration) branch. This version utilizes Java language integrated to Maven for the improvement of project management, dependencies handling, documentations and unit tests.
+## Prerequisites
 
-## Upcoming Versions
+Ensure you have the following installed on your system:
 
-The project will be enhanced and improved in subsequent versions. Planned updates include:
+- Java 17
+- PostgreSQL Database
+- Maven
+
+## Getting Started
+
+1. Clone the repository with the specific branch:
+    ```bash
+    git clone -b spring-boot-migration https://github.com/Pris-c/library-manager.git
+
+2. Set up your PostgreSQL database and update the `application.yml` file with the appropriate database configurations.
+
+3. Build and run the project:
+    ```bash
+    cd diagonal-library
+    mvn spring-boot:run
+    ```
+
+4. **Access the application at [http://localhost:8080](http://localhost:8080) in your web browser.**
+
+## Project Structure
+
+The project follows a standard Spring Boot project structure:
+
+- `src/main/java`: Contains the Java source code.
+- `src/main/resources`: Contains application properties and configuration files.
+- `src/test`: Contains test classes.
+
+## Dependencies
+
+The project utilizes the following major dependencies:
+
+- Spring Boot
+- Spring Data JPA 
+- MapStruct
+- Lombok
+- H2 Database (for testing)
+- PostgreSQL
 
 
-- **Migration to Spring Boot:**
-   - The project will migrate to the Spring Boot framework for enhanced features and architectural improvements.
+## Configuration
 
-## Branching Strategy
+### Maven Compiler Plugin
 
-Different versions of the project are organized into specific branches. To access a particular version, use the following branching strategy:
+The project uses the Maven Compiler Plugin for annotation processing. Ensure you have the required annotation processors for Lombok and MapStruct added to your project's build configuration.
 
-1.  [**java**](https://github.com/Pris-c/diagonal-library/tree/java/diagonal-library/src]branch) ✔ :
-   - The initial version using only Java with a simulated List-based database.
-    
-2.  [**maven-sql-integration**](https://github.com/Pris-c/library-manager/tree/maven-sql-integration) [_in progress_] :
-   - This branch focuses on integrating Maven to enhance project structure and dependency management. Additionally, it includes the integration of an SQL database for establishing persistent and efficient data storage.
+```xml
+<plugins>
+    <!-- Other plugins -->
 
-3. **spring-boot-migration:**
-   - The project will undergoing a transition to the Spring Boot framework to leverage advanced features and realize architectural enhancements. The replacement entails the adoption of a RESTful API paradigm.
+    <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven-compiler-plugin.version}</version>
+        <configuration>
+            <annotationProcessorPaths>
+                <path>
+                    <groupId>org.projectlombok</groupId>
+                    <artifactId>lombok</artifactId>
+                    <version>${lombok.version}</version>
+                </path>
+                <path>
+                    <groupId>org.mapstruct</groupId>
+                    <artifactId>mapstruct-processor</artifactId>
+                    <version>${org.mapstruct.version}</version>
+                </path>
+            </annotationProcessorPaths>
+        </configuration>
+    </plugin>
+</plugins>
+```
 
-## How to Access Different Versions
+## Usage
 
-To switch to a specific branch and access a different version of the project, use the following commands:
+The Diagonal Library Management System provides a set of RESTful APIs to manage a library's book inventory.
+You can interact with the APIs using tools like Insomnia, Postman, or integrate them into your own applications.
 
-```bash
-git checkout <branch-name>
+### Examples:
+
+#### Get all books:
+```http
+GET http://localhost:8080/books
+```
+
+#### Add a new book:
+```http
+POST http://localhost:8080/books
+Content-Type: application/json
+
+{
+"title": "Example Book",
+"author": "John Doe",
+"year": 2022
+}
+```
+
+#### Update a book:
+```http
+PUT http://localhost:8080/books
+Content-Type: application/json
+
+{
+  "bookId": "your-book-id",
+  "title": "Updated Book",
+  "author": "Jane Doe",
+  "year": 2023
+}
+```
+
+#### Delete a book:
+```http
+DELETE http://localhost:8080/books/your-book-id
+```
+
+
+## Contributing
+
+Contributions are welcome! Feel free to open issues to report bugs or propose enhancements. If you'd like to contribute directly, open a pull request.
+
+## Author
+
+Priscila Campos
+
+
+
+
