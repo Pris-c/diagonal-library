@@ -5,7 +5,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class DiagonalLibraryApplicationTests {
-
 	@Test
 	void contextLoads() {
 	}
