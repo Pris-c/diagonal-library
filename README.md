@@ -115,6 +115,26 @@ Content-Type: application/json
 }
 ```
 
+#### Get a specific book by ID:
+```http
+GET http://localhost:8080/books/your-book-id
+```
+
+#### Find books by title:
+```http
+GET http://localhost:8080/books/title?title=example
+```
+
+#### Find books by author:
+```http
+GET http://localhost:8080/books/author?author=john
+```
+
+#### Find books by year:
+```http
+GET http://localhost:8080/books/year?year=2022
+```
+
 #### Update a book:
 ```http
 PUT http://localhost:8080/books

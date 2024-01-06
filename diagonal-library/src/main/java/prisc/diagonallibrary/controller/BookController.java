@@ -56,35 +56,36 @@ public class BookController {
     }
 
     /**
-     * Handles HTTP GET request to retrieve a list of books whose titles contain the specified substring.
+     * Handles an HTTP GET request to retrieve a list of books with titles containing the specified substring.
      *
      * @param title Substring to search for in book titles.
      * @return ResponseEntity with a list of book responses and HTTP status OK.
      */
-    @GetMapping(path = "/title/{title}")
-    public ResponseEntity<List<BookResponse>> findByTitle(@PathVariable String title) {
+    @GetMapping(path = "/title")
+    public ResponseEntity<List<BookResponse>> findByTitle(@RequestParam String title) {
         return new ResponseEntity<>(bookService.findByTitle(title), HttpStatus.OK);
     }
 
+
     /**
-     * Handles HTTP GET request to retrieve a list of books whose authors' names contain the specified substring.
+     * Handles an HTTP GET request to retrieve a list of books with authors' names containing the specified substring.
      *
      * @param author Substring to search for in book authors' names.
      * @return ResponseEntity with a list of book responses and HTTP status OK.
      */
-    @GetMapping(path = "/author/{author}")
-    public ResponseEntity<List<BookResponse>> findByAuthor(@PathVariable String author) {
+    @GetMapping(path = "/author")
+    public ResponseEntity<List<BookResponse>> findByAuthor(@RequestParam String author) {
         return new ResponseEntity<>(bookService.findByAuthor(author), HttpStatus.OK);
     }
 
     /**
-     * Handles HTTP GET request to retrieve a list of books published in the specified year.
+     * Handles an HTTP GET request to retrieve a list of books published in the specified year.
      *
      * @param year Year of publication.
      * @return ResponseEntity with a list of book responses and HTTP status OK.
      */
-    @GetMapping(path = "/year/{year}")
-    public ResponseEntity<List<BookResponse>> findByYear(@PathVariable int year) {
+    @GetMapping(path = "/year")
+    public ResponseEntity<List<BookResponse>> findByYear(@RequestParam int year) {
         return new ResponseEntity<>(bookService.findByYear(year), HttpStatus.OK);
     }
 
