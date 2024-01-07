@@ -19,6 +19,8 @@
 		<mapstruct.version>1.5.5.Final</mapstruct.version>
 		<org.mapstruct.version>1.4.1.Final</org.mapstruct.version>
 		<h2.version>2.2.224</h2.version>
+		<swagger.version>2.2.0</swagger.version>
+
 	</properties>
 
 
@@ -69,6 +71,13 @@
 			<artifactId>h2</artifactId>
 			<version>${h2.version}</version>
 			<scope>test</scope>
+		</dependency>
+
+		<!-- Swagger to interface-->
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>${swagger.version}</version>
 		</dependency>
 
 	</dependencies>

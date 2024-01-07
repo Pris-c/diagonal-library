@@ -2,7 +2,8 @@
 
 ## Overview
 
-Diagonal Library Management System is an application designed to manage a library's book inventory. It provides functionalities to add, update, delete, and retrieve information about books in the library.
+Diagonal Library Management System is an application designed to manage a library's book inventory. It provides
+functionalities to add, update, delete, and retrieve information about books in the library.
 
 ## Table of Contents
 
@@ -52,20 +53,21 @@ The project follows a standard Spring Boot project structure:
 The project utilizes the following major dependencies:
 
 - Spring Boot
-- Spring Data JPA 
+- Spring Data JPA
 - MapStruct
 - Lombok
 - H2 Database (for testing)
 - PostgreSQL
 
-
 ## Configuration
 
 ### Maven Compiler Plugin
 
-The project uses the Maven Compiler Plugin for annotation processing. Ensure you have the required annotation processors for Lombok and MapStruct added to your project's build configuration.
+The project uses the Maven Compiler Plugin for annotation processing. Ensure you have the required annotation processors
+for Lombok and MapStruct added to your project's build configuration.
 
 ```xml
+
 <plugins>
     <!-- Other plugins -->
 
@@ -99,11 +101,13 @@ You can interact with the APIs using tools like Insomnia, Postman, or integrate 
 ### Examples:
 
 #### Get all books:
+
 ```http
 GET http://localhost:8080/books
 ```
 
 #### Add a new book:
+
 ```http
 POST http://localhost:8080/books
 Content-Type: application/json
@@ -116,26 +120,31 @@ Content-Type: application/json
 ```
 
 #### Get a specific book by ID:
+
 ```http
 GET http://localhost:8080/books/your-book-id
 ```
 
 #### Find books by title:
+
 ```http
 GET http://localhost:8080/books/title?title=example
 ```
 
 #### Find books by author:
+
 ```http
 GET http://localhost:8080/books/author?author=john
 ```
 
 #### Find books by year:
+
 ```http
 GET http://localhost:8080/books/year?year=2022
 ```
 
 #### Update a book:
+
 ```http
 PUT http://localhost:8080/books
 Content-Type: application/json
@@ -149,14 +158,21 @@ Content-Type: application/json
 ```
 
 #### Delete a book:
+
 ```http
 DELETE http://localhost:8080/books/your-book-id
 ```
 
+## Swagger Integration
+
+The Diagonal Library Management System leverages Swagger to provide an interactive interface, enabling direct
+interaction with the application's APIs. Access the Swagger interface at http://localhost:8080/swagger-ui/index.html to explore
+and make direct calls to the API endpoints.
 
 ## Contributing
 
-Contributions are welcome! Feel free to open issues to report bugs or propose enhancements. If you'd like to contribute directly, open a pull request.
+Contributions are welcome! Feel free to open issues to report bugs or propose enhancements. If you'd like to contribute
+directly, open a pull request.
 
 ## Author
 
