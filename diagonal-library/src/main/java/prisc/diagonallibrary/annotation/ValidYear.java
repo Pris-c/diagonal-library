@@ -9,6 +9,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.time.Year;
 
 /**
  * Custom annotation for validating the year of publication.
@@ -24,7 +25,7 @@ public @interface ValidYear {
      *
      * @return Error message
      */
-    String message() default "Invalid year";
+    String message() default "The year must be between 0 and the currentYear value";
 
     /**
      * Groups targeted for validation.

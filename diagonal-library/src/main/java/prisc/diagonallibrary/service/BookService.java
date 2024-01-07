@@ -48,7 +48,11 @@ public class BookService {
                 bookToSave.getTitle(),
                 bookToSave.getAuthor(),
                 bookToSave.getYear())) {
-            throw new BookAlreadyExistsException("The book " + bookRequest + " is already in database");
+            throw new BookAlreadyExistsException("The book: "
+                    + bookRequest.getTitle() + ", "
+                    + bookRequest.getAuthor() + ", "
+                    + bookRequest.getYear() +
+                    " is already in database");
         }
 
         return BookMapper.INSTANCE.toBookResponse(bookRepository.save(bookToSave));
@@ -116,7 +120,11 @@ public class BookService {
                 bookRequest.getTitle(),
                 bookRequest.getAuthor(),
                 bookRequest.getYear())) {
-            throw new BookAlreadyExistsException("The book " + bookRequest + " is already in database");
+            throw new BookAlreadyExistsException("The book: "
+                    + bookRequest.getTitle() + ", "
+                    + bookRequest.getAuthor() + ", "
+                    + bookRequest.getYear() +
+                    " is already in database");
         }
 
         savedBook.setYear(bookRequest.getYear());
