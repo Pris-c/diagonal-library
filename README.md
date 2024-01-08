@@ -1,4 +1,4 @@
-# Diagonal Library
+# Library Management System
 
 This Java project is a Library Management System, providing basic functionalities for managing books within a simulated library database. Users can view, add, search, update, and delete book records through a command-line interface.
 
