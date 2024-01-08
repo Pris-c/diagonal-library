@@ -15,6 +15,7 @@ functionalities to add, update, delete, and retrieve information about books in 
 - [Usage](#usage)
 - [Contributing](#contributing)
 - [Author](#author)
+- [Swagger Integration](#Swagger-Integration)
 
 ## Prerequisites
 
@@ -38,7 +39,7 @@ Ensure you have the following installed on your system:
     mvn spring-boot:run
     ```
 
-4. **Access the application at [http://localhost:8080](http://localhost:8080) in your web browser.**
+4. Access the application at [http://localhost:8080](http://localhost:8080) in your web browser.
 
 ## Project Structure
 
@@ -58,6 +59,7 @@ The project utilizes the following major dependencies:
 - Lombok
 - H2 Database (for testing)
 - PostgreSQL
+- Swagger
 
 ## Configuration
 
