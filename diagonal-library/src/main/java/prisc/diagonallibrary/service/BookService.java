@@ -3,7 +3,8 @@ package prisc.diagonallibrary.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import prisc.diagonallibrary.controller.request.BookRequest;
+import prisc.diagonallibrary.controller.request.BookPostRequest;
+import prisc.diagonallibrary.controller.request.BookPutRequest;
 import prisc.diagonallibrary.controller.response.BookResponse;
 import prisc.diagonallibrary.entity.Book;
 import prisc.diagonallibrary.exception.BookAlreadyExistsException;
@@ -37,21 +38,21 @@ public class BookService {
     /**
      * Saves a new book in the database.
      *
-     * @param bookRequest Request body containing book information.
+     * @param bookPostRequest Request body containing book information.
      * @return Book response representing the saved book.
      * @throws BookAlreadyExistsException If a book with the same attributes already exists in the database.
      */
     @Transactional
-    public BookResponse save(BookRequest bookRequest) throws BookAlreadyExistsException {
-        Book bookToSave = BookMapper.INSTANCE.toBook(bookRequest);
+    public BookResponse save(BookPostRequest bookPostRequest) throws BookAlreadyExistsException {
+        Book bookToSave = BookMapper.INSTANCE.toBook(bookPostRequest);
         if (bookRepository.existsByAttributesIgnoreCase(
                 bookToSave.getTitle(),
                 bookToSave.getAuthor(),
                 bookToSave.getYear())) {
             throw new BookAlreadyExistsException("The book: "
-                    + bookRequest.getTitle() + ", "
-                    + bookRequest.getAuthor() + ", "
-                    + bookRequest.getYear() +
+                    + bookPostRequest.getTitle() + ", "
+                    + bookPostRequest.getAuthor() + ", "
+                    + bookPostRequest.getYear() +
                     " is already in database");
         }
 
@@ -110,7 +111,7 @@ public class BookService {
      * @throws BookAlreadyExistsException If a book with the same attributes already exists in the database.
      */
     @Transactional
-    public BookResponse update(BookRequest bookRequest) {
+    public BookResponse update(BookPutRequest bookRequest) {
         //Verify if the id exists or throw exception in method findById
         Book savedBook = BookMapper.INSTANCE
                 .toBook(findById_OrThrowBookIdNotFoundException(bookRequest.getBookId()));

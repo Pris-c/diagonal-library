@@ -1,33 +1,26 @@
 package prisc.diagonallibrary.controller.request;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.validation.annotation.Validated;
 import prisc.diagonallibrary.annotation.ValidYear;
-import prisc.diagonallibrary.validations.groups.PostValidation;
-import prisc.diagonallibrary.validations.groups.PutValidation;
 
 import java.util.UUID;
 
 /**
- * Represents the request body for updating an existing book in the diagonal library.
- * This class is used to handle incoming requests to update an existing book.
+ * Represents the request body for save a new book in the diagonal library.
+ * This class is used to handle incoming requests to save a new book.
  */
 @Getter
 @Setter
 @ToString
 @Builder
-public class BookRequest {
-
-    /**
-     * Unique identifier of the book to be updated.
-     */
-    @NotNull(groups = PutValidation.class, message = "The id cannot be null.")
-    @Null(groups = PostValidation.class, message = "You cannot choose the id value.")
-    private UUID bookId;
+public class BookPostRequest {
 
     /**
      * Title of the book. Should have between 1 and 50 characters.

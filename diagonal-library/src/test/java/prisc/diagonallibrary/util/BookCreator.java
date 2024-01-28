@@ -1,6 +1,8 @@
 package prisc.diagonallibrary.util;
 
-import prisc.diagonallibrary.controller.request.BookRequest;
+import jakarta.validation.Valid;
+import prisc.diagonallibrary.controller.request.BookPostRequest;
+import prisc.diagonallibrary.controller.request.BookPutRequest;
 import prisc.diagonallibrary.controller.response.BookResponse;
 import prisc.diagonallibrary.entity.Book;
 
@@ -28,16 +30,16 @@ public class BookCreator {
                 .build();
     }
 
-    public static BookRequest createBookRequestToSave() {
-        return BookRequest.builder()
+    public static BookPostRequest createBookRequestToSave() {
+        return BookPostRequest.builder()
                 .title("Book")
                 .author("Author")
                 .year(2021)
                 .build();
     }
 
-    public static BookRequest createBookRequestToUpdate() {
-        return BookRequest.builder()
+    public static BookPutRequest createBookRequestToUpdate() {
+        return BookPutRequest.builder()
                 .bookId(UUID.fromString("a7669e4c-4420-43c8-9b90-81e149d37d95"))
                 .title("Book")
                 .author("Author")

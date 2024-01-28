@@ -7,7 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import prisc.diagonallibrary.controller.request.BookRequest;
+import prisc.diagonallibrary.controller.request.BookPutRequest;
 import prisc.diagonallibrary.controller.response.BookResponse;
 import prisc.diagonallibrary.entity.Book;
 import prisc.diagonallibrary.exception.BookAlreadyExistsException;
@@ -224,7 +224,7 @@ class BookServiceTest {
     @Test
     @DisplayName("update: Replaces book's information when successful")
     void update_ReplaceBookInformation_WhenSuccesful() {
-        BookRequest bookRequestToUpdate = BookCreator.createBookRequestToUpdate();
+        BookPutRequest bookRequestToUpdate = BookCreator.createBookRequestToUpdate();
         Book savedBook = BookCreator.createValidBook();
 
         when(bookRepositoryMock.findById(any(UUID.class)))
@@ -249,7 +249,7 @@ class BookServiceTest {
     @Test
     @DisplayName("update: Throws BookIdNotFoundException if the bookId does not exists in database")
     void update_ThrowsBookIdNotFoundException_IfBookIdDoesNotExistsInDatabase() {
-        BookRequest book = BookCreator.createBookRequestToUpdate();
+        BookPutRequest book = BookCreator.createBookRequestToUpdate();
         when(bookRepositoryMock.findById(any(UUID.class)))
                 .thenReturn(Optional.empty());
 
@@ -262,7 +262,7 @@ class BookServiceTest {
     @DisplayName("update: Throws BookAlreadyExistsException if book with equals attributes already exists in database")
     void update_ThrowsBookAlreadyExistsException_IfEqualBookAlreadyExistsInDatabase() {
         Book book = BookCreator.createValidBook();
-        BookRequest bookToBeUpdated = BookCreator.createBookRequestToUpdate();
+        BookPutRequest bookToBeUpdated = BookCreator.createBookRequestToUpdate();
         when(bookRepositoryMock.findById(any(UUID.class)))
                 .thenReturn(Optional.of(book));
 

@@ -9,7 +9,8 @@ import org.mockito.Mock;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import prisc.diagonallibrary.controller.request.BookRequest;
+import prisc.diagonallibrary.controller.request.BookPostRequest;
+import prisc.diagonallibrary.controller.request.BookPutRequest;
 import prisc.diagonallibrary.controller.response.BookResponse;
 import prisc.diagonallibrary.exception.BookAlreadyExistsException;
 import prisc.diagonallibrary.exception.BookIdNotFoundException;
@@ -86,7 +87,7 @@ class BookControllerTest {
     void save_ReturnsThePersistedBook_WhenSuccessful() {
         BookResponse bookResponse = BookCreator.createBookResponse();
 
-        when(bookServiceMock.save(any(BookRequest.class)))
+        when(bookServiceMock.save(any(BookPostRequest.class)))
                 .thenReturn(bookResponse);
 
         BookResponse savedBook = this.bookController.save(BookCreator.createBookRequestToSave()).getBody();
@@ -101,7 +102,7 @@ class BookControllerTest {
     @Test
     @DisplayName("save: throws BookAlreadyExistsException when there is a equal book in database")
     void save_ThrowsBookAlreadyExistsException_WhenBookAlreadyExistsInDatabase() {
-        when(bookServiceMock.save(any(BookRequest.class)))
+        when(bookServiceMock.save(any(BookPostRequest.class)))
                 .thenThrow(BookAlreadyExistsException.class);
 
         Assertions.assertThatExceptionOfType(BookAlreadyExistsException.class)
@@ -247,7 +248,7 @@ class BookControllerTest {
     @DisplayName("update: Replaces book's information when successful")
     void update_ReplaceBookInformation_WhenSuccesful() {
         BookResponse response = BookCreator.createBookResponse();
-        when(bookServiceMock.update(any(BookRequest.class)))
+        when(bookServiceMock.update(any(BookPutRequest.class)))
                 .thenReturn(response);
 
         BookResponse bookUpdated = this.bookController.update(BookCreator.createBookRequestToUpdate()).getBody();
@@ -259,7 +260,7 @@ class BookControllerTest {
     @DisplayName("update: Throws BookIdNotFoundException if the bookId does not exists in database")
     void update_ThrowsBookIdNotFoundException_IfBookIdDoesNotExistsInDatabase() {
         doThrow(BookIdNotFoundException.class)
-                .when(bookServiceMock).update(any(BookRequest.class));
+                .when(bookServiceMock).update(any(BookPutRequest.class));
 
         Assertions.assertThatExceptionOfType(BookIdNotFoundException.class)
                 .isThrownBy(() -> this.bookController.update(BookCreator.createBookRequestToUpdate()));
@@ -269,7 +270,7 @@ class BookControllerTest {
     @DisplayName("update: Throws BookAlreadyExistsException if book with equals attributes already exists in database")
     void update_ThrowsBookAlreadyExistsException_IfEqualBookAlreadyExistsInDatabase() {
         doThrow(BookAlreadyExistsException.class)
-                .when(bookServiceMock).update(any(BookRequest.class));
+                .when(bookServiceMock).update(any(BookPutRequest.class));
 
         Assertions.assertThatExceptionOfType(BookAlreadyExistsException.class)
                 .isThrownBy(() -> this.bookController.update(BookCreator.createBookRequestToUpdate()));

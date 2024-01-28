@@ -1,15 +1,14 @@
 package prisc.diagonallibrary.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import prisc.diagonallibrary.controller.request.BookRequest;
+import prisc.diagonallibrary.controller.request.BookPostRequest;
+import prisc.diagonallibrary.controller.request.BookPutRequest;
 import prisc.diagonallibrary.controller.response.BookResponse;
 import prisc.diagonallibrary.service.BookService;
-import prisc.diagonallibrary.validations.groups.PostValidation;
-import prisc.diagonallibrary.validations.groups.PutValidation;
 
 import java.util.List;
 import java.util.UUID;
@@ -36,12 +35,12 @@ public class BookController {
     /**
      * Handles HTTP POST request to save a new book.
      *
-     * @param bookRequest Request body containing book information.
+     * @param bookPostRequest Request body containing book information.
      * @return ResponseEntity with the saved book response and HTTP status CREATED.
      */
     @PostMapping
-    public ResponseEntity<BookResponse> save(@RequestBody @Validated(PostValidation.class) BookRequest bookRequest) {
-        return new ResponseEntity<>(bookService.save(bookRequest), HttpStatus.CREATED);
+    public ResponseEntity<BookResponse> save(@Valid @RequestBody BookPostRequest bookPostRequest) {
+        return new ResponseEntity<>(bookService.save(bookPostRequest), HttpStatus.CREATED);
     }
 
     /**
@@ -108,7 +107,7 @@ public class BookController {
      * @return ResponseEntity with the updated book response and HTTP status OK.
      */
     @PutMapping
-    public ResponseEntity<BookResponse> update(@RequestBody @Validated(PutValidation.class) BookRequest bookRequest) {
+    public ResponseEntity<BookResponse> update(@RequestBody @Valid BookPutRequest bookRequest) {
         return new ResponseEntity<>(bookService.update(bookRequest), HttpStatus.OK);
     }
 

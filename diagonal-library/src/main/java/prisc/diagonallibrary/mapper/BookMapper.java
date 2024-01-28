@@ -2,7 +2,8 @@ package prisc.diagonallibrary.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
-import prisc.diagonallibrary.controller.request.BookRequest;
+import prisc.diagonallibrary.controller.request.BookPostRequest;
+import prisc.diagonallibrary.controller.request.BookPutRequest;
 import prisc.diagonallibrary.controller.response.BookResponse;
 import prisc.diagonallibrary.entity.Book;
 
@@ -45,10 +46,19 @@ public abstract class BookMapper {
 
 
     /**
-     * Converts a BookRequest to a Book entity.
+     * Converts a BookPutRequest to a Book entity.
      *
-     * @param bookRequest Response containing book information.
+     * @param bookPutRequest containing book information.
      * @return Book entity.
      */
-    public abstract Book toBook(BookRequest bookRequest);
+    public abstract Book toBook(BookPutRequest bookPutRequest);
+
+
+    /**
+     * Converts a BookPostRequest to a Book entity.
+     *
+     * @param bookPostRequest containing book information.
+     * @return Book entity.
+     */
+    public abstract Book toBook(BookPostRequest bookPostRequest);
 }
