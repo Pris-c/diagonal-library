@@ -21,7 +21,7 @@ Despite the initial goal being achieved in the "spring-boot-migration" branch, I
 
 Different versions of the project are organized into specific branches:
 
-1.  [**java**](https://github.com/Pris-c/library-manager/tree/java)) ✔ :
+1.  [**java**](https://github.com/Pris-c/library-manager/tree/java) ✔ :
    - The initial version of the Library Management System is implemented solely in Java, featuring a simulated List-based database. User interaction in this version occurs through a command-line prompt.
     
 2.  [**maven-sql-integration**](https://github.com/Pris-c/library-manager/tree/maven-sql-integration)  ✔ :
