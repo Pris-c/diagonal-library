@@ -15,7 +15,6 @@ functionalities to add, update, delete, and retrieve information about books in 
 - [Usage](#usage)
 - [Contributing](#contributing)
 - [Author](#author)
-- [Swagger Integration](#Swagger-Integration)
 
 ## Prerequisites
 
@@ -164,12 +163,6 @@ Content-Type: application/json
 ```http
 DELETE http://localhost:8080/books/your-book-id
 ```
-
-## Swagger Integration
-
-The Diagonal Library Management System leverages Swagger to provide an interactive interface, enabling direct
-interaction with the application's APIs. Access the Swagger interface at http://localhost:8080/swagger-ui/index.html to explore
-and make direct calls to the API endpoints.
 
 ## Contributing
 
