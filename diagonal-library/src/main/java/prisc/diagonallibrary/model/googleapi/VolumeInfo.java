@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -12,7 +13,7 @@ import java.util.List;
 public class VolumeInfo {
 
     String title;
-    List<String> authors;
+    Set<String> authors;
     String publishedDate;
     List<IndustryIdentifier> industryIdentifiers;
     String language;

@@ -19,7 +19,6 @@ import java.util.UUID;
  * This class represents a Book entity in the application. It is annotated with JPA annotations
  * to indicate its mapping to a database table.
  */
-@Entity
 @Getter
 @Setter
 @ToString

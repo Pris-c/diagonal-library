@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import prisc.diagonallibrary.controller.request.BookPostRequest;
 import prisc.diagonallibrary.controller.request.BookPutRequest;
 import prisc.diagonallibrary.controller.response.BookResponse;
-import prisc.diagonallibrary.entity.Book;
+import prisc.diagonallibrary.model.Book;
 
 import java.util.UUID;
 
