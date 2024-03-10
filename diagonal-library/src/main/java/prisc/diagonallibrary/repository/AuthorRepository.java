@@ -18,7 +18,7 @@ public interface AuthorRepository extends JpaRepository<Author, UUID> {
     /**
      * Retrieves the author whose name is equals to the specified string, ignoring case.
      *
-     * @param name Substring to search for in book titles.
+     * @param name Substring to search for.
      * @return The Author that matching the criteria.
      */
     Optional<Author> findByNameIgnoreCase(String name);

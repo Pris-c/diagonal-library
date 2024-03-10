@@ -1,45 +1,52 @@
 package prisc.diagonallibrary.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
+import prisc.diagonallibrary.controller.response.VolumeResponse;
 import prisc.diagonallibrary.model.Author;
+import prisc.diagonallibrary.model.Category;
 import prisc.diagonallibrary.model.Volume;
 import prisc.diagonallibrary.model.googleapi.IndustryIdentifier;
 import prisc.diagonallibrary.model.googleapi.VolumeInfo;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Mapper
 public abstract class VolumeMapper {
 
     public static final VolumeMapper INSTANCE = Mappers.getMapper(VolumeMapper.class);
 
-    public static Volume volumeInfoToVolume (VolumeInfo volumeInfo){
+    abstract Set<Author> mapAuthor(Set<String> authors);
+    abstract Set<Category> mapCategory(Set<String> categories);
 
-        Set<String> authorsList = volumeInfo.getAuthors();
-        Set<Author> authors = new HashSet<>(authorsList.stream().map(a -> Author.builder().name(a).build()).toList());
-        List<IndustryIdentifier> identifiers = volumeInfo.getIndustryIdentifiers();
-        String isbn10, isbn13;
-        isbn13 = isbn10 = "0";
-        for(IndustryIdentifier i: identifiers){
-            if(i.getType().equals("ISBN_10")){
-                isbn10 = i.getIdentifier();
-            } else {
-                isbn13 = i.getIdentifier();
-            }
-        }
-        return Volume.builder()
-                .title(volumeInfo.getTitle())
-                .authors(authors)
-                .isbn10(isbn10)
-                .isbn13(isbn13)
-                .language(volumeInfo.getLanguage())
-                .publishedDate(volumeInfo.getPublishedDate())
-                .build();
+    abstract Author mapAuthor(String name);
+    abstract Category mapCategory(String name);
+
+    Set<String> mapAuthorName(Set<Author> authors){
+        return authors.stream().map(Author::getName).collect(Collectors.toSet());
+    }
+    Set<String> mapCategoryName(Set<Category> categories){
+        return categories.stream().map(Category::getName).collect(Collectors.toSet());
     }
 
+    @Mapping(target = "isbn10", expression = "java(mapIsbn(volumeInfo, 10))")
+    @Mapping(target = "isbn13", expression = "java(mapIsbn(volumeInfo, 13))")
+    public abstract Volume toVolume(VolumeInfo volumeInfo);
 
+    String mapIsbn(VolumeInfo volumeInfo, int type){
+        for (IndustryIdentifier i : volumeInfo.getIndustryIdentifiers()) {
+            String isbn = i.getIdentifier();
+            if (isbn.length() == type) {
+                return isbn;
+            }
+        }
+        return null;
+    }
+
+    @Mapping(target = "authors", expression = "java( mapAuthorName(volume.getAuthors()) )")
+    @Mapping(target = "categories", expression = "java( mapCategoryName(volume.getCategories()) )")
+    public  abstract VolumeResponse toVolumeResponse(Volume volume);
 
 }

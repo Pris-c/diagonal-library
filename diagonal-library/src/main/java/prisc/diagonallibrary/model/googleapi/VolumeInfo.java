@@ -16,6 +16,7 @@ public class VolumeInfo {
     Set<String> authors;
     String publishedDate;
     List<IndustryIdentifier> industryIdentifiers;
+    List<String> categories;
     String language;
 
 }

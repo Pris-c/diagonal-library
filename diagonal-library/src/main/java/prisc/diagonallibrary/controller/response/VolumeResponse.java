@@ -1,9 +1,7 @@
 package prisc.diagonallibrary.controller.response;
 
 import lombok.*;
-import prisc.diagonallibrary.model.Author;
 
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -18,6 +16,8 @@ public class VolumeResponse {
     private String title;
     private String isbn10;
     private String isbn13;
+    private Set<String> authors;
+    private Set<String> categories;
     private String publishedDate;
     private String language;
 

@@ -4,12 +4,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @NoArgsConstructor
-public class Item {
-    VolumeInfo volumeInfo;
-    SaleInfo saleInfo;
+public class SaleInfo {
+     String isEbook;
 }
