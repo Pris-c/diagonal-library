@@ -1,11 +1,8 @@
-package prisc.diagonallibrary.exception.volumes;
+package prisc.diagonallibrary.exception;
 
-import lombok.Getter;
-import lombok.experimental.SuperBuilder;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import prisc.diagonallibrary.exception.ExceptionDetails;
 
 /**
  * Exception class representing the scenario where the ISBN informed by the user is not valid.

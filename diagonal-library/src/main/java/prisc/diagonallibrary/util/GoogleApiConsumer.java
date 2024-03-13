@@ -3,8 +3,8 @@ package prisc.diagonallibrary.util;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import prisc.diagonallibrary.exception.volumes.EbookTypeException;
-import prisc.diagonallibrary.exception.volumes.EmptyApiResponseException;
+import prisc.diagonallibrary.exception.EbookTypeException;
+import prisc.diagonallibrary.exception.EmptyApiResponseException;
 import prisc.diagonallibrary.mapper.VolumeMapper;
 import prisc.diagonallibrary.model.Volume;
 import prisc.diagonallibrary.model.googleapi.GoogleApiResponse;
