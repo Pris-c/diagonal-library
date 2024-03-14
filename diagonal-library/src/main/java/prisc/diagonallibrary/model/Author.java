@@ -6,8 +6,6 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
-import java.io.Serializable;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -24,7 +22,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Author implements Serializable {
+public class Author {
 
     /**
      * Automatically generated unique identifier for the author.
@@ -47,17 +45,4 @@ public class Author implements Serializable {
     @ManyToMany(mappedBy = "authors")
     private Set<Volume> volumes;
 
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Author author = (Author) o;
-        return Objects.equals(author_id, author.author_id) && Objects.equals(name, author.name) && Objects.equals(volumes, author.volumes);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(author_id, name, volumes);
-    }
 }

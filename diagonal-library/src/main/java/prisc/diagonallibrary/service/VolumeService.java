@@ -8,12 +8,14 @@ import prisc.diagonallibrary.controller.request.VolumePostRequest;
 import prisc.diagonallibrary.controller.response.VolumeResponse;
 import prisc.diagonallibrary.exception.InvalidIsbnException;
 import prisc.diagonallibrary.exception.VolumeIsAlreadyRegisteredException;
+import prisc.diagonallibrary.exception.VolumeNotFoundException;
 import prisc.diagonallibrary.mapper.VolumeMapper;
 import prisc.diagonallibrary.model.Volume;
 import prisc.diagonallibrary.repository.VolumeRepository;
 import prisc.diagonallibrary.util.GoogleApiConsumer;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Service class for managing volume-related operations in the library.
@@ -64,6 +66,14 @@ public class VolumeService {
      */
     public List<VolumeResponse> getAll() {
         return VolumeMapper.INSTANCE.toVolumeResponseList(volumeRepository.findAll());
+    }
+
+    public VolumeResponse findById(UUID volumeId){
+        return VolumeMapper.INSTANCE.toVolumeResponse(
+                volumeRepository.findById(volumeId)
+                        .orElseThrow(() -> new VolumeNotFoundException(
+                                "There ir no book with id = " + volumeId + " in database")
+                        ));
     }
 
     /**

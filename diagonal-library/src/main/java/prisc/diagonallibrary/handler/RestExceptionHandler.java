@@ -77,6 +77,21 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         );
     }
 
+    @ExceptionHandler(VolumeNotFoundException.class)
+    public ResponseEntity<VolumeNotFoundExceptionDetails>
+    handlerVolumeNotFoundException(VolumeNotFoundException volumeNotFoundException){
+        return new ResponseEntity<>(
+                VolumeNotFoundExceptionDetails.builder()
+                        .timestamp(LocalDateTime.now())
+                        .status(HttpStatus.BAD_REQUEST.value())
+                        .title("Volume Not Found Exception: Check the documentation")
+                        .details(volumeNotFoundException.getMessage())
+                        .developerMessage(volumeNotFoundException.getClass().getName())
+                        .build(),
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         return new ResponseEntity<>(

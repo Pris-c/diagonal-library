@@ -10,6 +10,7 @@ import prisc.diagonallibrary.controller.response.VolumeResponse;
 import prisc.diagonallibrary.service.VolumeService;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Controller class for handling HTTP requests related to book volumes in the library-manager.
@@ -40,5 +41,10 @@ public class VolumeController {
     @GetMapping
     public ResponseEntity<List<VolumeResponse>> getAll(){
         return new ResponseEntity<>(volumeService.getAll(), HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/{volumeId}")
+    public ResponseEntity<VolumeResponse> findById(@PathVariable UUID volumeId){
+        return new ResponseEntity<>(volumeService.findById(volumeId), HttpStatus.OK);
     }
 }
