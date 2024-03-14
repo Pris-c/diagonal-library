@@ -11,8 +11,7 @@ import java.util.UUID;
 
 /**
  * Category Class
- *
- * This class represents an Category entity in the application. It is annotated with JPA annotations
+ * This class represents a Category entity in the application. It is annotated with JPA annotations
  * to indicate its mapping to a database table.
  */
 @Entity
@@ -44,6 +43,4 @@ public class Category {
      */
     @ManyToMany(mappedBy = "categories")
     private Set<Volume> volumes;
-
-
 }

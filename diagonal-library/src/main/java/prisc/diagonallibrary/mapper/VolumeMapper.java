@@ -10,6 +10,7 @@ import prisc.diagonallibrary.model.Volume;
 import prisc.diagonallibrary.model.googleapi.IndustryIdentifier;
 import prisc.diagonallibrary.model.googleapi.VolumeInfo;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -54,5 +55,7 @@ public abstract class VolumeMapper {
     @Mapping(target = "authors", expression = "java( mapAuthorName(volume.getAuthors()) )")
     @Mapping(target = "categories", expression = "java( mapCategoryName(volume.getCategories()) )")
     public  abstract VolumeResponse toVolumeResponse(Volume volume);
+
+    public  abstract List<VolumeResponse> toVolumeResponseList(List<Volume> volumes);
 
 }

@@ -13,6 +13,8 @@ import prisc.diagonallibrary.model.Volume;
 import prisc.diagonallibrary.repository.VolumeRepository;
 import prisc.diagonallibrary.util.GoogleApiConsumer;
 
+import java.util.List;
+
 /**
  * Service class for managing volume-related operations in the library.
  */
@@ -53,6 +55,15 @@ public class VolumeService {
         volumeToSave.setCategories(categoryService.processCategories(volumeToSave.getCategories()));
         Volume savedVolume = volumeRepository.save(volumeToSave);
         return VolumeMapper.INSTANCE.toVolumeResponse(savedVolume);
+    }
+
+    /**
+     * Retrieves a list of all volumes.
+     *
+     * @return List of volumeResponse representing all volumes.
+     */
+    public List<VolumeResponse> getAll() {
+        return VolumeMapper.INSTANCE.toVolumeResponseList(volumeRepository.findAll());
     }
 
     /**
@@ -123,4 +134,6 @@ public class VolumeService {
         j = (11 - (j % 11)) % 11;
         return st+j;
     }
+
+
 }

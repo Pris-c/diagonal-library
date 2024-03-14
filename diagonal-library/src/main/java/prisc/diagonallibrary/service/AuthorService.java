@@ -37,7 +37,8 @@ public class AuthorService {
      * @return An Author object containing both the name and ID of the author.
      */
     private Author processAuthor(Author author){
-        return authorRepository.findByNameIgnoreCase(author.getName()).orElse(authorRepository.save(author));
+        return authorRepository.findByNameIgnoreCase(author.getName())
+                .orElseGet(() -> authorRepository.save(author));
     }
 
     /**

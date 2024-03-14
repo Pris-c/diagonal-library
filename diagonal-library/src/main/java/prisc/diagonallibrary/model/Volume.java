@@ -69,12 +69,16 @@ public class Volume  implements Serializable {
     /**
      * Unique Isbn_10 identifier value of the volume.
      */
+    @NotEmpty
+    @NotBlank
     @Size(min = 10, max = 10)
     private String isbn10;
 
     /**
      * Unique Isbn_13 identifier value of the volume.
      */
+    @NotEmpty
+    @NotBlank
     @Size(min = 13, max = 13)
     private String isbn13;
 
