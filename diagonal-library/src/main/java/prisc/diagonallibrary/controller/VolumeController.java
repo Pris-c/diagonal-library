@@ -1,12 +1,12 @@
 package prisc.diagonallibrary.controller;
 
-import jakarta.validation.Valid;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import prisc.diagonallibrary.controller.request.VolumePostRequest;
 import prisc.diagonallibrary.controller.response.VolumeResponse;
+import prisc.diagonallibrary.exception.InvalidIsbnException;
 import prisc.diagonallibrary.service.VolumeService;
 
 import java.util.List;
@@ -25,12 +25,18 @@ public class VolumeController {
     /**
     * Handles HTTP POST request to save a new book volume.
     *
-    * @param volumePostRequest Request body containing book isbn.
+    * @param isbn String containing book isbn.
     * @return ResponseEntity with the saved book volume response and HTTP status CREATED.
     */
-    @PostMapping
-    public ResponseEntity<VolumeResponse> save(@Valid @RequestBody VolumePostRequest volumePostRequest){
-        return new ResponseEntity<>(volumeService.save(volumePostRequest), HttpStatus.CREATED);
+    @PostMapping(path = "/{isbn}")
+    public ResponseEntity<VolumeResponse> save(@PathVariable String isbn){
+        int isbnLength = isbn.length();
+        if (isbnLength != 10 && isbnLength !=13){
+            throw new InvalidIsbnException("The isbn must have 10 or 13 characters");
+        } else if (!NumberUtils.isDigits(isbn)) {
+            throw new InvalidIsbnException("The isbn must have only numerical characters");
+        }
+        return new ResponseEntity<>(volumeService.save(isbn), HttpStatus.CREATED);
     }
 
     /**
