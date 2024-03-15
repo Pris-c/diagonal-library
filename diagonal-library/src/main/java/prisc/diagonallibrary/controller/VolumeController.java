@@ -1,6 +1,5 @@
 package prisc.diagonallibrary.controller;
 
-import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,32 +24,68 @@ public class VolumeController {
     /**
     * Handles HTTP POST request to save a new book volume.
     *
-    * @param isbn String containing book isbn.
+    * @param isbn String as PathVariable
     * @return ResponseEntity with the saved book volume response and HTTP status CREATED.
     */
     @PostMapping(path = "/{isbn}")
     public ResponseEntity<VolumeResponse> save(@PathVariable String isbn){
-        int isbnLength = isbn.length();
-        if (isbnLength != 10 && isbnLength !=13){
-            throw new InvalidIsbnException("The isbn must have 10 or 13 characters");
-        } else if (!NumberUtils.isDigits(isbn)) {
-            throw new InvalidIsbnException("The isbn must have only numerical characters");
-        }
+        checkForValidIsbn(isbn);
         return new ResponseEntity<>(volumeService.save(isbn), HttpStatus.CREATED);
     }
 
     /**
      * Handles HTTP GET request to retrieve a list of all volumes.
      *
-     * @return ResponseEntity with a list of volumes responses and HTTP status OK.
+     * @return ResponseEntity with a list of VolumeResponse and HTTP status OK.
      */
     @GetMapping
     public ResponseEntity<List<VolumeResponse>> getAll(){
         return new ResponseEntity<>(volumeService.getAll(), HttpStatus.OK);
     }
 
+    /**
+     * Handles HTTP GET request to retrieve the book witch matches with the informed id.
+     * @param volumeId UUID as PathVariable
+     * @return ResponseEntity with VolumeResponse of the found Volume and HTTP status OK.
+     */
     @GetMapping(path = "/{volumeId}")
     public ResponseEntity<VolumeResponse> findById(@PathVariable UUID volumeId){
-        return new ResponseEntity<>(volumeService.findById(volumeId), HttpStatus.OK);
+        VolumeResponse volumeResponse = volumeService.findById(volumeId);
+        if (volumeResponse != null){
+            return new ResponseEntity<>(volumeResponse, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
+
+    /**
+     * Handles HTTP GET request to retrieve the book witch matches with the informed isbn value.
+     * @param isbn String as PathVariable
+     * @return ResponseEntity with VolumeResponse of the found Volume and HTTP status OK if it is found
+     *         or status NOT_FOUND if it is not found
+     */
+    @GetMapping(path = "/isbn/{isbn}")
+    public ResponseEntity<VolumeResponse> findByIsbn(@PathVariable String isbn){
+        checkForValidIsbn(isbn);
+        VolumeResponse volumeResponse = volumeService.findByIsbn(isbn);
+        if (volumeResponse != null){
+            return new ResponseEntity<>(volumeResponse, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    /**
+     * Check if the isbn has a valid size
+     * @param isbn String containing isbn value
+     * @throws InvalidIsbnException if the lenght is invalid
+     *          or isbn String not have only numerical characters
+     */
+    private void checkForValidIsbn(String isbn){
+        int isbnLength = isbn.length();
+        if (isbnLength != 10 && isbnLength !=13){
+            throw new InvalidIsbnException("The isbn must have 10 or 13 characters");
+        }
+    }
+
 }

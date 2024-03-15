@@ -6,9 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import prisc.diagonallibrary.controller.response.VolumeResponse;
-import prisc.diagonallibrary.exception.InvalidIsbnException;
 import prisc.diagonallibrary.exception.VolumeIsAlreadyRegisteredException;
-import prisc.diagonallibrary.exception.VolumeNotFoundException;
 import prisc.diagonallibrary.mapper.VolumeMapper;
 import prisc.diagonallibrary.model.Volume;
 import prisc.diagonallibrary.repository.VolumeRepository;
@@ -43,7 +41,6 @@ public class VolumeService {
      *
      * @param isbn String containing the isbn value
      * @return Volume response representing the saved volume.
-     * @throws InvalidIsbnException If the isbn value is invalid.
      * @throws VolumeIsAlreadyRegisteredException If a volume with the same isbn already exists in the database.
      */
     @Transactional
@@ -69,26 +66,32 @@ public class VolumeService {
     }
 
     public VolumeResponse findById(UUID volumeId){
-        return VolumeMapper.INSTANCE.toVolumeResponse(
-                volumeRepository.findById(volumeId)
-                        .orElseThrow(() -> new VolumeNotFoundException(
-                                "There ir no book with id = " + volumeId + " in database")
-                        ));
+        return VolumeMapper.INSTANCE.toVolumeResponse(volumeRepository.findById(volumeId).orElseGet(() -> null));
     }
 
     /**
-     * Check if database already contains the volume.
+     * Retrieves the volume witch match with the informed isbn
+     *
+     * @param isbn String representing the isbn information.
+     * @return VolumeResponse containing the correspondent Volume
+     */
+    public VolumeResponse findByIsbn(String isbn){
+        Volume dbVolume = switch (isbn.length()) {
+            case 10 -> volumeRepository.findByIsbn10(isbn);
+            case 13 -> volumeRepository.findByIsbn13(isbn);
+            default -> Volume.builder().build();
+        };
+        return VolumeMapper.INSTANCE.toVolumeResponse(dbVolume);
+    }
+
+    /**
+     * Calls findByIsbn to Check if database already contains the volume.
      *
      * @param isbn String representing the isbn information.
      * @return Boolean value indicating whether there is the volume in database
      */
     private boolean checkDatabaseForVolume(String isbn){
-        Volume dbVolume = switch (isbn.length()) {
-            case 10 -> volumeRepository.findByIsbn10(isbn);
-            case 13 -> volumeRepository.findByIsbn13(isbn);
-            default -> null;
-        };
-        return dbVolume != null;
+        return findByIsbn(isbn).getVolume_id() != null;
     }
 
     /**
