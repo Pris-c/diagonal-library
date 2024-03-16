@@ -84,6 +84,12 @@ public class VolumeService {
         return VolumeMapper.INSTANCE.toVolumeResponse(dbVolume);
     }
 
+    public List<VolumeResponse> findByTitle(String title) {
+        return VolumeMapper.INSTANCE.toVolumeResponseList(volumeRepository
+                .findByTitleContainingIgnoreCase(title).orElseGet(() -> null));
+    }
+
+
     /**
      * Calls findByIsbn to Check if database already contains the volume.
      *
@@ -161,4 +167,6 @@ public class VolumeService {
             return null;
         }
     }
+
+
 }
