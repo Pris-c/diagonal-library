@@ -29,7 +29,8 @@ public class Author {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID author_id;
+    @Column(name = "author_id")
+    private UUID authorId;
 
     /**
      * Author's name. Should have between 1 and 80 characters.

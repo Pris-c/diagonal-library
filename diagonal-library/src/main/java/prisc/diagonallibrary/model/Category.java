@@ -28,7 +28,8 @@ public class Category {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID category_id;
+    @Column(name = "category_id")
+    private UUID categoryId;
 
     /**
      * Category's name. Should have between 1 and 30 characters.

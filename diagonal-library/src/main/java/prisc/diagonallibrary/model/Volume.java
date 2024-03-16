@@ -31,7 +31,8 @@ public class Volume  implements Serializable {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID volume_id;
+    @Column(name = "volume_id")
+    private UUID volumeId;
 
     /**
      * Title of the volume. Should have between 1 and 80 characters.
@@ -93,11 +94,11 @@ public class Volume  implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Volume volume = (Volume) o;
-        return Objects.equals(volume_id, volume.volume_id) && Objects.equals(title, volume.title) && Objects.equals(authors, volume.authors) && Objects.equals(publishedDate, volume.publishedDate) && Objects.equals(isbn10, volume.isbn10) && Objects.equals(isbn13, volume.isbn13) && Objects.equals(categories, volume.categories) && Objects.equals(language, volume.language);
+        return Objects.equals(volumeId, volume.volumeId) && Objects.equals(title, volume.title) && Objects.equals(authors, volume.authors) && Objects.equals(publishedDate, volume.publishedDate) && Objects.equals(isbn10, volume.isbn10) && Objects.equals(isbn13, volume.isbn13) && Objects.equals(categories, volume.categories) && Objects.equals(language, volume.language);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(volume_id, title, authors, publishedDate, isbn10, isbn13, categories, language);
+        return Objects.hash(volumeId, title, authors, publishedDate, isbn10, isbn13, categories, language);
     }
 }

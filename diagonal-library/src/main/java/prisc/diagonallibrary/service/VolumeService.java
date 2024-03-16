@@ -8,12 +8,12 @@ import org.springframework.transaction.annotation.Transactional;
 import prisc.diagonallibrary.controller.response.VolumeResponse;
 import prisc.diagonallibrary.exception.VolumeIsAlreadyRegisteredException;
 import prisc.diagonallibrary.mapper.VolumeMapper;
+import prisc.diagonallibrary.model.Author;
 import prisc.diagonallibrary.model.Volume;
 import prisc.diagonallibrary.repository.VolumeRepository;
 import prisc.diagonallibrary.util.GoogleApiConsumer;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Service class for managing volume-related operations in the library.
@@ -66,7 +66,7 @@ public class VolumeService {
     }
 
     public VolumeResponse findById(UUID volumeId){
-        return VolumeMapper.INSTANCE.toVolumeResponse(volumeRepository.findById(volumeId).orElseGet(() -> null));
+        return VolumeMapper.INSTANCE.toVolumeResponse(volumeRepository.findById(volumeId).orElse(null));
     }
 
     /**
@@ -84,9 +84,37 @@ public class VolumeService {
         return VolumeMapper.INSTANCE.toVolumeResponse(dbVolume);
     }
 
+    /**
+     * Retrieves the volume witch title contains the informed string
+     *
+     * @param title String representing a substring to the title
+     * @return List<VolumeResponse> containing the correspondent Volumes
+     */
     public List<VolumeResponse> findByTitle(String title) {
         return VolumeMapper.INSTANCE.toVolumeResponseList(volumeRepository
-                .findByTitleContainingIgnoreCase(title).orElseGet(() -> null));
+                .findByTitleContainingIgnoreCase(title).orElse(null));
+    }
+
+
+
+    /**
+     * Retrieves the volume witch author's name contains the informed string
+     *
+     * @param authorName String representing a substring to the author's name
+     * @return List<VolumeResponse> containing the correspondent Volumes
+     */
+    public List<VolumeResponse> findByAuthor(String authorName) {
+        List<Author> authors = authorService.findByName(authorName);
+        if(authors == null){
+            return null;
+        } else {
+            Set<Volume> volumes = new HashSet<>();
+            for (Author author: authors){
+                Optional<List<Volume>> authorVolumes = volumeRepository.findByAuthorsAuthorId(author.getAuthorId());
+                authorVolumes.ifPresent(volumes::addAll);
+            }
+            return VolumeMapper.INSTANCE.toVolumeResponseList(new ArrayList<>(volumes));
+        }
     }
 
 
@@ -97,7 +125,7 @@ public class VolumeService {
      * @return Boolean value indicating whether there is the volume in database
      */
     private boolean checkDatabaseForVolume(String isbn){
-        return findByIsbn(isbn).getVolume_id() != null;
+        return findByIsbn(isbn).getVolumeId() != null;
     }
 
     /**

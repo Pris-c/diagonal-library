@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import prisc.diagonallibrary.model.Author;
 import prisc.diagonallibrary.repository.AuthorRepository;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -50,6 +51,17 @@ public class AuthorService {
     private String getName(UUID authorID){
         Author author = authorRepository.findById(authorID).orElseThrow();
         return author.getName();
+    }
+
+
+    /**
+     * Retrieves the Author witch name contains the informed string
+     *
+     * @param name String representing a substring of author's name
+     * @return List<VolumeResponse> containing the correspondent Authors
+     */
+    public List<Author> findByName(String name) {
+        return authorRepository.findByNameContainingIgnoreCase(name).orElse(null);
     }
 
 

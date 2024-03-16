@@ -77,7 +77,7 @@ public class VolumeController {
     }
 
     /**
-     * Handles HTTP GET request to retrieve the book witch authors name contains the informed string.
+     * Handles HTTP GET request to retrieve the book witch title contains the informed string.
      * @param title String as PathVariable
      * @return ResponseEntity with VolumeResponse of the found Volume and HTTP status OK if it is found
      *         or status NOT_FOUND if it is not found
@@ -86,6 +86,23 @@ public class VolumeController {
     public ResponseEntity<List<VolumeResponse>> findByTitle(@PathVariable String title){
         checkForValidString(title);
         List<VolumeResponse> volumeResponse = volumeService.findByTitle(title);
+        if (volumeResponse != null){
+            return new ResponseEntity<>(volumeResponse, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    /**
+     * Handles HTTP GET request to retrieve the book witch authors name contains the informed string.
+     * @param author String as PathVariable
+     * @return ResponseEntity with VolumeResponse of the found Volume and HTTP status OK if it is found
+     *         or status NOT_FOUND if it is not found
+     */
+    @GetMapping(path = "/author/{author}")
+    public ResponseEntity<List<VolumeResponse>> findByAuthor(@PathVariable String author){
+        checkForValidString(author);
+        List<VolumeResponse> volumeResponse = volumeService.findByAuthor(author);
         if (volumeResponse != null){
             return new ResponseEntity<>(volumeResponse, HttpStatus.OK);
         } else {

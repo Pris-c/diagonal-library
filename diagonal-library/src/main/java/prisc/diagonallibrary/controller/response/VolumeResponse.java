@@ -12,7 +12,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class VolumeResponse {
 
-    private UUID volume_id;
+    private UUID volumeId;
     private String title;
     private String isbn10;
     private String isbn13;
