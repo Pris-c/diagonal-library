@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import prisc.diagonallibrary.model.Category;
 import prisc.diagonallibrary.repository.CategoryRepository;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -30,11 +31,11 @@ public class CategoryService {
 
 
     /**
-     * Retrieves category's name and id information from the database.
+     * Retrieves category's information from the database.
      * If the category is not found, it saves it first.
      *
      * @param category The Category object containing the category's name.
-     * @return A Category object containing both the name and ID of the category.
+     * @return A Category object containing both the name and ID.
      */
     private Category processCategory(Category category){
         return categoryRepository.findByNameIgnoreCase(category.getName()).orElse(categoryRepository.save(category));
@@ -51,5 +52,15 @@ public class CategoryService {
         return category.getName();
     }
 
+    /**
+     * Retrieves the Category witch name matches the informed substring
+     *
+     * @param categoryName substring representing the category name
+     * @return Category correspondent to Category Name or null
+     *
+     */
+    public List<Category> findByName(String categoryName) {
+        return categoryRepository.findByNameContainingIgnoreCase(categoryName).orElse(null);
+    }
 
 }

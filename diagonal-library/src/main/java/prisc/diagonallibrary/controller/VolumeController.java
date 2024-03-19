@@ -95,14 +95,31 @@ public class VolumeController {
 
     /**
      * Handles HTTP GET request to retrieve the book witch authors name contains the informed string.
-     * @param author String as PathVariable
+     * @param authorName String as PathVariable
      * @return ResponseEntity with VolumeResponse of the found Volume and HTTP status OK if it is found
      *         or status NOT_FOUND if it is not found
      */
-    @GetMapping(path = "/author/{author}")
-    public ResponseEntity<List<VolumeResponse>> findByAuthor(@PathVariable String author){
-        checkForValidString(author);
-        List<VolumeResponse> volumeResponse = volumeService.findByAuthor(author);
+    @GetMapping(path = "/author/{authorName}")
+    public ResponseEntity<List<VolumeResponse>> findByAuthor(@PathVariable String authorName){
+        checkForValidString(authorName);
+        List<VolumeResponse> volumeResponse = volumeService.findByAuthor(authorName);
+        if (volumeResponse != null){
+            return new ResponseEntity<>(volumeResponse, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    /**
+     * Handles HTTP GET request to retrieve the book within a category
+     * @param categoryName String as PathVariable
+     * @return ResponseEntity with VolumeResponse of the found Volume and HTTP status OK if it is found
+     *         or status NOT_FOUND if it is not found
+     */
+    @GetMapping(path = "/category/{categoryName}")
+    public ResponseEntity<List<VolumeResponse>> findByCategory(@PathVariable String categoryName){
+        checkForValidString(categoryName);
+        List<VolumeResponse> volumeResponse = volumeService.findByCategory(categoryName);
         if (volumeResponse != null){
             return new ResponseEntity<>(volumeResponse, HttpStatus.OK);
         } else {

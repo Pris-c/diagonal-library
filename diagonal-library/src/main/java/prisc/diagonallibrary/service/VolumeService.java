@@ -9,6 +9,7 @@ import prisc.diagonallibrary.controller.response.VolumeResponse;
 import prisc.diagonallibrary.exception.VolumeIsAlreadyRegisteredException;
 import prisc.diagonallibrary.mapper.VolumeMapper;
 import prisc.diagonallibrary.model.Author;
+import prisc.diagonallibrary.model.Category;
 import prisc.diagonallibrary.model.Volume;
 import prisc.diagonallibrary.repository.VolumeRepository;
 import prisc.diagonallibrary.util.GoogleApiConsumer;
@@ -95,10 +96,8 @@ public class VolumeService {
                 .findByTitleContainingIgnoreCase(title).orElse(null));
     }
 
-
-
     /**
-     * Retrieves the volume witch author's name contains the informed string
+     * Retrieves List of volumes witch author's name contains the informed string
      *
      * @param authorName String representing a substring to the author's name
      * @return List<VolumeResponse> containing the correspondent Volumes
@@ -112,6 +111,25 @@ public class VolumeService {
             for (Author author: authors){
                 Optional<List<Volume>> authorVolumes = volumeRepository.findByAuthorsAuthorId(author.getAuthorId());
                 authorVolumes.ifPresent(volumes::addAll);
+            }
+            return VolumeMapper.INSTANCE.toVolumeResponseList(new ArrayList<>(volumes));
+        }
+    }
+    /**
+     * Retrieves Volumes in the informed category
+     *
+     * @param categoryName String representing a substring to the author's name
+     * @return Category
+     */
+    public List<VolumeResponse> findByCategory(String categoryName) {
+        List<Category> categories = categoryService.findByName(categoryName);
+        if(categories == null){
+            return null;
+        } else {
+            Set<Volume> volumes = new HashSet<>();
+            for (Category category: categories){
+                Optional<List<Volume>> categoryVolumes = volumeRepository.findByCategoriesCategoryId(category.getCategoryId());
+                categoryVolumes.ifPresent(volumes::addAll);
             }
             return VolumeMapper.INSTANCE.toVolumeResponseList(new ArrayList<>(volumes));
         }
@@ -195,6 +213,5 @@ public class VolumeService {
             return null;
         }
     }
-
 
 }
