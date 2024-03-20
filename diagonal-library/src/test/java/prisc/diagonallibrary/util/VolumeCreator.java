@@ -1,7 +1,6 @@
 package prisc.diagonallibrary.util;
 
 import prisc.diagonallibrary.controller.response.VolumeResponse;
-import prisc.diagonallibrary.model.Category;
 import prisc.diagonallibrary.model.Volume;
 
 import java.util.List;
@@ -16,7 +15,7 @@ public class VolumeCreator {
                 .isbn10("0545582938")
                 .isbn13("9780545582933")
                 .authors(AuthorCreator.createAuthorSetToSave())
-                .categories(createCategory())
+                .categories(CategoryCreator.createCategorySetToSave())
                 .publishedDate("2013-08-27")
                 .language("en")
                 .build();
@@ -48,12 +47,5 @@ public class VolumeCreator {
                 .language("en")
                 .build();
     }
-
-
-    private static Set<Category> createCategory(){
-        return  Set.of(
-                Category.builder().name("Juvenile Fiction").build());
-    }
-
 
 }

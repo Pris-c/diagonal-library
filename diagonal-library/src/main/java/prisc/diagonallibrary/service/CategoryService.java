@@ -38,7 +38,7 @@ public class CategoryService {
      * @return A Category object containing both the name and ID.
      */
     private Category processCategory(Category category){
-        return categoryRepository.findByNameIgnoreCase(category.getName()).orElse(categoryRepository.save(category));
+        return categoryRepository.findByNameIgnoreCase(category.getName()).orElseGet(() -> categoryRepository.save(category));
     }
 
     /**
