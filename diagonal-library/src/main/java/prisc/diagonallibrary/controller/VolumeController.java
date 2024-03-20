@@ -86,10 +86,10 @@ public class VolumeController {
     public ResponseEntity<List<VolumeResponse>> findByTitle(@PathVariable String title){
         checkForValidString(title);
         List<VolumeResponse> volumeResponse = volumeService.findByTitle(title);
-        if (volumeResponse != null){
-            return new ResponseEntity<>(volumeResponse, HttpStatus.OK);
-        } else {
+        if (volumeResponse == null || volumeResponse.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(volumeResponse, HttpStatus.OK);
         }
     }
 
@@ -100,13 +100,13 @@ public class VolumeController {
      *         or status NOT_FOUND if it is not found
      */
     @GetMapping(path = "/author/{authorName}")
-    public ResponseEntity<List<VolumeResponse>> findByAuthor(@PathVariable String authorName){
+    public ResponseEntity<List<VolumeResponse>> findByAuthor(@PathVariable String authorName) {
         checkForValidString(authorName);
         List<VolumeResponse> volumeResponse = volumeService.findByAuthor(authorName);
-        if (volumeResponse != null){
-            return new ResponseEntity<>(volumeResponse, HttpStatus.OK);
-        } else {
+        if (volumeResponse == null || volumeResponse.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(volumeResponse, HttpStatus.OK);
         }
     }
 
@@ -120,10 +120,10 @@ public class VolumeController {
     public ResponseEntity<List<VolumeResponse>> findByCategory(@PathVariable String categoryName){
         checkForValidString(categoryName);
         List<VolumeResponse> volumeResponse = volumeService.findByCategory(categoryName);
-        if (volumeResponse != null){
-            return new ResponseEntity<>(volumeResponse, HttpStatus.OK);
-        } else {
+        if (volumeResponse == null || volumeResponse.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(volumeResponse, HttpStatus.OK);
         }
     }
 
