@@ -78,11 +78,15 @@ public class VolumeService {
      */
     public VolumeResponse findByIsbn(String isbn){
         Volume dbVolume = switch (isbn.length()) {
-            case 10 -> volumeRepository.findByIsbn10(isbn);
-            case 13 -> volumeRepository.findByIsbn13(isbn);
-            default -> Volume.builder().build();
+            case 10 -> volumeRepository.findByIsbn10(isbn).orElse(null);
+            case 13 -> volumeRepository.findByIsbn13(isbn).orElse(null);
+            default -> null;
         };
-        return VolumeMapper.INSTANCE.toVolumeResponse(dbVolume);
+        if (dbVolume != null){
+            return VolumeMapper.INSTANCE.toVolumeResponse(dbVolume);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -112,6 +116,9 @@ public class VolumeService {
                 Optional<List<Volume>> authorVolumes = volumeRepository.findByAuthorsAuthorId(author.getAuthorId());
                 authorVolumes.ifPresent(volumes::addAll);
             }
+            if (volumes.isEmpty()){
+                return null;
+            }
             return VolumeMapper.INSTANCE.toVolumeResponseList(new ArrayList<>(volumes));
         }
     }
@@ -131,6 +138,9 @@ public class VolumeService {
                 Optional<List<Volume>> categoryVolumes = volumeRepository.findByCategoriesCategoryId(category.getCategoryId());
                 categoryVolumes.ifPresent(volumes::addAll);
             }
+            if (volumes.isEmpty()){
+                return null;
+            }
             return VolumeMapper.INSTANCE.toVolumeResponseList(new ArrayList<>(volumes));
         }
     }
@@ -143,7 +153,7 @@ public class VolumeService {
      * @return Boolean value indicating whether there is the volume in database
      */
     private boolean checkDatabaseForVolume(String isbn){
-        return findByIsbn(isbn).getVolumeId() != null;
+        return findByIsbn(isbn) != null;
     }
 
     /**

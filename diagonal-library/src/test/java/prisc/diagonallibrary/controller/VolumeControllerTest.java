@@ -66,8 +66,7 @@ class VolumeControllerTest {
         when(volumeServiceMock.getAll()).thenReturn(VolumeCreator.createValidVolumeResponseList());
 
         List<VolumeResponse> volumeResponseList = volumeController.getAll().getBody();
-        Assertions.assertThat(volumeResponseList)
-                .isNotNull();
+        Assertions.assertThat(volumeResponseList).isNotNull();
         Assertions.assertThat(volumeResponseList.size()).isEqualTo(2);
     }
 
@@ -82,9 +81,7 @@ class VolumeControllerTest {
 
         VolumeResponse volumeResponse = volumeController.findById(volumeId).getBody();
 
-        Assertions.assertThat(volumeResponse)
-                .isNotNull()
-                .isEqualTo(volumeResponseMock);
+        Assertions.assertThat(volumeResponse).isNotNull().isEqualTo(volumeResponseMock);
         Assertions.assertThat(volumeResponse.getVolumeId()).isEqualTo(volumeId);
     }
 
@@ -101,7 +98,7 @@ class VolumeControllerTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"0439554934", "9780439554930"})
-    @DisplayName("findById: Returns the unique Volume when successful")
+    @DisplayName("findByIsbn: Returns the unique Volume when successful")
     void findByIsbn_ReturnsTheUniqueVolume_WhenSuccessful(String validIsbn) {
         VolumeResponse volumeResponseMock = VolumeCreator.createValidVolumeResponse();
         when(volumeServiceMock.findByIsbn(validIsbn)).thenReturn(volumeResponseMock);
@@ -111,6 +108,17 @@ class VolumeControllerTest {
         Assertions.assertThat(volumeResponse)
                 .isNotNull()
                 .isEqualTo(volumeResponseMock);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"0439554934", "9780439554930"})
+    @DisplayName("findByIsbn: Returns HTTP Status NOT_FOUND when volume is not found ")
+    void findByIsbn_ReturnsHttpStatusNotFound_WhenNoVolumeIsFound(String validIsbn) {
+        when(volumeServiceMock.findByIsbn(validIsbn)).thenReturn(null);
+
+        ResponseEntity<VolumeResponse> responseEntity = volumeController.findByIsbn(validIsbn);
+        Assertions.assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        Assertions.assertThat(responseEntity.getBody()).isNull();
     }
 
     @ParameterizedTest

@@ -11,6 +11,7 @@ import java.util.UUID;
 @Repository
 public interface AuthorRepository extends JpaRepository<Author, UUID> {
     Optional<Author> findByNameIgnoreCase(String name);
+    // TODO: Change to Set<>
     Optional<List<Author>> findByNameContainingIgnoreCase(String name);
 
 

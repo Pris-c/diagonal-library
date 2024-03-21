@@ -2,6 +2,7 @@ package prisc.diagonallibrary.util;
 
 import prisc.diagonallibrary.model.Category;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -16,8 +17,14 @@ public class CategoryCreator {
                 Category.builder().name("Art").build(),
                 Category.builder().name("Fiction").build());
     }
+
     public static Set<Category> createCategorySet(){
         return  Set.of(
+                Category.builder().categoryId(UUID.randomUUID()).name("Art").build(),
+                Category.builder().categoryId(UUID.randomUUID()).name("Fiction").build());
+    }
+    public static List<Category> createCategoryList(){
+        return  List.of(
                 Category.builder().categoryId(UUID.randomUUID()).name("Art").build(),
                 Category.builder().categoryId(UUID.randomUUID()).name("Fiction").build());
     }

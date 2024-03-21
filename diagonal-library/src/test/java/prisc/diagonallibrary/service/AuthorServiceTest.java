@@ -32,7 +32,7 @@ class AuthorServiceTest {
     @Test
     @DisplayName("processAuthors with persisted Authors: Returns a Set of Authors whenSuccessful")
     void processAuthors_PersistedAuthors_ReturnsASetOfAuthors_WhenSuccessful() {
-        when(authorRepositoryMock.findByNameIgnoreCase(anyString())).thenReturn(Optional.ofNullable(AuthorCreator.createAuthor()));
+        when(authorRepositoryMock.findByNameIgnoreCase(anyString())).thenReturn(Optional.of(AuthorCreator.createAuthor()));
 
         Set<Author> authors = authorService.processAuthors(AuthorCreator.createAuthorSetToSave());
         Assertions.assertThat(authors).isNotNull().isNotEmpty();
