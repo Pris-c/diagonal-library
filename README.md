@@ -33,7 +33,7 @@ To utilize the Library Management System, follow these steps:
 1. **Clone the Repository:**
     - Clone the project repository using your preferred IDE or the following command:
       ```bash
-      git clone https://github.com/your-username/library-management-system.git
+      git clone https://github.com/Pris-c/library-manager.git
       ```
 
 2. **Import into IDE:**
