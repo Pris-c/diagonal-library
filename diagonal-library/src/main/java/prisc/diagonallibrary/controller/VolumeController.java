@@ -16,6 +16,7 @@ import java.util.UUID;
  * Controller class for handling HTTP requests related to book volumes in the library-manager.
  */
 @RestController
+@CrossOrigin
 @RequestMapping("/volumes")
 public class VolumeController {
 
