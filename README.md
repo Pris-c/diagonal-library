@@ -10,9 +10,7 @@ With different versions, ranging from a basic implementation in pure Java to mor
 
 ## Upcoming Versions
 
-Despite the initial goal being achieved in the "spring-boot-migration" branch, I will implement two additional steps:
-
-- Integration with an external API;
+- Implementation of Authentication and Authorization
 - Migration of the database to Docker.
 
 
@@ -30,8 +28,11 @@ Different versions of the project are organized into specific branches:
 3. [**spring-boot-migration**](https://github.com/Pris-c/library-manager/tree/spring-boot-migration) ✔  :
 - The project underwent a transition to the Spring Boot framework to leverage advanced features and realized architectural enhancements. The replacement entailed the adoption of a RESTful API paradigm.
   
-4. external-api-integration
-- To simplify the addition of books to the database, an external API integration will be implemented. This integration will allow for searching and retrieving several information about the books.
-  
-5. docker-database-migration
+4. [**external-api-integration**](https://github.com/Pris-c/library-manager/blob/spring-boot-migration/README.md) ✔  :
+- To simplify the addition of books to the database, an external API integration was implemented. This integration allows for searching and retrieving several information about the books.
+
+5. authentication-and-authorization 🔧 :
+- This branch introduces authentication and authorization mechanisms to ensure secure access to the Library Management System. It implements user authentication protocols and role-based access control to manage user privileges within the system.
+ 
+6. docker-database-migration
 - To streamline the deployment and management of the database, this branch will focus on migrating the project's database to Docker. This migration aims to enhance scalability, portability, and ease of maintenance by containerizing the database within a Docker environment.
