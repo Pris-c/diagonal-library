@@ -2,7 +2,6 @@ package prisc.librarymanager.controller.security;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,8 +10,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import prisc.librarymanager.config.security.TokenService;
 import prisc.librarymanager.model.user.AuthenticationDTO;
 import prisc.librarymanager.model.user.LibraryUser;
+import prisc.librarymanager.model.user.LoginResponseDTO;
 import prisc.librarymanager.model.user.RegisterDTO;
 import prisc.librarymanager.repository.UserRepository;
 
@@ -25,12 +26,16 @@ public class AuthenticationController {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    TokenService tokenService;
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Valid AuthenticationDTO authenticationDTO){
-        var userToken = new UsernamePasswordAuthenticationToken(authenticationDTO.login(), authenticationDTO.password());
-        var auth = this.authenticationManager.authenticate(userToken);
-        return ResponseEntity.ok(HttpStatus.OK);
+        var newUser = new UsernamePasswordAuthenticationToken(authenticationDTO.login(), authenticationDTO.password());
+        var auth = this.authenticationManager.authenticate(newUser);
+
+        var token = tokenService.generateToken((LibraryUser) auth.getPrincipal());
+        return ResponseEntity.ok(new LoginResponseDTO(token));
     }
 
     @PostMapping("/register")

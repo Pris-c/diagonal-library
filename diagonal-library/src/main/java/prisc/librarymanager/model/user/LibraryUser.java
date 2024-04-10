@@ -37,11 +37,20 @@ public class LibraryUser implements UserDetails {
         this.role = role;
     }
 
+    /**
+     * Returns the authorities granted to the user.
+     *
+     * @return Collection of user authorities.
+     */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (this.role == UserRole.ADMIN){
-            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+        // Check if the user is an administrator
+        if (this.role == UserRole.ADMIN) {
+            // If yes, grant the authorities ROLE_ADMIN and ROLE_USER
+            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"),
+                    new SimpleGrantedAuthority("ROLE_USER"));
         }
+        // If not, grant only the authority ROLE_USER
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
@@ -50,6 +59,15 @@ public class LibraryUser implements UserDetails {
         return login;
     }
 
+
+    /*
+    isAccountNonExpired(),
+    isAccountNonLocked(),
+    isCredentialsNonExpired(),
+    isEnabled():
+                These methods are overridden from the UserDetails interface and always return true,
+                indicating that the user account is always valid and enabled.
+     */
     @Override
     public boolean isAccountNonExpired() {
         return true;
