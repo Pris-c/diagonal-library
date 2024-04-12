@@ -2,7 +2,7 @@ package prisc.librarymanager.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import prisc.librarymanager.model.Volume;
+import prisc.librarymanager.model.volume.Volume;
 
 import java.util.List;
 import java.util.Optional;

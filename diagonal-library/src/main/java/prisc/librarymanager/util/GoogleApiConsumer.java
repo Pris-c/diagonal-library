@@ -6,7 +6,7 @@ import org.springframework.web.client.RestTemplate;
 import prisc.librarymanager.exception.EbookTypeException;
 import prisc.librarymanager.exception.EmptyApiResponseException;
 import prisc.librarymanager.mapper.VolumeMapper;
-import prisc.librarymanager.model.Volume;
+import prisc.librarymanager.model.volume.Volume;
 import prisc.librarymanager.model.googleapi.GoogleApiResponse;
 
 /**

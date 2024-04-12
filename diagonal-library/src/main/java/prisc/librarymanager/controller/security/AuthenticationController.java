@@ -6,19 +6,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import prisc.librarymanager.config.security.TokenService;
-import prisc.librarymanager.model.user.AuthenticationDTO;
-import prisc.librarymanager.model.user.LibraryUser;
-import prisc.librarymanager.model.user.LoginResponseDTO;
-import prisc.librarymanager.model.user.RegisterDTO;
+import prisc.librarymanager.model.user.*;
 import prisc.librarymanager.repository.UserRepository;
 
 @RestController
 @RequestMapping("auth")
+@CrossOrigin
 public class AuthenticationController {
 
     @Autowired
@@ -44,11 +39,9 @@ public class AuthenticationController {
             return ResponseEntity.badRequest().build();
         }
         String encryptedPassword = new BCryptPasswordEncoder().encode(registerDTO.password());
-        LibraryUser newUser = new LibraryUser(registerDTO.login(), encryptedPassword, registerDTO.role());
+        LibraryUser newUser = new LibraryUser(registerDTO.login(), encryptedPassword, UserRole.USER);
         this.userRepository.save(newUser);
         return ResponseEntity.ok().build();
     }
-
-
 
 }

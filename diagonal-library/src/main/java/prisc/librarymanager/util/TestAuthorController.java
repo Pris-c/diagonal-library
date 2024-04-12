@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import prisc.librarymanager.mapper.VolumeMapper;
-import prisc.librarymanager.model.Author;
-import prisc.librarymanager.model.Volume;
+import prisc.librarymanager.model.volume.Author;
+import prisc.librarymanager.model.volume.Volume;
 import prisc.librarymanager.model.googleapi.VolumeInfo;
 import prisc.librarymanager.service.AuthorService;
 

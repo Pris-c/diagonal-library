@@ -2,7 +2,7 @@ package prisc.librarymanager.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import prisc.librarymanager.model.Category;
+import prisc.librarymanager.model.volume.Category;
 import prisc.librarymanager.repository.CategoryRepository;
 
 import java.util.List;

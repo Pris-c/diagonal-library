@@ -1,4 +1,4 @@
-package prisc.librarymanager.model;
+package prisc.librarymanager.model.volume;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -33,6 +33,8 @@ public class Volume  implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "volume_id")
     private UUID volumeId;
+
+    private Integer units;
 
     /**
      * Title of the volume. Should have between 1 and 80 characters.

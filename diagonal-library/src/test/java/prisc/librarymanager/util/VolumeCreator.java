@@ -1,7 +1,7 @@
 package prisc.librarymanager.util;
 
-import prisc.librarymanager.controller.response.VolumeResponse;
-import prisc.librarymanager.model.Volume;
+import prisc.librarymanager.model.volume.VolumeResponse;
+import prisc.librarymanager.model.volume.Volume;
 
 import java.util.List;
 import java.util.Set;

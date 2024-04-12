@@ -1,10 +1,12 @@
 package prisc.librarymanager.controller;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import prisc.librarymanager.controller.response.VolumeResponse;
+import prisc.librarymanager.model.volume.VolumePostRequest;
+import prisc.librarymanager.model.volume.VolumeResponse;
 import prisc.librarymanager.exception.InvalidIsbnException;
 import prisc.librarymanager.exception.InvalidUserInputException;
 import prisc.librarymanager.service.VolumeService;
@@ -17,6 +19,7 @@ import java.util.UUID;
  */
 @RestController
 @CrossOrigin
+@Log4j2
 @RequestMapping("/volumes")
 public class VolumeController {
 
@@ -29,10 +32,11 @@ public class VolumeController {
     * @param isbn String as PathVariable
     * @return ResponseEntity with the saved book volume response and HTTP status CREATED.
     */
-    @PostMapping(path = "/{isbn}")
-    public ResponseEntity<VolumeResponse> save(@PathVariable String isbn){
+    @PostMapping
+    public ResponseEntity<VolumeResponse> save(@RequestBody VolumePostRequest volumePostRequest){
+        String isbn = volumePostRequest.getIsbn();
         checkForValidIsbn(isbn);
-        return new ResponseEntity<>(volumeService.save(isbn), HttpStatus.CREATED);
+        return new ResponseEntity<>(volumeService.save(isbn, volumePostRequest.getUnits()), HttpStatus.CREATED);
     }
 
     /**
@@ -136,6 +140,8 @@ public class VolumeController {
      */
     private void checkForValidIsbn(String isbn){
         int isbnLength = isbn.length();
+        log.error("ISBN length: " + isbnLength);
+        log.error("ISBN: " + isbn);
         if (isbnLength != 10 && isbnLength !=13){
             throw new InvalidIsbnException("The isbn must have 10 or 13 characters");
         }

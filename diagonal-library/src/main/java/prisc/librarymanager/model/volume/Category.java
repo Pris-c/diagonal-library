@@ -1,4 +1,4 @@
-package prisc.librarymanager.model;
+package prisc.librarymanager.model.volume;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -10,9 +10,8 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * Author Class
- *
- * This class represents an Author entity in the application. It is annotated with JPA annotations
+ * Category Class
+ * This class represents a Category entity in the application. It is annotated with JPA annotations
  * to indicate its mapping to a database table.
  */
 @Entity
@@ -22,28 +21,27 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Author {
+public class Category {
 
     /**
-     * Automatically generated unique identifier for the author.
+     * Automatically generated unique identifier for the category.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "author_id")
-    private UUID authorId;
+    @Column(name = "category_id")
+    private UUID categoryId;
 
     /**
-     * Author's name. Should have between 1 and 80 characters.
+     * Category's name. Should have between 1 and 30 characters.
      */
-    @Size(min = 1, max = 80)
+    @Size(min = 1, max = 30)
     @NotEmpty
     @NotBlank
     private String name;
 
     /**
-     * Volumes written by the author.
+     * Volumes in the Category
      */
-    @ManyToMany(mappedBy = "authors")
+    @ManyToMany(mappedBy = "categories")
     private Set<Volume> volumes;
-
 }

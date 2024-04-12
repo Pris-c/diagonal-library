@@ -1,6 +1,6 @@
 package prisc.librarymanager.util;
 
-import prisc.librarymanager.model.Author;
+import prisc.librarymanager.model.volume.Author;
 
 import java.util.List;
 import java.util.Set;

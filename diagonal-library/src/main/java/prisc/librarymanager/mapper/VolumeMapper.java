@@ -2,19 +2,20 @@ package prisc.librarymanager.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.NullValueMappingStrategy;
 import org.mapstruct.factory.Mappers;
-import prisc.librarymanager.controller.response.VolumeResponse;
-import prisc.librarymanager.model.Author;
-import prisc.librarymanager.model.Category;
-import prisc.librarymanager.model.Volume;
 import prisc.librarymanager.model.googleapi.IndustryIdentifier;
 import prisc.librarymanager.model.googleapi.VolumeInfo;
+import prisc.librarymanager.model.volume.Author;
+import prisc.librarymanager.model.volume.Category;
+import prisc.librarymanager.model.volume.Volume;
+import prisc.librarymanager.model.volume.VolumeResponse;
 
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Mapper
+@Mapper(nullValueMappingStrategy =  NullValueMappingStrategy.RETURN_DEFAULT)
 public abstract class VolumeMapper {
 
     public static final VolumeMapper INSTANCE = Mappers.getMapper(VolumeMapper.class);
@@ -33,6 +34,8 @@ public abstract class VolumeMapper {
     Set<String> mapAuthorName(Set<Author> authors){
         return authors.stream().map(Author::getName).collect(Collectors.toSet());
     }
+
+
     Set<String> mapCategoryName(Set<Category> categories){
         return categories.stream().map(Category::getName).collect(Collectors.toSet());
     }

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import prisc.librarymanager.model.Category;
+import prisc.librarymanager.model.volume.Category;
 import prisc.librarymanager.repository.CategoryRepository;
 import prisc.librarymanager.util.CategoryCreator;
 

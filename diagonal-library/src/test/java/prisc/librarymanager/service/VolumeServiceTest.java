@@ -9,9 +9,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import prisc.librarymanager.controller.response.VolumeResponse;
+import prisc.librarymanager.model.volume.VolumeResponse;
 import prisc.librarymanager.exception.VolumeIsAlreadyRegisteredException;
-import prisc.librarymanager.model.Volume;
+import prisc.librarymanager.model.volume.Volume;
 import prisc.librarymanager.repository.VolumeRepository;
 import prisc.librarymanager.util.AuthorCreator;
 import prisc.librarymanager.util.CategoryCreator;
@@ -52,7 +52,7 @@ class VolumeServiceTest {
         when(categoryServiceMock.processCategories(any())).thenReturn(CategoryCreator.createCategorySet());
         when(volumeRepositoryMock.save(any(Volume.class))).thenReturn(VolumeCreator.createValidVolume());
 
-        VolumeResponse savedVolume = volumeService.save(isbn);
+        VolumeResponse savedVolume = volumeService.save(isbn, 10);
 
         Assertions.assertThat(savedVolume).isNotNull();
         Assertions.assertThat(savedVolume.getVolumeId()).isNotNull();
@@ -72,7 +72,7 @@ class VolumeServiceTest {
         when(volumeRepositoryMock.findByIsbn10(anyString())).thenReturn(Optional.of(VolumeCreator.createValidVolume()));
         when(volumeRepositoryMock.findByIsbn13(anyString())).thenReturn(Optional.of(VolumeCreator.createValidVolume()));
 
-        Assertions.assertThatThrownBy(() -> volumeService.save(isbn)).isInstanceOf(VolumeIsAlreadyRegisteredException.class);
+        Assertions.assertThatThrownBy(() -> volumeService.save(isbn, 10)).isInstanceOf(VolumeIsAlreadyRegisteredException.class);
 
         verifyNoInteractions(authorServiceMock);
         verifyNoInteractions(categoryServiceMock);

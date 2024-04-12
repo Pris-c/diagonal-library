@@ -5,12 +5,12 @@ import org.apache.commons.validator.routines.ISBNValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import prisc.librarymanager.controller.response.VolumeResponse;
+import prisc.librarymanager.model.volume.VolumeResponse;
 import prisc.librarymanager.exception.VolumeIsAlreadyRegisteredException;
 import prisc.librarymanager.mapper.VolumeMapper;
-import prisc.librarymanager.model.Author;
-import prisc.librarymanager.model.Category;
-import prisc.librarymanager.model.Volume;
+import prisc.librarymanager.model.volume.Author;
+import prisc.librarymanager.model.volume.Category;
+import prisc.librarymanager.model.volume.Volume;
 import prisc.librarymanager.repository.VolumeRepository;
 import prisc.librarymanager.util.GoogleApiConsumer;
 
@@ -34,8 +34,7 @@ public class VolumeService {
     @Autowired
     CategoryService categoryService;
 
-   ISBNValidator isbnValidator = ISBNValidator.getInstance();
-
+   private final ISBNValidator isbnValidator = ISBNValidator.getInstance();
 
     /**
      * Saves a new volume book in database.
@@ -45,14 +44,18 @@ public class VolumeService {
      * @throws VolumeIsAlreadyRegisteredException If a volume with the same isbn already exists in the database.
      */
     @Transactional
-    public VolumeResponse save(String isbn){
-        if(checkDatabaseForVolume(isbn)){
-            throw new VolumeIsAlreadyRegisteredException("Isbn " + isbn + " is already in library database");
-        }
+    public VolumeResponse save(String isbn, Integer units){
+        Volume dbVolume = internalFindByIsbn(isbn);
+
         Volume volumeToSave = googleApiConsumer.get(isbn);
+        volumeToSave.setUnits(dbVolume.getUnits() + units);
+        volumeToSave.setUnits(units);
         volumeToSave = processIsbns(volumeToSave, isbn);
         volumeToSave.setAuthors(authorService.processAuthors(volumeToSave.getAuthors()));
         volumeToSave.setCategories(categoryService.processCategories(volumeToSave.getCategories()));
+        volumeToSave.setPublishedDate(volumeToSave.getPublishedDate().substring(0, 4));
+
+
         Volume savedVolume = volumeRepository.save(volumeToSave);
         return VolumeMapper.INSTANCE.toVolumeResponse(savedVolume);
     }
@@ -77,11 +80,7 @@ public class VolumeService {
      * @return VolumeResponse containing the correspondent Volume
      */
     public VolumeResponse findByIsbn(String isbn){
-        Volume dbVolume = switch (isbn.length()) {
-            case 10 -> volumeRepository.findByIsbn10(isbn).orElse(null);
-            case 13 -> volumeRepository.findByIsbn13(isbn).orElse(null);
-            default -> null;
-        };
+        Volume dbVolume = internalFindByIsbn(isbn);
         if (dbVolume != null){
             return VolumeMapper.INSTANCE.toVolumeResponse(dbVolume);
         } else {
@@ -222,6 +221,14 @@ public class VolumeService {
             log.warn("isbn13 could not be converted to isbn 10");
             return null;
         }
+    }
+
+    private Volume internalFindByIsbn(String isbn){
+       return switch (isbn.length()) {
+            case 10 -> volumeRepository.findByIsbn10(isbn).orElse(null);
+            case 13 -> volumeRepository.findByIsbn13(isbn).orElse(null);
+            default -> null;
+        };
     }
 
 }
