@@ -3,14 +3,13 @@ package prisc.librarymanager.service;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.validator.routines.ISBNValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import prisc.librarymanager.model.volume.VolumeResponse;
 import prisc.librarymanager.exception.VolumeIsAlreadyRegisteredException;
 import prisc.librarymanager.mapper.VolumeMapper;
-import prisc.librarymanager.model.volume.Author;
-import prisc.librarymanager.model.volume.Category;
-import prisc.librarymanager.model.volume.Volume;
+import prisc.librarymanager.model.volume.*;
 import prisc.librarymanager.repository.VolumeRepository;
 import prisc.librarymanager.util.GoogleApiConsumer;
 
@@ -38,7 +37,6 @@ public class VolumeService {
     @Autowired
     UserService userService;
 
-
    private final ISBNValidator isbnValidator = ISBNValidator.getInstance();
 
     /**
@@ -65,17 +63,18 @@ public class VolumeService {
         return VolumeMapper.INSTANCE.toVolumeResponse(savedVolume);
     }
 
-    public void addFavorite(UUID volumeId, UUID userId){
-        Volume favoriteVolume = volumeRepository.findById(volumeId).get();
+    public void addFavorite(VolumeFavoriteRequest volumeFavoriteRequest){
+        UUID userId = this.getUserIdFromContext();
+        Volume favoriteVolume = volumeRepository.findById(volumeFavoriteRequest.getVolumeId()).get();
         favoriteVolume.getUsers().add(userService.findById(userId));
         volumeRepository.save(favoriteVolume);
     }
 
-    public void removeFavorite(UUID volumeId, UUID userId){
-        Volume favoriteVolume = volumeRepository.findById(volumeId).get();
+    public void removeFavorite(VolumeFavoriteRequest volumeFavoriteRequest){
+        UUID userId = this.getUserIdFromContext();
+        Volume favoriteVolume = volumeRepository.findById(volumeFavoriteRequest.getVolumeId()).get();
         favoriteVolume.getUsers().removeIf(user -> user.getUserID().equals(userId));
         volumeRepository.save(favoriteVolume);
-
     }
 
      /**
@@ -247,6 +246,12 @@ public class VolumeService {
             case 13 -> volumeRepository.findByIsbn13(isbn).orElse(null);
             default -> null;
         };
+    }
+
+    private UUID getUserIdFromContext(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String login = authentication.getName();
+        return userService.findUserByLogin(login).getUserID();
     }
 
 }

@@ -5,11 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import prisc.librarymanager.exception.InvalidIsbnException;
+import prisc.librarymanager.exception.InvalidUserInputException;
 import prisc.librarymanager.model.volume.VolumeFavoriteRequest;
 import prisc.librarymanager.model.volume.VolumePostRequest;
 import prisc.librarymanager.model.volume.VolumeResponse;
-import prisc.librarymanager.exception.InvalidIsbnException;
-import prisc.librarymanager.exception.InvalidUserInputException;
 import prisc.librarymanager.service.VolumeService;
 
 import java.util.List;
@@ -42,15 +42,13 @@ public class VolumeController {
 
     @PostMapping(path = "/favorite")
     public ResponseEntity addFavorite(@RequestBody VolumeFavoriteRequest volumeFavoriteRequest){
-        log.info("FAVORITE REQUEST: volume = " + volumeFavoriteRequest.getVolumeId() + " user = " + volumeFavoriteRequest.getUserId());
-        volumeService.addFavorite(volumeFavoriteRequest.getVolumeId(), volumeFavoriteRequest.getUserId());
+        volumeService.addFavorite(volumeFavoriteRequest);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping(path = "/favorite")
     public ResponseEntity removeFavorite(@RequestBody VolumeFavoriteRequest volumeFavoriteRequest){
-
-        volumeService.removeFavorite(volumeFavoriteRequest.getVolumeId(), volumeFavoriteRequest.getUserId());
+        volumeService.removeFavorite(volumeFavoriteRequest);
         return ResponseEntity.ok().build();
     }
 

@@ -6,8 +6,5 @@ import java.util.UUID;
 
 @Getter
 public class VolumeFavoriteRequest {
-
     private UUID volumeId;
-    private UUID userId;
-
 }

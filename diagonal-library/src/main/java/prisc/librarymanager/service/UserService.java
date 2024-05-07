@@ -21,6 +21,8 @@ public class UserService {
         return userRepository.findById(userId).get();
     }
 
-
+    public LibraryUser findUserByLogin(String login){
+        return userRepository.findLibraryUserByLogin(login);
+    }
 
 }
