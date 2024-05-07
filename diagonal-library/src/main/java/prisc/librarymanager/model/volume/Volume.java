@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import prisc.librarymanager.model.user.LibraryUser;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -34,6 +35,9 @@ public class Volume  implements Serializable {
     @Column(name = "volume_id")
     private UUID volumeId;
 
+    /**
+     * Quantity of volumes.
+     */
     private Integer units;
 
     /**
@@ -53,6 +57,7 @@ public class Volume  implements Serializable {
     )
     private Set<Author> authors;
 
+
     /**
      * Published Date of the volume.
      * Accepts the format sending by Google API, it could have only year or complete date information
@@ -68,6 +73,16 @@ public class Volume  implements Serializable {
             inverseJoinColumns =  @JoinColumn(name = "category_id")
     )
     private Set<Category> categories;
+
+    /**
+     * Users who has favored the volume.
+     */
+    @ManyToMany
+    @JoinTable(name = "favorites",
+            joinColumns = @JoinColumn(name = "volume_id"),
+            inverseJoinColumns =  @JoinColumn(name = "user_id")
+    )
+    private Set<LibraryUser> users;
 
     /**
      * Unique Isbn_10 identifier value of the volume.
@@ -96,11 +111,11 @@ public class Volume  implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Volume volume = (Volume) o;
-        return Objects.equals(volumeId, volume.volumeId) && Objects.equals(title, volume.title) && Objects.equals(authors, volume.authors) && Objects.equals(publishedDate, volume.publishedDate) && Objects.equals(isbn10, volume.isbn10) && Objects.equals(isbn13, volume.isbn13) && Objects.equals(categories, volume.categories) && Objects.equals(language, volume.language);
+        return Objects.equals(volumeId, volume.volumeId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(volumeId, title, authors, publishedDate, isbn10, isbn13, categories, language);
+        return Objects.hashCode(volumeId);
     }
 }

@@ -31,8 +31,13 @@ public class VolumeService {
 
     @Autowired
     AuthorService authorService;
+
     @Autowired
     CategoryService categoryService;
+
+    @Autowired
+    UserService userService;
+
 
    private final ISBNValidator isbnValidator = ISBNValidator.getInstance();
 
@@ -48,7 +53,7 @@ public class VolumeService {
         Volume dbVolume = internalFindByIsbn(isbn);
 
         Volume volumeToSave = googleApiConsumer.get(isbn);
-        volumeToSave.setUnits(dbVolume.getUnits() + units);
+        //volumeToSave.setUnits(dbVolume.getUnits() + units);
         volumeToSave.setUnits(units);
         volumeToSave = processIsbns(volumeToSave, isbn);
         volumeToSave.setAuthors(authorService.processAuthors(volumeToSave.getAuthors()));
@@ -60,7 +65,20 @@ public class VolumeService {
         return VolumeMapper.INSTANCE.toVolumeResponse(savedVolume);
     }
 
-    /**
+    public void addFavorite(UUID volumeId, UUID userId){
+        Volume favoriteVolume = volumeRepository.findById(volumeId).get();
+        favoriteVolume.getUsers().add(userService.findById(userId));
+        volumeRepository.save(favoriteVolume);
+    }
+
+    public void removeFavorite(UUID volumeId, UUID userId){
+        Volume favoriteVolume = volumeRepository.findById(volumeId).get();
+        favoriteVolume.getUsers().removeIf(user -> user.getUserID().equals(userId));
+        volumeRepository.save(favoriteVolume);
+
+    }
+
+     /**
      * Retrieves a list of all volumes.
      *
      * @return List of volumeResponse representing all volumes.

@@ -2,6 +2,7 @@ package prisc.librarymanager.controller.security;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,10 +37,10 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody @Valid RegisterDTO registerDTO){
         if (this.userRepository.findByLogin(registerDTO.login()) != null){
-            return ResponseEntity.badRequest().build();
+            return (ResponseEntity) ResponseEntity.status(HttpStatus.CONFLICT);
         }
         String encryptedPassword = new BCryptPasswordEncoder().encode(registerDTO.password());
-        LibraryUser newUser = new LibraryUser(registerDTO.login(), encryptedPassword, UserRole.USER);
+        LibraryUser newUser = new LibraryUser(registerDTO.name().toLowerCase(), registerDTO.login(), encryptedPassword, UserRole.USER);
         this.userRepository.save(newUser);
         return ResponseEntity.ok().build();
     }

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import prisc.librarymanager.model.volume.VolumeFavoriteRequest;
 import prisc.librarymanager.model.volume.VolumePostRequest;
 import prisc.librarymanager.model.volume.VolumeResponse;
 import prisc.librarymanager.exception.InvalidIsbnException;
@@ -37,6 +38,20 @@ public class VolumeController {
         String isbn = volumePostRequest.getIsbn();
         checkForValidIsbn(isbn);
         return new ResponseEntity<>(volumeService.save(isbn, volumePostRequest.getUnits()), HttpStatus.CREATED);
+    }
+
+    @PostMapping(path = "/favorite")
+    public ResponseEntity addFavorite(@RequestBody VolumeFavoriteRequest volumeFavoriteRequest){
+        log.info("FAVORITE REQUEST: volume = " + volumeFavoriteRequest.getVolumeId() + " user = " + volumeFavoriteRequest.getUserId());
+        volumeService.addFavorite(volumeFavoriteRequest.getVolumeId(), volumeFavoriteRequest.getUserId());
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping(path = "/favorite")
+    public ResponseEntity removeFavorite(@RequestBody VolumeFavoriteRequest volumeFavoriteRequest){
+
+        volumeService.removeFavorite(volumeFavoriteRequest.getVolumeId(), volumeFavoriteRequest.getUserId());
+        return ResponseEntity.ok().build();
     }
 
     /**
@@ -131,6 +146,7 @@ public class VolumeController {
             return new ResponseEntity<>(volumeResponse, HttpStatus.OK);
         }
     }
+
 
     /**
      * Checks if the isbn has a valid size

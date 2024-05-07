@@ -5,10 +5,10 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import prisc.librarymanager.model.volume.Volume;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.io.Serializable;
+import java.util.*;
 
 
 @Entity
@@ -19,7 +19,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "library_users")
-public class LibraryUser implements UserDetails {
+public class LibraryUser implements UserDetails, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,7 +31,15 @@ public class LibraryUser implements UserDetails {
     private String password;
     private UserRole role;
 
-    public LibraryUser(String login, String password, UserRole role){
+    /**
+     * User's favorite volumes
+     */
+    @ManyToMany(mappedBy = "users")
+    private Set<Volume> favorites;
+
+
+    public LibraryUser(String name, String login, String password, UserRole role){
+        this.name = name;
         this.login = login;
         this.password = password;
         this.role = role;
@@ -86,5 +94,18 @@ public class LibraryUser implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LibraryUser that = (LibraryUser) o;
+        return Objects.equals(userID, that.userID);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(userID);
     }
 }
