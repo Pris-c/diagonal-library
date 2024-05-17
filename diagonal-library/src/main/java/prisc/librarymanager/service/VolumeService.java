@@ -85,7 +85,12 @@ public class VolumeService {
         return volumes;
     }
 
-     /**
+    public List<VolumeResponse> findTop5Favorites(){
+        return VolumeMapper.INSTANCE.toVolumeResponseList(volumeRepository.findTop5Favorites().orElse(null));
+    }
+
+
+    /**
      * Retrieves a list of all volumes.
      *
      * @return List of volumeResponse representing all volumes.
@@ -172,6 +177,7 @@ public class VolumeService {
     public void delete(String id){
         volumeRepository.deleteById(UUID.fromString(id));
     }
+
 
 
     /**

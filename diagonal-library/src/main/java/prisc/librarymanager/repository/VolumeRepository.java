@@ -22,4 +22,11 @@ public interface VolumeRepository extends JpaRepository<Volume, UUID> {
     @Query(value = "SELECT * FROM volume WHERE volume_id IN (SELECT volume_id FROM favorites WHERE user_id = :userId)", nativeQuery = true)
     Optional<List<Volume>> findFavoriteByUserId(@Param("userId") UUID userId);
 
+    @Query(value = "SELECT volume.* FROM " +
+            "(SELECT  volume_id, COUNT(volume_id) AS volume_count FROM favorites GROUP BY volume_id LIMIT 5) " +
+            "AS tabela JOIN volume ON volume.volume_id = tabela.volume_id " +
+            "ORDER BY volume_count DESC", nativeQuery = true)
+    Optional<List<Volume>>findTop5Favorites();
+
+
 }

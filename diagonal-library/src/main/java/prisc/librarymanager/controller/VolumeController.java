@@ -73,6 +73,13 @@ public class VolumeController {
         return new ResponseEntity<>(volumeService.getUserFavorites(), HttpStatus.OK);
     }
 
+    @GetMapping(path = "/top-favorites")
+    public ResponseEntity<List<VolumeResponse>> findTop5Favorites(){
+        log.info("GET TOP 5 CALLED");
+        return new ResponseEntity<>(volumeService.findTop5Favorites(), HttpStatus.OK);
+    }
+
+
 
     /**
      * Handles HTTP GET request to retrieve a list of all volumes.

@@ -31,6 +31,7 @@ public class SecurityConfigurations {
                 .authorizeHttpRequests(
                         authorize -> authorize
                                 .requestMatchers(HttpMethod.GET, "/volumes").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/volumes/top-favorites").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/volumes").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.DELETE,  "/volumes").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
