@@ -47,17 +47,18 @@ public class VolumeService {
      * @throws VolumeIsAlreadyRegisteredException If a volume with the same isbn already exists in the database.
      */
     @Transactional
-    public VolumeResponse save(String isbn, Integer units){
+    public VolumeResponse save(String isbn){
         Volume dbVolume = internalFindByIsbn(isbn);
+        if (dbVolume != null){
+            throw new VolumeIsAlreadyRegisteredException("This volume is already registered in database: volumeId = " + dbVolume.getVolumeId());
+        }
 
-        Volume volumeToSave = googleApiConsumer.get(isbn);
-        //volumeToSave.setUnits(dbVolume.getUnits() + units);
-        volumeToSave.setUnits(units);
+        Volume volumeToSave = googleApiConsumer.get(isbn); // throw exeptions if volume is not found or type is invalid
+
         volumeToSave = processIsbns(volumeToSave, isbn);
         volumeToSave.setAuthors(authorService.processAuthors(volumeToSave.getAuthors()));
         volumeToSave.setCategories(categoryService.processCategories(volumeToSave.getCategories()));
         volumeToSave.setPublishedDate(volumeToSave.getPublishedDate().substring(0, 4));
-
 
         Volume savedVolume = volumeRepository.save(volumeToSave);
         return VolumeMapper.INSTANCE.toVolumeResponse(savedVolume);
@@ -65,16 +66,23 @@ public class VolumeService {
 
     public void addFavorite(VolumeFavoriteRequest volumeFavoriteRequest){
         UUID userId = this.getUserIdFromContext();
-        Volume favoriteVolume = volumeRepository.findById(volumeFavoriteRequest.getVolumeId()).get();
+        Volume favoriteVolume = volumeRepository.findById(UUID.fromString(volumeFavoriteRequest.getVolumeId())).get();
         favoriteVolume.getUsers().add(userService.findById(userId));
         volumeRepository.save(favoriteVolume);
     }
 
     public void removeFavorite(VolumeFavoriteRequest volumeFavoriteRequest){
+        log.info("Service REMOVE FAVORITE CALLED");
         UUID userId = this.getUserIdFromContext();
-        Volume favoriteVolume = volumeRepository.findById(volumeFavoriteRequest.getVolumeId()).get();
+        Volume favoriteVolume = volumeRepository.findById(UUID.fromString(volumeFavoriteRequest.getVolumeId())).get();
         favoriteVolume.getUsers().removeIf(user -> user.getUserID().equals(userId));
         volumeRepository.save(favoriteVolume);
+    }
+
+    public List<VolumeResponse> getUserFavorites(){
+        UUID userId = this.getUserIdFromContext();
+        List<VolumeResponse> volumes = VolumeMapper.INSTANCE.toVolumeResponseList(volumeRepository.findFavoriteByUserId(userId).orElse(null));
+        return volumes;
     }
 
      /**
@@ -159,6 +167,10 @@ public class VolumeService {
             }
             return VolumeMapper.INSTANCE.toVolumeResponseList(new ArrayList<>(volumes));
         }
+    }
+
+    public void delete(String id){
+        volumeRepository.deleteById(UUID.fromString(id));
     }
 
 

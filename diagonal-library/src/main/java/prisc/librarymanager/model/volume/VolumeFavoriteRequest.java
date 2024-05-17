@@ -1,10 +1,10 @@
 package prisc.librarymanager.model.volume;
 
 import lombok.Getter;
-
-import java.util.UUID;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class VolumeFavoriteRequest {
-    private UUID volumeId;
+    private String volumeId;
 }

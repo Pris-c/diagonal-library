@@ -36,21 +36,43 @@ public class VolumeController {
     @PostMapping
     public ResponseEntity<VolumeResponse> save(@RequestBody VolumePostRequest volumePostRequest){
         String isbn = volumePostRequest.getIsbn();
-        checkForValidIsbn(isbn);
-        return new ResponseEntity<>(volumeService.save(isbn, volumePostRequest.getUnits()), HttpStatus.CREATED);
+        checkForValidIsbn(isbn);    // throw exception if isbn is not valid
+
+        return new ResponseEntity<>(volumeService.save(isbn), HttpStatus.CREATED);
+    }
+
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity delete(@PathVariable String id){
+        log.info("DELETE CALLED");
+        log.info("STRING ID: " + id);
+        volumeService.delete(id);
+
+        if(volumeService.findById(UUID.fromString(id)) == null) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @PostMapping(path = "/favorite")
     public ResponseEntity addFavorite(@RequestBody VolumeFavoriteRequest volumeFavoriteRequest){
+        log.info("ADD FAVORITE CALLED");
         volumeService.addFavorite(volumeFavoriteRequest);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping(path = "/favorite")
     public ResponseEntity removeFavorite(@RequestBody VolumeFavoriteRequest volumeFavoriteRequest){
+        log.info("REMOVE FAVORITE CALLED");
         volumeService.removeFavorite(volumeFavoriteRequest);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping(path = "/favorite")
+    public ResponseEntity<List<VolumeResponse>> getUserFavorites(){
+        log.info("GET FAVORITES CALLED");
+        return new ResponseEntity<>(volumeService.getUserFavorites(), HttpStatus.OK);
+    }
+
 
     /**
      * Handles HTTP GET request to retrieve a list of all volumes.
@@ -144,7 +166,6 @@ public class VolumeController {
             return new ResponseEntity<>(volumeResponse, HttpStatus.OK);
         }
     }
-
 
     /**
      * Checks if the isbn has a valid size

@@ -51,7 +51,7 @@ class VolumeServiceTest {
         when(categoryServiceMock.processCategories(any())).thenReturn(CategoryCreator.createCategorySet());
         when(volumeRepositoryMock.save(any(Volume.class))).thenReturn(VolumeCreator.createValidVolume());
 
-        VolumeResponse savedVolume = volumeService.save(isbn, 10);
+        VolumeResponse savedVolume = volumeService.save(isbn);
 
         Assertions.assertThat(savedVolume).isNotNull();
         Assertions.assertThat(savedVolume.getVolumeId()).isNotNull();

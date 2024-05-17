@@ -8,7 +8,6 @@ import lombok.*;
 import prisc.librarymanager.model.user.LibraryUser;
 
 import java.io.Serializable;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -106,16 +105,4 @@ public class Volume  implements Serializable {
      */
     private String language;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Volume volume = (Volume) o;
-        return Objects.equals(volumeId, volume.volumeId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(volumeId);
-    }
 }

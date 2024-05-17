@@ -31,12 +31,13 @@ public class SecurityConfigurations {
                 .authorizeHttpRequests(
                         authorize -> authorize
                                 .requestMatchers(HttpMethod.GET, "/volumes").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/volumes").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE,  "/volumes").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/volumes/favorite").hasRole("USER")
                                 .requestMatchers(HttpMethod.DELETE, "/volumes/favorite").hasRole("USER")
-                                .requestMatchers(HttpMethod.POST).hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.DELETE).hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/volumes/favorite").hasRole("USER")
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

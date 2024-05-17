@@ -26,7 +26,7 @@ public class TokenService {
 
             String token = JWT.create()
                     .withIssuer("library-auth")
-                    .withSubject(user.getLogin())
+                    .withSubject(user.getLogin()+"_"+user.getRole())
                     .withExpiresAt(generateExpirationDate())
                     .sign(algorithm);
             return token;
