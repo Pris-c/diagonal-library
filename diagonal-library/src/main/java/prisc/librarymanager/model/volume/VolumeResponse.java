@@ -6,6 +6,11 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * VolumeResponse Class
+ *
+ * This class represents a response containing information about a volume.
+ */
 @Builder
 @Getter
 @Setter

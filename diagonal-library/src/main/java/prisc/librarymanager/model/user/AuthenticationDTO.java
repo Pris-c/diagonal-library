@@ -1,5 +1,6 @@
 package prisc.librarymanager.model.user;
 
-public record AuthenticationDTO(String login, String password) {
-
-}
+/**
+ * Data Transfer Object (DTO) for user authentication.
+ */
+public record AuthenticationDTO(String login, String password) {}

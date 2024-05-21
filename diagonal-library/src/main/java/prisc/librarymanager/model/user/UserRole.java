@@ -1,5 +1,8 @@
 package prisc.librarymanager.model.user;
 
+/**
+ * Enum representing the roles of users in the library system.
+ */
 public enum UserRole {
     ADMIN("admin"),
     USER("user");

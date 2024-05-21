@@ -1,5 +1,6 @@
 package prisc.librarymanager.model.user;
 
-public record LoginResponseDTO(String token) {
-
-}
+/**
+ * Data Transfer Object (DTO) for login response.
+ */
+public record LoginResponseDTO(String token) {}

@@ -7,6 +7,11 @@ import lombok.Setter;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Represents the volume information of a book from the Google Books API response.
+ * This information includes the title, authors, published date, industry identifiers,
+ * categories, and language of the book.
+ */
 @Getter
 @Setter
 @NoArgsConstructor

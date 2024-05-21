@@ -7,6 +7,9 @@ import lombok.Setter;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * Represents the response from the Google Books API.
+ */
 @Getter
 @Setter
 @NoArgsConstructor

@@ -10,7 +10,10 @@ import prisc.librarymanager.model.volume.Volume;
 import java.io.Serializable;
 import java.util.*;
 
-
+/**
+ * Represents a user in the library system.
+ * Implements UserDetails interface for Spring Security integration.
+ */
 @Entity
 @Getter
 @Setter
@@ -31,13 +34,17 @@ public class LibraryUser implements UserDetails, Serializable {
     private String password;
     private UserRole role;
 
-    /**
-     * User's favorite volumes
-     */
     @ManyToMany(mappedBy = "users")
     private Set<Volume> favorites;
 
-
+    /**
+     * Constructs a LibraryUser with the specified attributes.
+     *
+     * @param name     The name of the user.
+     * @param login    The login username of the user.
+     * @param password The password of the user.
+     * @param role     The role of the user.
+     */
     public LibraryUser(String name, String login, String password, UserRole role){
         this.name = name;
         this.login = login;
@@ -62,39 +69,56 @@ public class LibraryUser implements UserDetails, Serializable {
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
+    /**
+     * Returns the username of the user.
+     *
+     * @return The username.
+     */
     @Override
     public String getUsername() {
         return login;
     }
 
-
-    /*
-    isAccountNonExpired(),
-    isAccountNonLocked(),
-    isCredentialsNonExpired(),
-    isEnabled():
-                These methods are overridden from the UserDetails interface and always return true,
-                indicating that the user account is always valid and enabled.
+    /**
+     * Indicates whether the user account is non-expired.
+     *
+     * @return True if the user account is non-expired, false otherwise.
      */
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    /**
+     * Indicates whether the user account is non-locked.
+     *
+     * @return True if the user account is non-locked, false otherwise.
+     */
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    /**
+     * Indicates whether the user credentials are non-expired.
+     *
+     * @return True if the user credentials are non-expired, false otherwise.
+     */
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+    /**
+     * Indicates whether the user account is enabled.
+     *
+     * @return True if the user account is enabled, false otherwise.
+     */
     @Override
     public boolean isEnabled() {
         return true;
     }
+
 
     @Override
     public boolean equals(Object o) {
