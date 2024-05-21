@@ -40,11 +40,14 @@ public class VolumeService {
    private final ISBNValidator isbnValidator = ISBNValidator.getInstance();
 
     /**
-     * Saves a new volume book in database.
+     * Saves a new volume book in the database.
+     *      At first, it is verified if the book is already in the database.
+     *      If not, the Google API is consulted for the provided ISBN, and the information is handled.
+     *      Finally, the book is saved in the database.
      *
-     * @param isbn String containing the isbn value
-     * @return Volume response representing the saved volume.
-     * @throws VolumeIsAlreadyRegisteredException If a volume with the same isbn already exists in the database.
+     * @param isbn String containing the ISBN value.
+     * @return VolumeResponse representing the saved volume.
+     * @throws VolumeIsAlreadyRegisteredException If a volume with the same ISBN already exists in the database.
      */
     @Transactional
     public VolumeResponse save(String isbn){
@@ -53,7 +56,7 @@ public class VolumeService {
             throw new VolumeIsAlreadyRegisteredException("This volume is already registered in database: volumeId = " + dbVolume.getVolumeId());
         }
 
-        Volume volumeToSave = googleApiConsumer.get(isbn); // throw exeptions if volume is not found or type is invalid
+        Volume volumeToSave = googleApiConsumer.get(isbn); // throw exception if volume is not found or type is invalid
 
         volumeToSave = processIsbns(volumeToSave, isbn);
         volumeToSave.setAuthors(authorService.processAuthors(volumeToSave.getAuthors()));
@@ -64,6 +67,11 @@ public class VolumeService {
         return VolumeMapper.INSTANCE.toVolumeResponse(savedVolume);
     }
 
+    /**
+     * Adds a volume to a user's favorites.
+     *
+     * @param volumeFavoriteRequest Request object containing the volume ID.
+     */
     public void addFavorite(VolumeFavoriteRequest volumeFavoriteRequest){
         UUID userId = this.getUserIdFromContext();
         Volume favoriteVolume = volumeRepository.findById(UUID.fromString(volumeFavoriteRequest.getVolumeId())).get();
@@ -71,20 +79,34 @@ public class VolumeService {
         volumeRepository.save(favoriteVolume);
     }
 
+    /**
+     * Removes a volume from a user's favorites.
+     *
+     * @param volumeFavoriteRequest Request object containing the volume ID.
+     */
     public void removeFavorite(VolumeFavoriteRequest volumeFavoriteRequest){
-        log.info("Service REMOVE FAVORITE CALLED");
         UUID userId = this.getUserIdFromContext();
         Volume favoriteVolume = volumeRepository.findById(UUID.fromString(volumeFavoriteRequest.getVolumeId())).get();
         favoriteVolume.getUsers().removeIf(user -> user.getUserID().equals(userId));
         volumeRepository.save(favoriteVolume);
     }
 
+    /**
+     * Retrieves a list of volumes that are favorites of the current user.
+     *
+     * @return List of VolumeResponse representing the user's favorite volumes.
+     */
     public List<VolumeResponse> getUserFavorites(){
         UUID userId = this.getUserIdFromContext();
         List<VolumeResponse> volumes = VolumeMapper.INSTANCE.toVolumeResponseList(volumeRepository.findFavoriteByUserId(userId).orElse(null));
         return volumes;
     }
 
+    /**
+     * Retrieves a list of the top 5 favorite volumes in the library.
+     *
+     * @return List of VolumeResponse representing the top 5 favorite volumes.
+     */
     public List<VolumeResponse> findTop5Favorites(){
         return VolumeMapper.INSTANCE.toVolumeResponseList(volumeRepository.findTop5Favorites().orElse(null));
     }
@@ -99,15 +121,21 @@ public class VolumeService {
         return VolumeMapper.INSTANCE.toVolumeResponseList(volumeRepository.findAll());
     }
 
+    /**
+     * Retrieves a volume by its unique ID.
+     *
+     * @param volumeId The unique ID of the volume.
+     * @return VolumeResponse representing the volume corresponding to the provided ID.
+     */
     public VolumeResponse findById(UUID volumeId){
         return VolumeMapper.INSTANCE.toVolumeResponse(volumeRepository.findById(volumeId).orElse(null));
     }
 
     /**
-     * Retrieves the volume witch match with the informed isbn
+     * Retrieves a volume by its ISBN.
      *
-     * @param isbn String representing the isbn information.
-     * @return VolumeResponse containing the correspondent Volume
+     * @param isbn String containing the ISBN information.
+     * @return VolumeResponse representing the volume corresponding to the provided ISBN, or null if not found.
      */
     public VolumeResponse findByIsbn(String isbn){
         Volume dbVolume = internalFindByIsbn(isbn);
@@ -119,10 +147,10 @@ public class VolumeService {
     }
 
     /**
-     * Retrieves the volume witch title contains the informed string
+     * Retrieves a list of volumes whose title contains the provided substring.
      *
-     * @param title String representing a substring to the title
-     * @return List<VolumeResponse> containing the correspondent Volumes
+     * @param title String representing a substring of the volume title.
+     * @return List of VolumeResponse representing the volumes with titles containing the substring.
      */
     public List<VolumeResponse> findByTitle(String title) {
         return VolumeMapper.INSTANCE.toVolumeResponseList(volumeRepository
@@ -130,10 +158,10 @@ public class VolumeService {
     }
 
     /**
-     * Retrieves List of volumes witch author's name contains the informed string
+     * Retrieves a list of volumes written by authors whose name contains the provided substring.
      *
-     * @param authorName String representing a substring to the author's name
-     * @return List<VolumeResponse> containing the correspondent Volumes
+     * @param authorName String representing a substring of the author's name.
+     * @return List of VolumeResponse representing the volumes written by authors with names containing the substring.
      */
     public List<VolumeResponse> findByAuthor(String authorName) {
         List<Author> authors = authorService.findByName(authorName);
@@ -151,11 +179,12 @@ public class VolumeService {
             return VolumeMapper.INSTANCE.toVolumeResponseList(new ArrayList<>(volumes));
         }
     }
+
     /**
-     * Retrieves Volumes in the informed category
+     * Retrieves a list of volumes in the specified category.
      *
-     * @param categoryName String representing a substring to the author's name
-     * @return Category
+     * @param categoryName String representing a substring of the category name.
+     * @return List of VolumeResponse representing the volumes in the specified category.
      */
     public List<VolumeResponse> findByCategory(String categoryName) {
         List<Category> categories = categoryService.findByName(categoryName);
@@ -174,28 +203,31 @@ public class VolumeService {
         }
     }
 
+    /**
+     * Deletes a volume from the database.
+     *
+     * @param id String containing the ID of the volume to delete.
+     */
     public void delete(String id){
         volumeRepository.deleteById(UUID.fromString(id));
     }
 
-
-
     /**
-     * Calls findByIsbn to Check if database already contains the volume.
+     * Checks if a volume with the provided ISBN already exists in the database.
      *
-     * @param isbn String representing the isbn information.
-     * @return Boolean value indicating whether there is the volume in database
+     * @param isbn String containing the ISBN information.
+     * @return Boolean value indicating whether the volume exists in the database.
      */
     private boolean checkDatabaseForVolume(String isbn){
         return findByIsbn(isbn) != null;
     }
 
     /**
-     * Set isbn values if they aren't present
+     * Sets ISBN values if they aren't present in the volume object.
      *
-     * @param volumeToSave Object to be saved in database.
-     * @param isbn isbn value.
-     * @return Volume including both isbn10 and isbn13
+     * @param volumeToSave Volume object to be saved in the database.
+     * @param isbn ISBN value.
+     * @return Volume object including both ISBN-10 and ISBN-13.
      */
     private Volume processIsbns(Volume volumeToSave, String isbn){
         if(volumeToSave.getIsbn10() != null && volumeToSave.getIsbn13() != null){
@@ -224,10 +256,10 @@ public class VolumeService {
     }
 
     /**
-     * Convert ISBN13 to ISBN10
+     * Converts ISBN-13 to ISBN-10.
      *
-     * @param isbn13 String containing the ISBN13 value.
-     * @return String containing the ISBN10 value or null.
+     * @param isbn13 String containing the ISBN-13 value.
+     * @return String containing the ISBN-10 value, or null if conversion is not possible.
      */
     private String convertToISBN10(String isbn13) {
         // Ensure that the input ISBN-13 can be converted to ISBN-10
@@ -258,6 +290,12 @@ public class VolumeService {
         }
     }
 
+    /**
+     * Internal method to find a volume by its ISBN.
+     *
+     * @param isbn String containing the ISBN information.
+     * @return Volume object corresponding to the provided ISBN, or null if not found.
+     */
     private Volume internalFindByIsbn(String isbn){
        return switch (isbn.length()) {
             case 10 -> volumeRepository.findByIsbn10(isbn).orElse(null);
@@ -266,6 +304,11 @@ public class VolumeService {
         };
     }
 
+    /**
+     * Retrieves the ID of the current user from the security context.
+     *
+     * @return UUID representing the user ID.
+     */
     private UUID getUserIdFromContext(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String login = authentication.getName();

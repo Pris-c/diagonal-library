@@ -20,15 +20,15 @@ public class CategoryService {
     CategoryRepository categoryRepository;
 
     /**
-     * Calls processCategory for each Category on the Set<>
+     * Processes a set of categories, retrieving their information from the database.
+     * If a category is not found, it is saved first.
      *
-     * @param categories Set<Category> containing volume's categories' names.
-     * @return Set<Category> containing both names and ids of volume's categories.
+     * @param categories Set of Category objects containing the categories' names.
+     * @return Set of Category objects containing both the names and IDs of the categories.
      */
     public Set<Category> processCategories(Set<Category> categories){
         return  categories.stream().map(this::processCategory).collect(Collectors.toSet());
     }
-
 
     /**
      * Retrieves category's information from the database.
@@ -42,7 +42,7 @@ public class CategoryService {
     }
 
     /**
-     * Retrieves the name of the category from the database based on the category's unique ID.
+     * Retrieves the name of a category from the database based on the category's unique ID.
      *
      * @param categoryID The unique ID of the category.
      * @return A String containing the name of the category.

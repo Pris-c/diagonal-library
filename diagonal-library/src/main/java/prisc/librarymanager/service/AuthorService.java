@@ -20,10 +20,11 @@ public class AuthorService {
     AuthorRepository authorRepository;
 
     /**
-     * Calls processAuthor for each Author on the Set<>
+     * Processes a set of authors, retrieving their information from the database.
+     * If an author is not found, it is saved first.
      *
-     * @param authors Set<Author> containing volume's authors' names.
-     * @return Set<Author> containing both names and ids of the authors.
+     * @param authors Set of Author objects containing the authors' names.
+     * @return Set of Author objects containing both the names and IDs of the authors.
      */
     public Set<Author> processAuthors(Set<Author> authors){
         return  authors.stream().map(this::processAuthor).collect(Collectors.toSet());
@@ -53,17 +54,14 @@ public class AuthorService {
         return author.getName();
     }
 
-
     /**
-     * Retrieves a List of Authors witch name contains the informed substring
+     * Retrieves a list of authors whose name contains the provided substring.
      *
-     * @param name String representing a substring of author's name
-     * @return List<Author> containing the correspondent Authors
-     *         or null
+     * @param name String representing a substring of the author's name.
+     * @return List of Author objects containing the corresponding authors, or null if not found.
      */
     public List<Author> findByName(String name) {
         return authorRepository.findByNameContainingIgnoreCase(name).orElse(null);
     }
-
 
 }

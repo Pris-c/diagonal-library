@@ -28,5 +28,4 @@ public interface VolumeRepository extends JpaRepository<Volume, UUID> {
             "ORDER BY volume_count DESC", nativeQuery = true)
     Optional<List<Volume>>findTop5Favorites();
 
-
 }
