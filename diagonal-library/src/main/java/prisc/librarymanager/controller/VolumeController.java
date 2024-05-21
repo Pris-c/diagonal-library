@@ -18,6 +18,7 @@ import java.util.UUID;
 /**
  * Controller class for handling HTTP requests related to book volumes in the library-manager.
  */
+
 @RestController
 @CrossOrigin
 @Log4j2
@@ -30,61 +31,79 @@ public class VolumeController {
     /**
     * Handles HTTP POST request to save a new book volume.
     *
-    * @param isbn String as PathVariable
+    * @param volumePostRequest containing the isbn value
     * @return ResponseEntity with the saved book volume response and HTTP status CREATED.
     */
     @PostMapping
     public ResponseEntity<VolumeResponse> save(@RequestBody VolumePostRequest volumePostRequest){
         String isbn = volumePostRequest.getIsbn();
         checkForValidIsbn(isbn);    // throw exception if isbn is not valid
-
         return new ResponseEntity<>(volumeService.save(isbn), HttpStatus.CREATED);
     }
 
+    /**
+     * Handles HTTP DELETE request to remove a book volume from the database.
+     *
+     * @param id String representing the volume ID.
+     * @return ResponseEntity with HTTP status OK if the book is deleted, or HTTP status NOT FOUND if the book is not found in the database.
+     */
     @DeleteMapping(path = "/{id}")
     public ResponseEntity delete(@PathVariable String id){
-        log.info("DELETE CALLED");
-        log.info("STRING ID: " + id);
         volumeService.delete(id);
-
         if(volumeService.findById(UUID.fromString(id)) == null) {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
     }
 
+    /**
+     * Handles HTTP POST request to add a book volume to the user's favorites.
+     *
+     * @param volumeFavoriteRequest Request body containing the id of the volume to be added to favorites.
+     * @return ResponseEntity with HTTP status OK if the volume is successfully added to favorites.
+     */
     @PostMapping(path = "/favorite")
     public ResponseEntity addFavorite(@RequestBody VolumeFavoriteRequest volumeFavoriteRequest){
-        log.info("ADD FAVORITE CALLED");
         volumeService.addFavorite(volumeFavoriteRequest);
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Handles HTTP DELETE request to remove a book volume from the user's favorites.
+     *
+     * @param volumeFavoriteRequest Request body containing the id of the volume to be removed from favorites.
+     * @return ResponseEntity with HTTP status OK if the volume is successfully removed from favorites.
+     */
     @DeleteMapping(path = "/favorite")
     public ResponseEntity removeFavorite(@RequestBody VolumeFavoriteRequest volumeFavoriteRequest){
-        log.info("REMOVE FAVORITE CALLED");
         volumeService.removeFavorite(volumeFavoriteRequest);
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Handles HTTP GET request to retrieve the user's favorite book volumes.
+     *
+     * @return ResponseEntity with a list of VolumeResponse containing the user's favorite volumes and HTTP status OK.
+     */
     @GetMapping(path = "/favorite")
     public ResponseEntity<List<VolumeResponse>> getUserFavorites(){
-        log.info("GET FAVORITES CALLED");
         return new ResponseEntity<>(volumeService.getUserFavorites(), HttpStatus.OK);
     }
 
+    /**
+     * Handles HTTP GET request to retrieve the top 5 favorite book volumes.
+     *
+     * @return ResponseEntity with a list of VolumeResponse containing the top 5 favorite volumes and HTTP status OK.
+     */
     @GetMapping(path = "/top-favorites")
     public ResponseEntity<List<VolumeResponse>> findTop5Favorites(){
-        log.info("GET TOP 5 CALLED");
         return new ResponseEntity<>(volumeService.findTop5Favorites(), HttpStatus.OK);
     }
 
-
-
     /**
-     * Handles HTTP GET request to retrieve a list of all volumes.
+     * Handles HTTP GET request to retrieve a list of all book volumes.
      *
-     * @return ResponseEntity with a list of VolumeResponse and HTTP status OK.
+     * @return ResponseEntity with a list of VolumeResponse containing all book volumes and HTTP status OK.
      */
     @GetMapping
     public ResponseEntity<List<VolumeResponse>> getAll(){
@@ -92,9 +111,11 @@ public class VolumeController {
     }
 
     /**
-     * Handles HTTP GET request to retrieve the book witch matches with the informed id.
-     * @param volumeId UUID as PathVariable
-     * @return ResponseEntity with VolumeResponse of the found Volume and HTTP status OK.
+     * Handles HTTP GET request to retrieve the book volume that matches the provided ID.
+     *
+     * @param volumeId The UUID of the volume to retrieve, specified as a PathVariable.
+     * @return ResponseEntity with the VolumeResponse of the found volume and HTTP status OK if found,
+     *         or HTTP status NOT_FOUND if not found.
      */
     @GetMapping(path = "/{volumeId}")
     public ResponseEntity<VolumeResponse> findById(@PathVariable UUID volumeId){
@@ -107,10 +128,11 @@ public class VolumeController {
     }
 
     /**
-     * Handles HTTP GET request to retrieve the book witch matches with the informed isbn value.
-     * @param isbn String as PathVariable
-     * @return ResponseEntity with VolumeResponse of the found Volume and HTTP status OK if it is found
-     *         or status NOT_FOUND if it is not found
+     * Handles HTTP GET request to retrieve the book volume that matches the provided ISBN.
+     *
+     * @param isbn The ISBN of the volume to retrieve, specified as a PathVariable.
+     * @return ResponseEntity with the VolumeResponse of the found volume and HTTP status OK if found,
+     *         or HTTP status NOT_FOUND if not found.
      */
     @GetMapping(path = "/isbn/{isbn}")
     public ResponseEntity<VolumeResponse> findByIsbn(@PathVariable String isbn){
@@ -124,10 +146,11 @@ public class VolumeController {
     }
 
     /**
-     * Handles HTTP GET request to retrieve the book witch title contains the informed string.
-     * @param title String as PathVariable
-     * @return ResponseEntity with VolumeResponse of the found Volume and HTTP status OK if it is found
-     *         or status NOT_FOUND if it is not found
+     * Handles HTTP GET request to retrieve the book volumes whose titles contain the provided string.
+     *
+     * @param title The string to search for in the titles of book volumes, specified as a PathVariable.
+     * @return ResponseEntity with a list of VolumeResponse of the found volumes and HTTP status OK if found,
+     *         or HTTP status NOT_FOUND if not found.
      */
     @GetMapping(path = "/title/{title}")
     public ResponseEntity<List<VolumeResponse>> findByTitle(@PathVariable String title){
@@ -141,10 +164,11 @@ public class VolumeController {
     }
 
     /**
-     * Handles HTTP GET request to retrieve the book witch authors name contains the informed string.
-     * @param authorName String as PathVariable
-     * @return ResponseEntity with VolumeResponse of the found Volume and HTTP status OK if it is found
-     *         or status NOT_FOUND if it is not found
+     * Handles an HTTP GET request to retrieve the book volumes whose authors' names contain the provided string.
+     *
+     * @param authorName The string to search for in the names of book authors, specified as a PathVariable.
+     * @return ResponseEntity with a list of VolumeResponse of the found volumes and HTTP status OK if found,
+     *         or HTTP status NOT_FOUND if not found.
      */
     @GetMapping(path = "/author/{authorName}")
     public ResponseEntity<List<VolumeResponse>> findByAuthor(@PathVariable String authorName) {
@@ -158,10 +182,11 @@ public class VolumeController {
     }
 
     /**
-     * Handles HTTP GET request to retrieve the book within a category
-     * @param categoryName String as PathVariable
-     * @return ResponseEntity with VolumeResponse of the found Volume and HTTP status OK if it is found
-     *         or status NOT_FOUND if it is not found
+     * Handles an HTTP GET request to retrieve the book volumes within a specified category.
+     *
+     * @param categoryName The name of the category to search for, specified as a PathVariable.
+     * @return ResponseEntity with a list of VolumeResponse of the found volumes and HTTP status OK if found,
+     *         or HTTP status NOT_FOUND if not found.
      */
     @GetMapping(path = "/category/{categoryName}")
     public ResponseEntity<List<VolumeResponse>> findByCategory(@PathVariable String categoryName){
@@ -175,30 +200,27 @@ public class VolumeController {
     }
 
     /**
-     * Checks if the isbn has a valid size
-     * @param isbn String containing isbn value
-     * @throws InvalidIsbnException if the lenght is invalid
-     *          or isbn String not have only numerical characters
+     * Checks if the ISBN has a valid length and consists only of numerical characters.
+     *
+     * @param isbn A String containing the ISBN value to be checked.
+     * @throws InvalidIsbnException If the length of the ISBN is invalid or it contains non-numerical characters.
      */
     private void checkForValidIsbn(String isbn){
         int isbnLength = isbn.length();
-        log.error("ISBN length: " + isbnLength);
-        log.error("ISBN: " + isbn);
         if (isbnLength != 10 && isbnLength !=13){
             throw new InvalidIsbnException("The isbn must have 10 or 13 characters");
         }
     }
 
     /**
-     * Checks if the string informed by the user is valid
-     * @param userInput String
-     * @throws InvalidUserInputException if the string is empty or bigger than 100 characters
+     * Checks if the provided string is valid.
      *
+     * @param userInput The string to be checked for validity.
+     * @throws InvalidUserInputException If the string is empty or exceeds 100 characters.
      */
     private void checkForValidString(String userInput){
         if (userInput.isBlank() || userInput.length() > 100){
             throw new InvalidUserInputException("The input must have between 1 and 100 characters");
         }
     }
-
 }
