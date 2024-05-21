@@ -24,6 +24,15 @@ public class SecurityFilter extends OncePerRequestFilter {
     @Autowired
     UserRepository userRepository;
 
+    /**
+     * Method to process incoming requests and apply security measures.
+     *
+     * @param request     HttpServletRequest representing the incoming request.
+     * @param response    HttpServletResponse representing the response to be sent.
+     * @param filterChain FilterChain for invoking the next filter in the chain.
+     * @throws ServletException If a servlet error occurs during processing.
+     * @throws IOException      If an I/O error occurs during processing.
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var token = this.recoverToken(request);
@@ -38,6 +47,12 @@ public class SecurityFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+    /**
+     * Method to extract token from the request.
+     *
+     * @param request HttpServletRequest representing the incoming request.
+     * @return String representing the extracted token, or null if not found.
+     */
     private String recoverToken(HttpServletRequest request){
         var authHeader = request.getHeader("Authorization");
         if (authHeader == null){
