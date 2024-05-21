@@ -13,13 +13,22 @@ import prisc.librarymanager.exception.*;
 
 import java.time.LocalDateTime;
 
+/**
+ * Global exception handler for REST controllers.
+ * Provides custom handling for specific exceptions and validation errors.
+ */
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
-
+    /**
+     * Handles EmptyApiResponseException.
+     *
+     * @param emptyApiReponse the exception to handle
+     * @return a ResponseEntity with EmptyApiResponseExceptionDetails and HTTP status NOT_FOUND
+     */
     @ExceptionHandler(EmptyApiResponseException.class)
     public ResponseEntity<EmptyApiResponseExceptionDetails>
-    handlerEmptyApiResponseExceptionDetails(EmptyApiResponseException emptyApiReponse){
+    handlerEmptyApiResponseException(EmptyApiResponseException emptyApiReponse){
         return new ResponseEntity<>(
                 EmptyApiResponseExceptionDetails.builder()
                         .timestamp(LocalDateTime.now())
@@ -32,9 +41,15 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         );
     }
 
+    /**
+     * Handles VolumeIsAlreadyRegisteredException.
+     *
+     * @param volumeIsAlreadyRegisteredExc the exception to handle
+     * @return a ResponseEntity with VolumeIsAlreadyRegisteredExceptionDetails and HTTP status CONFLICT
+     */
     @ExceptionHandler(VolumeIsAlreadyRegisteredException.class)
     public ResponseEntity<VolumeIsAlreadyRegisteredExceptionDetails>
-    handlerVolumeIsAlreadyRegisteredExceptionDetails(VolumeIsAlreadyRegisteredException volumeIsAlreadyRegisteredExc){
+    handlerVolumeIsAlreadyRegisteredException(VolumeIsAlreadyRegisteredException volumeIsAlreadyRegisteredExc){
         return new ResponseEntity<>(
                 VolumeIsAlreadyRegisteredExceptionDetails.builder()
                         .timestamp(LocalDateTime.now())
@@ -47,9 +62,15 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         );
     }
 
+    /**
+     * Handles InvalidIsbnException.
+     *
+     * @param invalidIsbnException the exception to handle
+     * @return a ResponseEntity with VolumeIsAlreadyRegisteredExceptionDetails and HTTP status BAD_REQUEST
+     */
     @ExceptionHandler(InvalidIsbnException.class)
     public ResponseEntity<VolumeIsAlreadyRegisteredExceptionDetails>
-    handlerInvalidIsbnExceptionDetails(InvalidIsbnException invalidIsbnException){
+    handlerInvalidIsbnException(InvalidIsbnException invalidIsbnException){
         return new ResponseEntity<>(
                 VolumeIsAlreadyRegisteredExceptionDetails.builder()
                         .timestamp(LocalDateTime.now())
@@ -62,6 +83,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         );
     }
 
+    /**
+     * Handles EbookTypeException.
+     *
+     * @param ebookTypeException the exception to handle
+     * @return a ResponseEntity with EbookTypeExceptionDetails and HTTP status BAD_REQUEST
+     */
     @ExceptionHandler(EbookTypeException.class)
     public ResponseEntity<EbookTypeExceptionDetails>
     handlerEbookTypeException(EbookTypeException ebookTypeException){
@@ -77,6 +104,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         );
     }
 
+    /**
+     * Handles VolumeNotFoundException.
+     *
+     * @param volumeNotFoundException the exception to handle
+     * @return a ResponseEntity with VolumeNotFoundExceptionDetails and HTTP status BAD_REQUEST
+     */
     @ExceptionHandler(VolumeNotFoundException.class)
     public ResponseEntity<VolumeNotFoundExceptionDetails>
     handlerVolumeNotFoundException(VolumeNotFoundException volumeNotFoundException){
@@ -92,6 +125,15 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         );
     }
 
+    /**
+     * Handles validation errors for method arguments.
+     *
+     * @param ex the MethodArgumentNotValidException exception
+     * @param headers the HTTP headers
+     * @param status the HTTP status code
+     * @param request the WebRequest
+     * @return a ResponseEntity with ValidationExceptionDetails and HTTP status BAD_REQUEST
+     */
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         return new ResponseEntity<>(
