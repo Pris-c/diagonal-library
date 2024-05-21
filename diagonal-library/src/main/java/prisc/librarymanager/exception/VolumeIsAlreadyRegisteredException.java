@@ -19,6 +19,5 @@ public class VolumeIsAlreadyRegisteredException extends RuntimeException {
      */
     public VolumeIsAlreadyRegisteredException(String message) {
         super(message);
-        log.error("VolumeIsAlreadyRegisteredException: " + message);
     }
 }

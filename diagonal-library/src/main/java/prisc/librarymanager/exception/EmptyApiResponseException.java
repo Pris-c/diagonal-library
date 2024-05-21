@@ -19,6 +19,5 @@ public class EmptyApiResponseException extends RuntimeException{
      */
     public EmptyApiResponseException(String message) {
         super(message);
-        log.error("VolumeIsAlreadyRegisteredException: " + message);
     }
 }

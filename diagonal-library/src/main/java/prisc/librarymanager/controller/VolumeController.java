@@ -203,7 +203,7 @@ public class VolumeController {
      * Checks if the ISBN has a valid length and consists only of numerical characters.
      *
      * @param isbn A String containing the ISBN value to be checked.
-     * @throws InvalidIsbnException If the length of the ISBN is invalid or it contains non-numerical characters.
+     * @throws InvalidIsbnException If the length of the ISBN is invalid, or it contains non-numerical characters.
      */
     private void checkForValidIsbn(String isbn){
         int isbnLength = isbn.length();
