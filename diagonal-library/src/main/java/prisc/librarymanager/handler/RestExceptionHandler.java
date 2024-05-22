@@ -125,10 +125,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         );
     }
 
-
-
     /**
-     * Handles EmptyApiResponseException.
+     * Handles InvalidCredentialsException.
      *
      * @param invalidCredentialsException the exception to handle
      * @return a ResponseEntity with InvalidCredentialsExceptionDetails and HTTP status BAD_REQUEST
