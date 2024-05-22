@@ -89,7 +89,7 @@ class VolumeServiceTest {
     void delete_RemovesVolume_WhenSuccessful(){
         doNothing().when(volumeRepositoryMock).deleteById(any(UUID.class));
 
-        volumeService.delete(UUID.randomUUID().toString());
+        volumeService.delete(UUID.randomUUID());
         verify(volumeRepositoryMock, times(1)).deleteById(any());
     }
 

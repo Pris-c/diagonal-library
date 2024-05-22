@@ -68,11 +68,11 @@ class VolumeControllerTest {
         when(volumeServiceMock.findById(any(UUID.class)))
                 .thenReturn(VolumeCreator.createValidVolumeResponse());
 
-        doNothing().when(volumeServiceMock).delete(anyString());
-        ResponseEntity<Void> response = volumeController.delete(UUID.randomUUID().toString());
+        doNothing().when(volumeServiceMock).delete(any(UUID.class));
+        ResponseEntity<Void> response = volumeController.delete(UUID.randomUUID());
 
         verify(volumeServiceMock, times(1)).findById(any(UUID.class));
-        verify(volumeServiceMock, times(1)).delete(anyString());
+        verify(volumeServiceMock, times(1)).delete(any(UUID.class));
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
@@ -82,8 +82,8 @@ class VolumeControllerTest {
         when(volumeServiceMock.findById(any(UUID.class)))
                 .thenReturn(null);
 
-        doNothing().when(volumeServiceMock).delete(anyString());
-        ResponseEntity<Void> response = volumeController.delete(UUID.randomUUID().toString());
+        doNothing().when(volumeServiceMock).delete(any(UUID.class));
+        ResponseEntity<Void> response = volumeController.delete(UUID.randomUUID());
 
         verify(volumeServiceMock, times(1)).findById(any(UUID.class));
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);

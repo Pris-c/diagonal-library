@@ -71,8 +71,8 @@ public class VolumeService {
      *
      * @param id String containing the ID of the volume to delete.
      */
-    public void delete(String id){
-        volumeRepository.deleteById(UUID.fromString(id));
+    public void delete(UUID id){
+        volumeRepository.deleteById(id);
     }
 
     /**

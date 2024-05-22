@@ -48,8 +48,8 @@ public class VolumeController {
      * @return ResponseEntity with HTTP status OK if the book is deleted, or HTTP status NOT FOUND if the book is not found in the database.
      */
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity delete(@PathVariable String id){
-        if(volumeService.findById(UUID.fromString(id)) == null) {
+    public ResponseEntity delete(@PathVariable UUID id){
+        if(volumeService.findById(id) == null) {
             return ResponseEntity.notFound().build();
         }
         volumeService.delete(id);
