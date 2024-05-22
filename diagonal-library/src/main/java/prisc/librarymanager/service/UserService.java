@@ -1,6 +1,8 @@
 package prisc.librarymanager.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import prisc.librarymanager.model.user.LibraryUser;
 import prisc.librarymanager.repository.UserRepository;
@@ -36,6 +38,18 @@ public class UserService {
      */
     public LibraryUser findUserByLogin(String login){
         return userRepository.findLibraryUserByLogin(login);
+    }
+
+
+    /**
+     * Retrieves the ID of the current user from the security context.
+     *
+     * @return UUID representing the user ID.
+     */
+    public UUID getUserIdFromContext(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String login = authentication.getName();
+        return findUserByLogin(login).getUserID();
     }
 
 }
