@@ -1,10 +1,12 @@
 package prisc.librarymanager.util;
 
+import prisc.librarymanager.model.user.LibraryUser;
 import prisc.librarymanager.model.volume.VolumeFavoriteRequest;
 import prisc.librarymanager.model.volume.VolumePostRequest;
 import prisc.librarymanager.model.volume.VolumeResponse;
 import prisc.librarymanager.model.volume.Volume;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -22,6 +24,21 @@ public class VolumeCreator {
                 .language("en")
                 .build();
     }
+    public static Volume createValidVolumeToFavorite(){
+        Set<LibraryUser> usersSet = new HashSet<>();
+        usersSet.add(LibraryUser.builder().userID(UUID.randomUUID()).name("Name1").build());
+        return Volume.builder()
+                .title("Harry Potter and the Prisoner of Azkaban")
+                .isbn10("0545582938")
+                .isbn13("9780545582933")
+                .authors(AuthorCreator.createAuthorSetToSave())
+                .categories(CategoryCreator.createCategorySetToSave())
+                .publishedDate("2013-08-27")
+                .users(usersSet)
+                .language("en")
+                .build();
+    }
+
 
     public static List<VolumeResponse> createValidVolumeResponseList(){
         return List.of(createValidVolumeResponse(),
@@ -86,7 +103,9 @@ public class VolumeCreator {
     }
 
     public static VolumeFavoriteRequest createValidVolumeFavoriteRequest(){
-        return VolumeFavoriteRequest.builder().volumeId(UUID.randomUUID().toString()).build();
+        VolumeFavoriteRequest volumeFavoriteRequest = new VolumeFavoriteRequest();
+        volumeFavoriteRequest.setVolumeId(UUID.randomUUID().toString());
+        return volumeFavoriteRequest;
     }
 
 

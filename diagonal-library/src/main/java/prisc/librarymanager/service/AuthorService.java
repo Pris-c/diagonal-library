@@ -30,6 +30,16 @@ public class AuthorService {
         return  authors.stream().map(this::processAuthor).collect(Collectors.toSet());
     }
 
+    /**
+     * Retrieves a list of authors whose name contains the provided substring.
+     *
+     * @param name String representing a substring of the author's name.
+     * @return List of Author objects containing the corresponding authors, or null if not found.
+     */
+    public List<Author> findByName(String name) {
+        return authorRepository.findByNameContainingIgnoreCase(name).orElse(null);
+    }
+
 
     /**
      * Retrieves author's information from the database.
@@ -52,16 +62,6 @@ public class AuthorService {
     private String getName(UUID authorID){
         Author author = authorRepository.findById(authorID).orElseThrow();
         return author.getName();
-    }
-
-    /**
-     * Retrieves a list of authors whose name contains the provided substring.
-     *
-     * @param name String representing a substring of the author's name.
-     * @return List of Author objects containing the corresponding authors, or null if not found.
-     */
-    public List<Author> findByName(String name) {
-        return authorRepository.findByNameContainingIgnoreCase(name).orElse(null);
     }
 
 }

@@ -65,6 +65,16 @@ public class VolumeService {
         return VolumeMapper.INSTANCE.toVolumeResponse(savedVolume);
     }
 
+
+    /**
+     * Deletes a volume from the database.
+     *
+     * @param id String containing the ID of the volume to delete.
+     */
+    public void delete(String id){
+        volumeRepository.deleteById(UUID.fromString(id));
+    }
+
     /**
      * Adds a volume to a user's favorites.
      *
@@ -109,7 +119,6 @@ public class VolumeService {
         return VolumeMapper.INSTANCE.toVolumeResponseList(volumeRepository.findTop5Favorites().orElse(null));
     }
 
-
     /**
      * Retrieves a list of all volumes.
      *
@@ -126,7 +135,11 @@ public class VolumeService {
      * @return VolumeResponse representing the volume corresponding to the provided ID.
      */
     public VolumeResponse findById(UUID volumeId){
-        return VolumeMapper.INSTANCE.toVolumeResponse(volumeRepository.findById(volumeId).orElse(null));
+        Volume volume = volumeRepository.findById(volumeId).orElse(null);
+        if (volume != null){
+            return VolumeMapper.INSTANCE.toVolumeResponse(volume);
+        }
+        return null;
     }
 
     /**
@@ -199,15 +212,6 @@ public class VolumeService {
             }
             return VolumeMapper.INSTANCE.toVolumeResponseList(new ArrayList<>(volumes));
         }
-    }
-
-    /**
-     * Deletes a volume from the database.
-     *
-     * @param id String containing the ID of the volume to delete.
-     */
-    public void delete(String id){
-        volumeRepository.deleteById(UUID.fromString(id));
     }
 
     /**

@@ -31,6 +31,17 @@ public class CategoryService {
     }
 
     /**
+     * Retrieves the Category witch name matches the informed substring
+     *
+     * @param categoryName substring representing the category name
+     * @return Category correspondent to Category Name or null
+     *
+     */
+    public List<Category> findByName(String categoryName) {
+        return categoryRepository.findByNameContainingIgnoreCase(categoryName).orElse(null);
+    }
+
+    /**
      * Retrieves category's information from the database.
      * If the category is not found, it saves it first.
      *
@@ -50,17 +61,6 @@ public class CategoryService {
     private String getName(UUID categoryID){
         Category category = categoryRepository.findById(categoryID).orElseThrow();
         return category.getName();
-    }
-
-    /**
-     * Retrieves the Category witch name matches the informed substring
-     *
-     * @param categoryName substring representing the category name
-     * @return Category correspondent to Category Name or null
-     *
-     */
-    public List<Category> findByName(String categoryName) {
-        return categoryRepository.findByNameContainingIgnoreCase(categoryName).orElse(null);
     }
 
 }

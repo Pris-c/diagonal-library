@@ -9,6 +9,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import prisc.librarymanager.exception.VolumeIsAlreadyRegisteredException;
+import prisc.librarymanager.model.user.LibraryUser;
+import prisc.librarymanager.model.user.UserRole;
 import prisc.librarymanager.model.volume.Volume;
 import prisc.librarymanager.model.volume.VolumeResponse;
 import prisc.librarymanager.repository.VolumeRepository;
@@ -19,6 +22,7 @@ import prisc.librarymanager.util.VolumeCreator;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -38,6 +42,8 @@ class VolumeServiceTest {
     AuthorService authorServiceMock;
     @Mock
     CategoryService categoryServiceMock;
+    @Mock
+    UserService userServiceMock;
 
 
     @ParameterizedTest
@@ -64,19 +70,103 @@ class VolumeServiceTest {
         verifyNoMoreInteractions(googleApiConsumerMock);
     }
 
-    /*@ParameterizedTest
+    @ParameterizedTest
     @ValueSource(strings = {"0439554934", "9780439554930"})
     @DisplayName("save: ")
     void save_ThrowsVolumeIsAlreadyRegisteredException_WhenTheVolumeIsAlreadyInDb(String isbn) {
         when(volumeRepositoryMock.findByIsbn10(anyString())).thenReturn(Optional.of(VolumeCreator.createValidVolume()));
         when(volumeRepositoryMock.findByIsbn13(anyString())).thenReturn(Optional.of(VolumeCreator.createValidVolume()));
 
-        Assertions.assertThatThrownBy(() -> volumeService.save(isbn, 10)).isInstanceOf(VolumeIsAlreadyRegisteredException.class);
+        Assertions.assertThatThrownBy(() -> volumeService.save(isbn)).isInstanceOf(VolumeIsAlreadyRegisteredException.class);
 
         verifyNoInteractions(authorServiceMock);
         verifyNoInteractions(categoryServiceMock);
         verifyNoInteractions(googleApiConsumerMock);
-    }*/
+    }
+
+    @Test
+    @DisplayName("delete: Removes volume from database when successful")
+    void delete_RemovesVolume_WhenSuccessful(){
+        doNothing().when(volumeRepositoryMock).deleteById(any(UUID.class));
+
+        volumeService.delete(UUID.randomUUID().toString());
+        verify(volumeRepositoryMock, times(1)).deleteById(any());
+    }
+
+    @Test
+    @DisplayName("addFavorite: Save user's favorite when successful")
+    void addFavorite_SavesUserFavorite_WhenSuccessful() {
+        UUID userId = UUID.randomUUID();
+        LibraryUser user = LibraryUser
+                .builder()
+                .name("Name")
+                .userID(userId)
+                .favorites(Set.of(Volume.builder().volumeId(UUID.randomUUID()).build()))
+                .role(UserRole.USER)
+                .login("namelogin")
+                .build();
+
+        when(userServiceMock.getUserIdFromContext()).thenReturn(userId);
+        when(volumeRepositoryMock.findById(any(UUID.class))).thenReturn(Optional.of(VolumeCreator.createValidVolumeToFavorite()));
+        when(userServiceMock.findById(userId)).thenReturn(user);
+        when(volumeRepositoryMock.save(any(Volume.class))).thenReturn(VolumeCreator.createValidVolume());
+
+        volumeService.addFavorite(VolumeCreator.createValidVolumeFavoriteRequest());
+
+        verify(volumeRepositoryMock, times(1)).save(any(Volume.class));
+
+    }
+
+    @Test
+    @DisplayName("removeFavorite: Remove volume from user's favorites when successful")
+    void removeFavorite_RemoveVolumeFromUserFavorites_WhenSuccessful() {
+        UUID userId = UUID.randomUUID();
+        LibraryUser user = LibraryUser
+                .builder()
+                .name("Name")
+                .userID(userId)
+                .favorites(Set.of(Volume.builder().volumeId(UUID.randomUUID()).build()))
+                .role(UserRole.USER)
+                .login("namelogin")
+                .build();
+
+        when(userServiceMock.getUserIdFromContext()).thenReturn(userId);
+        when(volumeRepositoryMock.findById(any(UUID.class))).thenReturn(Optional.of(VolumeCreator.createValidVolumeToFavorite()));
+        when(userServiceMock.findById(userId)).thenReturn(user);
+        when(volumeRepositoryMock.save(any(Volume.class))).thenReturn(VolumeCreator.createValidVolume());
+
+        volumeService.addFavorite(VolumeCreator.createValidVolumeFavoriteRequest());
+
+        verify(volumeRepositoryMock, times(1)).save(any(Volume.class));
+    }
+
+    @Test
+    @DisplayName("getUserFavorites: Returns a list of Volumes when successful")
+    void getUserFavorites_ReturnsListOfVolumes_WhenSuccessful(){
+        UUID userId = UUID.randomUUID();
+        when(userServiceMock.getUserIdFromContext()).thenReturn(userId);
+        when(volumeRepositoryMock.findFavoriteByUserId(userId)).thenReturn(Optional.of(VolumeCreator.createValidVolumeList()));
+
+        List<VolumeResponse> volumeResponse = volumeService.getUserFavorites();
+
+        Assertions.assertThat(volumeResponse).isNotNull().hasSize(2);
+        verify(userServiceMock, times(1)).getUserIdFromContext();
+        verify(volumeRepositoryMock, times(1)).findFavoriteByUserId(any(UUID.class));
+    }
+
+    @Test
+    @DisplayName("getUserFavorites: Returns an empty list if no Volume is found")
+    void getUserFavorites_ReturnsEmptyList_IfNoFavoriteIsFound(){
+        UUID userId = UUID.randomUUID();
+        when(userServiceMock.getUserIdFromContext()).thenReturn(userId);
+        when(volumeRepositoryMock.findFavoriteByUserId(userId)).thenReturn(Optional.empty());
+
+        List<VolumeResponse> volumeResponse = volumeService.getUserFavorites();
+
+        Assertions.assertThat(volumeResponse).isNotNull().hasSize(0);
+        verify(userServiceMock, times(1)).getUserIdFromContext();
+        verify(volumeRepositoryMock, times(1)).findFavoriteByUserId(any(UUID.class));
+    }
 
     @Test
     @DisplayName("getAll: Returns a List of all Volumes in Database when successful")
@@ -104,7 +194,7 @@ class VolumeServiceTest {
         Assertions.assertThat(volumeResponse.getVolumeId()).isEqualTo(volumeId);
     }
 
-   /* @Test
+    @Test
     @DisplayName("findById: Returns null when no Volume is found")
     void findById_ReturnsNull_WhenNoVolumeIsFound() {
          when(volumeRepositoryMock.findById(any(UUID.class))).thenReturn(Optional.empty());
@@ -112,7 +202,6 @@ class VolumeServiceTest {
         VolumeResponse volumeResponse = volumeService.findById(UUID.randomUUID());
         Assertions.assertThat(volumeResponse).isNull();
     }
-    */
 
     @ParameterizedTest
     @ValueSource(strings = {"0439554934", "9780439554930"})
