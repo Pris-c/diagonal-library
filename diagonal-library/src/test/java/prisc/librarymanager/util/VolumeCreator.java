@@ -1,5 +1,7 @@
 package prisc.librarymanager.util;
 
+import prisc.librarymanager.model.volume.VolumeFavoriteRequest;
+import prisc.librarymanager.model.volume.VolumePostRequest;
 import prisc.librarymanager.model.volume.VolumeResponse;
 import prisc.librarymanager.model.volume.Volume;
 
@@ -76,5 +78,16 @@ public class VolumeCreator {
                 .language("en")
                 .build();
     }
+
+    public static VolumePostRequest createValidVolumePostRequest(){
+        return VolumePostRequest.builder()
+                .isbn("0439554934")
+                .build();
+    }
+
+    public static VolumeFavoriteRequest createValidVolumeFavoriteRequest(){
+        return VolumeFavoriteRequest.builder().volumeId(UUID.randomUUID().toString()).build();
+    }
+
 
 }

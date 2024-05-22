@@ -44,5 +44,4 @@ public class GoogleApiConsumer {
         return VolumeMapper.INSTANCE
                 .toVolume(googleResponse.getItems().get(0).getVolumeInfo());
     }
-
 }

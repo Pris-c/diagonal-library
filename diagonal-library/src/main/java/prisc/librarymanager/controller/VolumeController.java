@@ -49,11 +49,11 @@ public class VolumeController {
      */
     @DeleteMapping(path = "/{id}")
     public ResponseEntity delete(@PathVariable String id){
-        volumeService.delete(id);
         if(volumeService.findById(UUID.fromString(id)) == null) {
-            return ResponseEntity.ok().build();
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
+        volumeService.delete(id);
+        return ResponseEntity.ok().build();
     }
 
     /**
