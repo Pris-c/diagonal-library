@@ -125,6 +125,29 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         );
     }
 
+
+
+    /**
+     * Handles EmptyApiResponseException.
+     *
+     * @param invalidCredentialsException the exception to handle
+     * @return a ResponseEntity with InvalidCredentialsExceptionDetails and HTTP status BAD_REQUEST
+     */
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<InvalidCredentialsExceptionDetails>
+    handlerInvalidCredentialsException(InvalidCredentialsException invalidCredentialsException){
+        return new ResponseEntity<>(
+                InvalidCredentialsExceptionDetails.builder()
+                        .timestamp(LocalDateTime.now())
+                        .status(HttpStatus.BAD_REQUEST.value())
+                        .title("InvalidCredentialsException: Check the documentation")
+                        .details(invalidCredentialsException.getMessage())
+                        .developerMessage(invalidCredentialsException.getClass().getName())
+                        .build(),
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
     /**
      * Handles validation errors for method arguments.
      *

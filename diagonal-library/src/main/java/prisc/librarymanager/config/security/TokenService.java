@@ -7,6 +7,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import prisc.librarymanager.exception.InvalidCredentialsException;
 import prisc.librarymanager.model.user.LibraryUser;
 
 import java.time.Instant;
@@ -38,7 +39,7 @@ public class TokenService {
             return token;
 
         } catch (JWTCreationException exception){
-            throw new RuntimeException("Error while generate token", exception);
+            throw new InvalidCredentialsException("Error while generate token");
         }
     }
 
