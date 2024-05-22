@@ -4,13 +4,11 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import prisc.librarymanager.config.security.TokenService;
-import prisc.librarymanager.model.user.*;
-import prisc.librarymanager.repository.UserRepository;
+import prisc.librarymanager.model.user.AuthenticationDTO;
+import prisc.librarymanager.model.user.LibraryUser;
+import prisc.librarymanager.model.user.RegisterDTO;
+import prisc.librarymanager.service.security.AuthenticationService;
 
 /**
  * Controller class for handling authentication-related requests.
@@ -21,12 +19,7 @@ import prisc.librarymanager.repository.UserRepository;
 public class AuthenticationController {
 
     @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    TokenService tokenService;
+    AuthenticationService authenticationService;
 
     /**
      * Endpoint for user login.
@@ -36,11 +29,7 @@ public class AuthenticationController {
      */
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Valid AuthenticationDTO authenticationDTO){
-        var newUser = new UsernamePasswordAuthenticationToken(authenticationDTO.login(), authenticationDTO.password());
-        var auth = this.authenticationManager.authenticate(newUser);
-
-        var token = tokenService.generateToken((LibraryUser) auth.getPrincipal());
-        return ResponseEntity.ok(new LoginResponseDTO(token));
+        return ResponseEntity.ok(authenticationService.login(authenticationDTO));
     }
 
     /**
@@ -51,12 +40,10 @@ public class AuthenticationController {
      */
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody @Valid RegisterDTO registerDTO){
-        if (this.userRepository.findByLogin(registerDTO.login()) != null){
-            return (ResponseEntity) ResponseEntity.status(HttpStatus.CONFLICT);
+        LibraryUser newUser = authenticationService.register(registerDTO);
+        if (newUser == null){
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
-        String encryptedPassword = new BCryptPasswordEncoder().encode(registerDTO.password());
-        LibraryUser newUser = new LibraryUser(registerDTO.name().toLowerCase(), registerDTO.login(), encryptedPassword, UserRole.USER);
-        this.userRepository.save(newUser);
         return ResponseEntity.ok().build();
     }
 
