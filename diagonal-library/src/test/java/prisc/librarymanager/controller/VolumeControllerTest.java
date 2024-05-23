@@ -38,11 +38,14 @@ class VolumeControllerTest {
     @ParameterizedTest
     @ValueSource(strings = {"0439554934", "9780439554930"})
     @DisplayName("save: Returns the persisted VolumeResponse when successful")
-    void save_PersistsVolume_WhenSuccessful(VolumePostRequest volumePostRequest) {
+    void save_PersistsVolume_WhenSuccessful(String isbn) {
+        VolumePostRequest volumePostRequest =  new VolumePostRequest();
+        volumePostRequest.setIsbn(isbn);
+
         when(volumeServiceMock.save(any(String.class)))
                 .thenReturn(VolumeCreator.createValidVolumeResponse());
 
-        VolumeResponse responseBody = volumeController.save(VolumeCreator.createValidVolumePostRequest()).getBody();
+        VolumeResponse responseBody = volumeController.save(volumePostRequest).getBody();
         Assertions.assertThat(responseBody.getVolumeId())
                 .isNotNull();
         Assertions.assertThat(responseBody.getVolumeId()).isNotNull();
@@ -53,7 +56,9 @@ class VolumeControllerTest {
     @DisplayName("save: InvalidIsbnException is thrown by intern method when isbn is invalid")
     void save_InvalidIsbn_ThrowsInvalidIsbnException(String invalidIsbn) {
         try {
-            volumeController.save(VolumePostRequest.builder().isbn(invalidIsbn).build());
+            VolumePostRequest volumePostRequest =  new VolumePostRequest();
+            volumePostRequest.setIsbn(invalidIsbn);
+            volumeController.save(volumePostRequest);
         } catch (Exception e) {
             Assertions.assertThat(e).isInstanceOf(InvalidIsbnException.class);
         } finally {

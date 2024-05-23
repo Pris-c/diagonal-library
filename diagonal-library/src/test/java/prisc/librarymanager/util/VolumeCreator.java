@@ -97,9 +97,9 @@ public class VolumeCreator {
     }
 
     public static VolumePostRequest createValidVolumePostRequest(){
-        return VolumePostRequest.builder()
-                .isbn("0439554934")
-                .build();
+        final VolumePostRequest volumePostRequest = new VolumePostRequest();
+        volumePostRequest.setIsbn("0439554934");
+        return volumePostRequest;
     }
 
     public static VolumeFavoriteRequest createValidVolumeFavoriteRequest(){
