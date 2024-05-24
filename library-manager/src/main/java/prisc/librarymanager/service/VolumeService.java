@@ -65,6 +65,11 @@ public class VolumeService {
         return VolumeMapper.INSTANCE.toVolumeResponse(savedVolume);
     }
 
+    /**
+     * Loads the initial volumes in database
+     *
+     * @param volumeToSave The Volume object containing data to be processed and saved.
+     */
     @Transactional
     public void dataLoader(Volume volumeToSave){
         volumeToSave.setAuthors(authorService.processAuthors(volumeToSave.getAuthors()));
@@ -80,6 +85,7 @@ public class VolumeService {
      *
      * @param id String containing the ID of the volume to delete.
      */
+    @Transactional
     public void delete(UUID id){
         volumeRepository.deleteById(id);
     }
@@ -89,6 +95,7 @@ public class VolumeService {
      *
      * @param volumeFavoriteRequest Request object containing the volume ID.
      */
+    @Transactional
     public void addFavorite(VolumeFavoriteRequest volumeFavoriteRequest){
         UUID userId = userService.getUserIdFromContext();
         Volume favoriteVolume = volumeRepository.findById(UUID.fromString(volumeFavoriteRequest.getVolumeId())).get();
@@ -101,6 +108,7 @@ public class VolumeService {
      *
      * @param volumeFavoriteRequest Request object containing the volume ID.
      */
+    @Transactional
     public void removeFavorite(VolumeFavoriteRequest volumeFavoriteRequest){
         UUID userId = userService.getUserIdFromContext();
         Volume favoriteVolume = volumeRepository.findById(UUID.fromString(volumeFavoriteRequest.getVolumeId())).get();
@@ -137,6 +145,11 @@ public class VolumeService {
         return VolumeMapper.INSTANCE.toVolumeResponseList(volumeRepository.findAll());
     }
 
+    /**
+     * Checks if the volume database is empty.
+     *
+     * @return boolean indicating whether the volume database is empty.
+     */
     public boolean emptyDatabase() {
         return volumeRepository.findAll().isEmpty();
     }

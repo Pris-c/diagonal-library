@@ -15,9 +15,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * DataLoader class responsible for loading initial volume data into the database.
+ * Implements CommandLineRunner to execute the data loading when the application starts.
+ */
 @Log4j2
 @Component
 public class DataLoader implements CommandLineRunner {
+
+    List<GoogleApiResponse> gApiResponse;
+    List<Volume> volumes;
 
     @Autowired
     ObjectMapper mapper;
@@ -25,9 +32,12 @@ public class DataLoader implements CommandLineRunner {
     @Autowired
     VolumeService volumeService;
 
-    List<GoogleApiResponse> gApiResponse;
-    List<Volume> volumes;
-
+    /**
+     * Loads initial volume data from a JSON file and saves it to the database if the database is empty.
+     *
+     * @param args Command-line arguments passed to the application.
+     * @throws Exception if an error occurs during data loading.
+     */
     @Override
     public void run(String... args) throws Exception {
         try {
