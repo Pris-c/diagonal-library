@@ -1,7 +1,5 @@
 # Library Manager
 
-# Library Management System
-
 ## Overview
 
 Library Manager is a Spring Boot application designed to manage a library's book collection, including volumes, authors, categories, and user interactions such as adding favorite books. The application uses Google Books API to retrieve book information and integrates with a PostgreSQL database for storage.
