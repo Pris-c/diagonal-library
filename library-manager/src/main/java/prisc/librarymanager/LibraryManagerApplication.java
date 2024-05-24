@@ -9,5 +9,7 @@ import org.springframework.context.annotation.PropertySource;
 public class LibraryManagerApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(LibraryManagerApplication.class, args);
-	}
+
+    }
+
 }

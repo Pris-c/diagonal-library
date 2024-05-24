@@ -35,11 +35,6 @@ public class Volume  implements Serializable {
     private UUID volumeId;
 
     /**
-     * Quantity of volumes.
-     */
-    private Integer units;
-
-    /**
      * Title of the volume. Should have between 1 and 80 characters.
      */
     @NotEmpty
@@ -55,7 +50,6 @@ public class Volume  implements Serializable {
             inverseJoinColumns =  @JoinColumn(name = "author_id")
     )
     private Set<Author> authors;
-
 
     /**
      * Published Date of the volume.

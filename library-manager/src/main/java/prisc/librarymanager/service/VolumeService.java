@@ -65,6 +65,15 @@ public class VolumeService {
         return VolumeMapper.INSTANCE.toVolumeResponse(savedVolume);
     }
 
+    @Transactional
+    public void dataLoader(Volume volumeToSave){
+        volumeToSave.setAuthors(authorService.processAuthors(volumeToSave.getAuthors()));
+        volumeToSave.setCategories(categoryService.processCategories(volumeToSave.getCategories()));
+        volumeToSave.setPublishedDate(volumeToSave.getPublishedDate().substring(0, 4));
+
+        volumeRepository.save(volumeToSave);
+    }
+
 
     /**
      * Deletes a volume from the database.
@@ -126,6 +135,10 @@ public class VolumeService {
      */
     public List<VolumeResponse> getAll() {
         return VolumeMapper.INSTANCE.toVolumeResponseList(volumeRepository.findAll());
+    }
+
+    public boolean emptyDatabase() {
+        return volumeRepository.findAll().isEmpty();
     }
 
     /**

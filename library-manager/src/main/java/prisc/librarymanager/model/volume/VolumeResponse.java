@@ -19,7 +19,6 @@ import java.util.UUID;
 public class VolumeResponse {
 
     private UUID volumeId;
-    private Integer units;
     private String title;
     private String isbn10;
     private String isbn13;
