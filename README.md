@@ -1,6 +1,6 @@
 # Library Management System
 
-This Java project is a Library Management System, providing basic functionalities for managing books within a simulated library database. Users can view, add, search, update, and delete book records through a command-line interface.
+The Library Management System is a Java project designed to facilitate the management of books within a simulated library database. Users interact with the system via a command-line interface (CLI), enabling them to perform various operations such as adding, searching, updating, and deleting book records.
 
 ## Key Features
 
@@ -21,46 +21,58 @@ This Java project is a Library Management System, providing basic functionalitie
 
 ## Project Structure
 
-The project is organized into several classes, including:
+The project is structured into several classes, each serving a specific purpose:
 
 1. **Book:**
-    - Represents a book with attributes such as ID, title, author, and publication year.
+    - Represents a book entity with attributes such as ID, title, author, and publication year.
 
 2. **BookDTO:**
-    - A Data Transfer Object (DTO) class that protects the database object, representing the book information.
+    - Data Transfer Object (DTO) class used to encapsulate book information.
 
 3. **BookRepository:**
-    - Manages the persistence of book data, including methods for saving, querying, updating, and deleting books. Ensures a single book list (database) for the entire application.
+    - Manages the persistence of book data, providing methods for CRUD operations.
+
 4. **BookService:**
-    - Provides services for book manipulation, including querying, adding, searching, updating, and deleting. This class is responsible for implementing the business rules.
+    - Implements business logic for book manipulation, including querying, adding, searching, updating, and deleting.
 
 5. **BookController:**
-    - Offers a command-line interface for users to interact with the system's functionalities.
+    - Provides a command-line interface for users to interact with the system's functionalities.
 
 6. **LibraryPrinter:**
-    - A utility class for printing messages and user prompts to the console.
+    - Utility class for printing messages and user prompts to the console.
 
 7. **Enums:**
     - Enumeration classes for defining string and numeric fields, as well as update status.
 
-## How to Use
+## Getting Started
 
-1. **Run the Program:**
-    - Execute the `mainMenu` method in the `BookController` class to initiate user interaction.
+### Prerequisites
+- JDK 17
 
-2. **Menu Options:**
-    - Choose an option from the main menu by entering the corresponding number.
-    - Follow the on-screen instructions to perform the desired operations.
+### Installation
 
-## Requirements for Developers
+1. **Clone the repository:**
+     The current project is available on the _'java'_ branch of this repository.
 
-Developers wishing to utilize or contribute to this project should have the following:
+    ```bash
+   git clone https://github.com/yourusername/library-manager.git
+   cd library-manager
+   git checkout java
+    ```
 
-- **Java Development Kit (JDK):**
-    - Ensure you have Java installed. The project is developed using Java 17, and having the JDK installed is essential.
+2. **Compile the Program:**
+    Go into the root directory of the project
+    - Compile the project:
+    ```bash
+    javac Main.java
+    ```
+    
+2. **Run:**
+    - Execute the _'Main'_  class to initiate user interaction.
+    ```bash
+    java Main
+    ```
 
-- **Integrated Development Environment (IDE):**
-    - Use a Java-friendly IDE such as IntelliJ IDEA or Eclipse for a seamless development experience.
 
 ## Contribution
 
@@ -68,5 +80,5 @@ Contributions are welcome! Feel free to open issues to report bugs or propose en
 
 ## Author
 
-Priscila Campos
+Priscila Campos 👩‍💻
 
