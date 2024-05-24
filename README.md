@@ -45,9 +45,9 @@ This branch was built with the mission to integrate this backend application wit
 
 ### Prerequisites
 
-- Java 11
-- Maven 3.6.3
-- PostgreSQL 12
+- Java 17
+- Maven
+- PostgreSQL
 
 ### Installation
 
