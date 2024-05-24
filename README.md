@@ -1,175 +1,147 @@
+# Library Manager
+
 # Library Management System
 
 ## Overview
 
-Diagonal Library Management System is an application designed to manage a library's book inventory. It provides
-functionalities to add, update, delete, and retrieve information about books in the library.
+Library Manager is a Spring Boot application designed to manage a library's book collection, including volumes, authors, categories, and user interactions such as adding favorite books. The application uses Google Books API to retrieve book information and integrates with a PostgreSQL database for storage.
+
+This branch was built with the mission to integrate this backend application with the frontend in [Lumus Library](https://github.com/Pris-c/lumus-library-angular).
+
 
 ## Table of Contents
 
-- [Prerequisites](#prerequisites)
+- [Features](#features)
+- [Technologies Used](#technologies-used)
 - [Getting Started](#getting-started)
 - [Project Structure](#project-structure)
-- [Dependencies](#dependencies)
-- [Configuration](#configuration)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [Author](#author)
-- [Swagger Integration](#Swagger-Integration)
+- [API Endpoints](#api-endpoints)
+- [Testing](#testing)
 
-## Prerequisites
 
-Ensure you have the following installed on your system:
 
-- Java 17
-- PostgreSQL Database
-- Maven
+## Features
+
+- **Volume Management:** Add, update, delete, and search for books by ISBN, title, author, or category.
+- **User Management:** User registration, authentication, and favorite book management.
+- **Category and Author Management:** Handle book categories and authors, ensuring they are properly stored and retrieved from the database.
+- **Google Books API Integration:** Fetch book details using ISBN from Google Books API.
+- **Data Initialization:** Load initial data from a JSON file if the database is empty.
+
+
+## Technologies Used
+
+- **Spring Boot:** For building the application.
+- **Spring Data JPA:** For database operations.
+- **Spring Security:** For authentication and authorization.
+- **Hibernate:** For ORM (Object-Relational Mapping).
+- **PostgreSQL:** For the relational database.
+- **Mockito:** For unit testing.
+- **JUnit:** For running tests.
+- **AssertJ:** For fluent assertions in tests.
+- **Google Books API:** For fetching book information.
+- **Log4j2:** For logging.
+- **Jackson:** For JSON processing.
 
 ## Getting Started
 
-1. Clone the repository with the specific branch:
-    ```bash
-    git clone -b spring-boot-migration https://github.com/Pris-c/library-manager.git
+### Prerequisites
 
-2. Set up your PostgreSQL database and update the `application.yml` file with the appropriate database configurations.
+- Java 11
+- Maven 3.6.3
+- PostgreSQL 12
 
-3. Build and run the project:
+### Installation
+
+1. **Clone the repository:**
+     The current project is available on the _'adapt-for-frontend-integration'_ branch of this repository.
+
     ```bash
-    cd diagonal-library
+   git clone https://github.com/yourusername/library-manager.git
+   cd library-manager
+   git checkout adapt-for-frontend-integration
+    ```
+
+2. **Configure the database:**
+
+Create a PostgreSQL database and update the application.yml file with your database credentials.
+    
+        spring:
+        datasource:
+            url: jdbc:postgresql:<your-database-path>
+            username: <databse username>
+            password: <database password>
+            driver-class-name: org.postgresql.Driver
+        jpa:
+            hibernate:
+            ddl-auto: update
+            show-sql: true
+            format_sql: true
+    
+3. **Configure token secret:**
+Create a .properties file to keep your private key, which will be used by Spring Security to create and authenticate users' tokens.
+This secret key is essential for ensuring the security of user authentication and authorization.
+
+     ```bash
+    api.security.token.secret = ${JWT_SECRET: <your-secret-key>}
+     ```
+
+
+   
+4. **Run the application:**
+    ```bash
     mvn spring-boot:run
     ```
 
-4. Access the application at [http://localhost:8080](http://localhost:8080) in your web browser.
+5. **Access the application:**
+Open your browser and go to http://localhost:8080.
+
+
 
 ## Project Structure
 
-The project follows a standard Spring Boot project structure:
+- `src/main/java/prisc/librarymanager`: Contains the main application class and configuration.
+- `src/main/java/prisc/librarymanager/controller`: Contains REST controllers for handling HTTP requests.
+- `src/main/java/prisc/librarymanager/service`: Contains service classes for business logic.
+- `src/main/java/prisc/librarymanager/repository`: Contains repository interfaces for database operations.
+- `src/main/java/prisc/librarymanager/model`: Contains entity classes representing the database tables.
+- `src/main/java/prisc/librarymanager/util`: Contains utility classes such as the Google API consumer and DataLoader
+- `src/main/resources`: Contains application properties and initial data files.
+- `src/test`: Contains unit and integration tests.
 
-- `src/main/java`: Contains the Java source code.
-- `src/main/resources`: Contains application properties and configuration files.
-- `src/test`: Contains test classes.
+## API Endpoints
 
-## Dependencies
+### Volume Endpoints
 
-The project utilizes the following major dependencies:
+- `GET /volumes`: Retrieve all volumes.
+- `GET /volumes/{id}`: Retrieve a volume by ID.
+- `POST /volumes`: Add a new volume by ISBN.
+- `DELETE /volumes/{id}`: Delete a volume by ID.
 
-- Spring Boot
-- Spring Data JPA
-- MapStruct
-- Lombok
-- H2 Database (for testing)
-- PostgreSQL
-- Swagger
+### User Endpoints
 
-## Configuration
+- `POST /users/register`: Register a new user.
+- `POST /users/login`: Authenticate a user and return a JWT token.
+- `GET /users/favorites`: Get the authenticated user's favorite volumes.
+- `POST /users/favorites`: Add a volume to the user's favorites.
+- `DELETE /users/favorites`: Remove a volume from the user's favorites.
 
-### Maven Compiler Plugin
+### Author Endpoints
 
-The project uses the Maven Compiler Plugin for annotation processing. Ensure you have the required annotation processors
-for Lombok and MapStruct added to your project's build configuration.
+- `GET /authors/{name}`: Retrieve authors by name.
 
-```xml
+### Category Endpoints
 
-<plugins>
-    <!-- Other plugins -->
+- `GET /categories/{name}`: Retrieve categories by name.
 
-    <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>${maven-compiler-plugin.version}</version>
-        <configuration>
-            <annotationProcessorPaths>
-                <path>
-                    <groupId>org.projectlombok</groupId>
-                    <artifactId>lombok</artifactId>
-                    <version>${lombok.version}</version>
-                </path>
-                <path>
-                    <groupId>org.mapstruct</groupId>
-                    <artifactId>mapstruct-processor</artifactId>
-                    <version>${org.mapstruct.version}</version>
-                </path>
-            </annotationProcessorPaths>
-        </configuration>
-    </plugin>
-</plugins>
+## Testing
+
+The project includes unit tests for service and controller layers. To run the tests, use the following command:
+
+ ```bash
+   mvn test
 ```
 
-## Usage
-
-The Diagonal Library Management System provides a set of RESTful APIs to manage a library's book inventory.
-You can interact with the APIs using tools like Insomnia, Postman, or integrate them into your own applications.
-
-### Examples:
-
-#### Get all books:
-
-```http
-GET http://localhost:8080/books
-```
-
-#### Add a new book:
-
-```http
-POST http://localhost:8080/books
-Content-Type: application/json
-
-{
-"title": "Example Book",
-"author": "John Doe",
-"year": 2022
-}
-```
-
-#### Get a specific book by ID:
-
-```http
-GET http://localhost:8080/books/your-book-id
-```
-
-#### Find books by title:
-
-```http
-GET http://localhost:8080/books/title?title=example
-```
-
-#### Find books by author:
-
-```http
-GET http://localhost:8080/books/author?author=john
-```
-
-#### Find books by year:
-
-```http
-GET http://localhost:8080/books/year?year=2022
-```
-
-#### Update a book:
-
-```http
-PUT http://localhost:8080/books
-Content-Type: application/json
-
-{
-  "bookId": "your-book-id",
-  "title": "Updated Book",
-  "author": "Jane Doe",
-  "year": 2023
-}
-```
-
-#### Delete a book:
-
-```http
-DELETE http://localhost:8080/books/your-book-id
-```
-
-## Swagger Integration
-
-The Diagonal Library Management System leverages Swagger to provide an interactive interface, enabling direct
-interaction with the application's APIs. Access the Swagger interface at http://localhost:8080/swagger-ui/index.html to explore
-and make direct calls to the API endpoints.
 
 ## Contributing
 
@@ -178,8 +150,6 @@ directly, open a pull request.
 
 ## Author
 
-Priscila Campos
-
-
+Priscila Campos 👩‍💻
 
 
