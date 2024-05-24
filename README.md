@@ -9,11 +9,9 @@ user experience.
 
 ## Features
 
-- **Main Menu:** The main menu provides an intuitive interface for users to perform various actions, including listing
-  all books, adding new books, searching for books, updating book information, and deleting books.
+- **Main Menu:** The main menu provides an intuitive interface for users to perform various actions, including listing all books, adding new books, searching for books, updating book information, and deleting books.
 
-- **Listing Books:** Users can view a list of all books in the library. If the library is empty, a corresponding message
-  is displayed.
+- **Listing Books:** Users can view a list of all books in the library. If the library is empty, a corresponding message  is displayed.
 
 - **Adding Books:** Enrich the library by adding new books, providing details such as title, author, and publication
   year.
@@ -26,47 +24,43 @@ user experience.
 
 - **Deleting Books:** Remove books from the library by providing their unique ID.
 
+## Getting Started
+
+### Prerequisites
+- JDK 17
+- Maven
+- PostgreSQL
+
+
 ## Usage
 
-To utilize the Library Management System, follow these steps:
+To set up and use the Library Management System, follow these steps:
 
 1. **Clone the Repository:**
-    - Clone the project repository using your preferred IDE or the following command:
-      ```bash
-      git clone https://github.com/Pris-c/library-manager.git
-      ```
+    The current project is available on the _'maven-sql-integration'_ branch of this repository
 
-2. **Import into IDE:**
-    - Open the project in your favorite Java IDE (e.g., IntelliJ, Eclipse).
-    <br><br>
-3. **Configure PostgreSQL:**
+    ```bash
+   git clone https://github.com/yourusername/library-manager.git
+   cd library-manager
+   git checkout maven-sql-integration
+   ```
+
+2. **Configuration:**
     - Ensure you have a PostgreSQL database set up.
-    - Update the database configuration in the Hibernate configuration file (`hibernate.cfg.xml`) with your database credentials.
-      <br><br>
-4. **Run the Application:**
-    - Run the `Main` class within your IDE.
-      <br><br>
-5. **Interact with the System:**
-    - Follow the on-screen instructions to navigate through the main menu and perform various library management actions.
+    - Update the `hibernate.cfg.xml` file with your database credentials:
+      ```xml
+      <property name="hibernate.connection.url">jdbc:postgresql://<your-database-url>:<port>/<database-name></property>
+      <property name="hibernate.connection.username">your-username</property>
+      <property name="hibernate.connection.password">your-password</property>
+      ```
+    - Customize the `log4j2.xml` file to suit your logging preferences, ensuring logs are recorded as required.
 
-## Dependencies
 
-The Library Management System has the following dependencies:
-
-- PostgreSQL
-- Hibernate
-- Log4j
-
-## Configuration
-
-Before running the application, make sure to configure the following:
-
-- **PostgreSQL Database:**
-    - Set up a PostgreSQL database.
-    - Update the Hibernate configuration file (`hibernate.cfg.xml`) with your database credentials.
-
-- **Log4j Configuration:**
-    - Configure Log4j to suit your logging preferences in the `log4j2.xml` file.
+3. **Run the Application:**
+    - Go into the root directory of the project and run the application:
+      ```bash
+      mvn spring-boot:run
+      ```
 
 ## Contribution
 
@@ -74,4 +68,4 @@ Contributions are welcome! Feel free to open issues to report bugs or propose en
 
 ## Author
 
-Priscila Campos
+Priscila Campos 👩‍💻
