@@ -50,4 +50,17 @@ public class AuthenticationService {
         return this.userRepository.save(newUser);
     }
 
+
+    /**
+     * Registers the primary admin in system
+     *
+     * @param user LibraryUser containing the admin name, login and password
+     * @return LibraryUser representing the newly registered user
+     */
+    public LibraryUser loadPrimaryAdmin(LibraryUser user){
+        String encryptedPassword = new BCryptPasswordEncoder().encode(user.getPassword());
+        LibraryUser admin = new LibraryUser(user.getName().toLowerCase(), user.getLogin(), encryptedPassword, UserRole.ADMIN);
+        return this.userRepository.save(admin);
+    }
+
 }
