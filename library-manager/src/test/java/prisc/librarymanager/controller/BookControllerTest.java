@@ -1,4 +1,4 @@
-package prisc.diagonallibrary.controller;
+package prisc.librarymanager.controller;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -9,14 +9,13 @@ import org.mockito.Mock;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import prisc.librarymanager.controller.BookController;
 import prisc.librarymanager.controller.request.BookPostRequest;
 import prisc.librarymanager.controller.request.BookPutRequest;
 import prisc.librarymanager.controller.response.BookResponse;
 import prisc.librarymanager.exception.BookAlreadyExistsException;
 import prisc.librarymanager.exception.BookIdNotFoundException;
 import prisc.librarymanager.service.BookService;
-import prisc.diagonallibrary.util.BookCreator;
+import prisc.librarymanager.util.BookCreator;
 
 import java.util.ArrayList;
 import java.util.List;

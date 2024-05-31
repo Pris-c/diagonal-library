@@ -27,4 +27,6 @@ replay_pid*
 .idea/
 *.iml
 
+## Properties
+library-manager/src/main/resources/credential.properties
 

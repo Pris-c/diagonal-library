@@ -87,7 +87,7 @@ for Lombok and MapStruct added to your project's build configuration.
     git clone -b spring-boot-migration https://github.com/Pris-c/library-manager.git
     ```
 
-2. Set up your PostgreSQL database and update the `application.yml` file with the appropriate database configurations.
+2. Set up your PostgreSQL database and update the `credential.properties` file with the appropriate database configurations.
 
 3. Build and run the project:
     - Go into the root directory `library-manager/library-manager`

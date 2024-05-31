@@ -1,4 +1,4 @@
-package prisc.diagonallibrary;
+package prisc.librarymanager;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

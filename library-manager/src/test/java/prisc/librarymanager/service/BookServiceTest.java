@@ -1,4 +1,4 @@
-package prisc.diagonallibrary.service;
+package prisc.librarymanager.service;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -14,8 +14,7 @@ import prisc.librarymanager.exception.BookAlreadyExistsException;
 import prisc.librarymanager.exception.BookIdNotFoundException;
 import prisc.librarymanager.mapper.BookMapper;
 import prisc.librarymanager.repository.BookRepository;
-import prisc.diagonallibrary.util.BookCreator;
-import prisc.librarymanager.service.BookService;
+import prisc.librarymanager.util.BookCreator;
 
 import java.util.ArrayList;
 import java.util.List;

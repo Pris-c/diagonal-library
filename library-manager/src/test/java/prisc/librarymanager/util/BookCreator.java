@@ -1,4 +1,4 @@
-package prisc.diagonallibrary.util;
+package prisc.librarymanager.util;
 
 import prisc.librarymanager.controller.request.BookPostRequest;
 import prisc.librarymanager.controller.request.BookPutRequest;

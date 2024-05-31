@@ -1,4 +1,4 @@
-package prisc.diagonallibrary.repository;
+package prisc.librarymanager.repository;
 
 
 import org.assertj.core.api.Assertions;
@@ -7,8 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import prisc.librarymanager.entity.Book;
-import prisc.diagonallibrary.util.BookCreator;
-import prisc.librarymanager.repository.BookRepository;
+import prisc.librarymanager.util.BookCreator;
 
 import java.util.List;
 import java.util.Optional;
