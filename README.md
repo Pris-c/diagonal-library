@@ -8,10 +8,10 @@ functionalities to add, update, delete, and retrieve information about books in 
 ## Table of Contents
 
 - [Prerequisites](#prerequisites)
-- [Getting Started](#getting-started)
 - [Project Structure](#project-structure)
 - [Dependencies](#dependencies)
 - [Configuration](#configuration)
+- [Getting Started](#getting-started)
 - [Usage](#usage)
 - [Contributing](#contributing)
 - [Author](#author)
@@ -97,7 +97,11 @@ for Lombok and MapStruct added to your project's build configuration.
         mvn spring-boot:run
         ```
 
-4. Access the application at [http://localhost:8080](http://localhost:8080) in your web browser.
+4. Access the application at [http://localhost:8080](http://localhost:8080).
+
+## Swagger Integration
+
+The Diagonal Library Management System leverages Swagger to provide an interactive interface, enabling direct interaction with the application's APIs. Access the Swagger interface at http://localhost:8080/swagger-ui/index.html to explore and make direct calls to the API endpoints.
 
 ## Usage
 
@@ -128,7 +132,7 @@ Content-Type: application/json
 #### Get a specific book by ID:
 
 ```http
-GET http://localhost:8080/books/your-book-id
+GET http://localhost:8080/books/{id}
 ```
 
 #### Find books by title:
@@ -166,13 +170,12 @@ Content-Type: application/json
 #### Delete a book:
 
 ```http
-DELETE http://localhost:8080/books/your-book-id
+DELETE http://localhost:8080/books/{id}
 ```
 
 ## Contributing
 
-Contributions are welcome! Feel free to open issues to report bugs or propose enhancements. If you'd like to contribute
-directly, open a pull request.
+Contributions are welcome! Feel free to open issues to report bugs or propose enhancements. If you'd like to contribute directly, open a pull request.
 
 ## Author
 
