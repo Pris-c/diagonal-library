@@ -24,21 +24,7 @@ Ensure you have the following installed on your system:
 - PostgreSQL Database
 - Maven
 
-## Getting Started
 
-1. Clone the repository with the specific branch:
-    ```bash
-    git clone -b spring-boot-migration https://github.com/Pris-c/library-manager.git
-
-2. Set up your PostgreSQL database and update the `application.yml` file with the appropriate database configurations.
-
-3. Build and run the project:
-    ```bash
-    cd diagonal-library
-    mvn spring-boot:run
-    ```
-
-4. Access the application at [http://localhost:8080](http://localhost:8080) in your web browser.
 
 ## Project Structure
 
@@ -93,6 +79,25 @@ for Lombok and MapStruct added to your project's build configuration.
     </plugin>
 </plugins>
 ```
+
+## Getting Started
+
+1. Clone the repository with the specific branch:
+    ```bash
+    git clone -b spring-boot-migration https://github.com/Pris-c/library-manager.git
+    ```
+
+2. Set up your PostgreSQL database and update the `application.yml` file with the appropriate database configurations.
+
+3. Build and run the project:
+    - Go into the root directory `library-manager/library-manager`
+    - Run the application:
+
+        ```bash
+        mvn spring-boot:run
+        ```
+
+4. Access the application at [http://localhost:8080](http://localhost:8080) in your web browser.
 
 ## Usage
 

@@ -1,10 +1,9 @@
 package prisc.diagonallibrary.util;
 
-import jakarta.validation.Valid;
-import prisc.diagonallibrary.controller.request.BookPostRequest;
-import prisc.diagonallibrary.controller.request.BookPutRequest;
-import prisc.diagonallibrary.controller.response.BookResponse;
-import prisc.diagonallibrary.entity.Book;
+import prisc.librarymanager.controller.request.BookPostRequest;
+import prisc.librarymanager.controller.request.BookPutRequest;
+import prisc.librarymanager.controller.response.BookResponse;
+import prisc.librarymanager.entity.Book;
 
 import java.util.UUID;
 
