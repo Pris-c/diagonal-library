@@ -55,13 +55,13 @@ The project is structured into several classes, each serving a specific purpose:
      The current project is available on the _'java'_ branch of this repository.
 
     ```bash
-   git clone https://github.com/yourusername/library-manager.git
-   cd library-manager
-   git checkout java
+    git clone https://github.com/Pris-c/library-manager.git --branch java --single-branch
     ```
 
 2. **Compile the Program:**
-    Go into the root directory of the project
+    - Go into the root directory of the projec:
+   `library-manager/library-manager/src`
+   
     - Compile the project:
     ```bash
     javac Main.java
