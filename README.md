@@ -37,12 +37,10 @@ user experience.
 To set up and use the Library Management System, follow these steps:
 
 1. **Clone the Repository:**
-    The current project is available on the _'maven-sql-integration'_ branch of this repository
+    The current project is available on the _'maven-sql-integration'_ branch of this repository:
 
     ```bash
-   git clone https://github.com/yourusername/library-manager.git
-   cd library-manager
-   git checkout maven-sql-integration
+    git clone https://github.com/Pris-c/library-manager.git --branch maven-sql-integration --single-branch
    ```
 
 2. **Configuration:**
@@ -57,11 +55,22 @@ To set up and use the Library Management System, follow these steps:
 
 
 3. **Run the Application:**
-    - Go into the root directory of the project and run the application:
+    - Go into the root directory of the project `library-manager/library-manager`, where pom.xml is.
+
+    - Compile the code:
       ```bash
-      mvn spring-boot:run
+      mvn clean package
       ```
 
+    - Run the application
+      ```bash
+      java -jar target/library-manager-1.0-SNAPSHOT.jar
+      ```
+
+    Note:
+    - For consecutive runs, consider changing the property `<property name="hbm2ddl.auto">create</property>` to 'update' in `hibernate.cfg.xml`
+ 
+ 
 ## Contribution
 
 Contributions are welcome! Feel free to open issues to report bugs or propose enhancements. If you'd like to contribute directly, open a pull request.

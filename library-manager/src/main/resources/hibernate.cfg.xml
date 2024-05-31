@@ -18,7 +18,7 @@
         <property name="hibernate.format_sql">true</property>
 
         <!-- First time it is create and then onwards update-->
-        <property name="hbm2ddl.auto">update</property>
+        <property name="hbm2ddl.auto">create</property>
 
         <!-- - Mapping files or annotated classes -->
         <!-- - Add your entity classes or mapping files here  for ex: entity used below -->
