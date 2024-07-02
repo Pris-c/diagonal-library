@@ -10,9 +10,7 @@ import org.springframework.stereotype.Component;
 import prisc.librarymanager.mapper.VolumeMapper;
 import prisc.librarymanager.model.googleapi.GoogleApiResponse;
 import prisc.librarymanager.model.user.LibraryUser;
-import prisc.librarymanager.model.user.UserRole;
 import prisc.librarymanager.model.volume.Volume;
-import prisc.librarymanager.service.UserService;
 import prisc.librarymanager.service.VolumeService;
 import prisc.librarymanager.service.security.AuthenticationService;
 
@@ -57,7 +55,7 @@ public class DataLoader implements CommandLineRunner {
     public void run(String... args) throws Exception {
         try {
             if (volumeService.emptyDatabase()) {
-                gApiResponse = mapper.readValue(new File("src/main/resources/volumes-starter.json"), new TypeReference<List<GoogleApiResponse>>() {
+                gApiResponse = mapper.readValue(new File("/starter.json"), new TypeReference<List<GoogleApiResponse>>() {
                 });
                 volumes = gApiResponse.stream().map(g -> VolumeMapper.INSTANCE.toVolume(g.getItems().get(0).getVolumeInfo())).toList();
                 volumes.forEach(v -> volumeService.dataLoader(v));
