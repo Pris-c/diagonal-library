@@ -26,4 +26,4 @@ Different versions of the project are organized into specific branches:
 
 5. [**adapt-for-frontend-integration**](https://github.com/Pris-c/library-manager/tree/adapt-for-frontend-integration) ✔ : This branch focuses on integrating the Library Management System backend application with the frontend in [Lumus Library](https://github.com/Pris-c/lumus-library-angular). It aims to establish seamless communication between the frontend and backend components, enabling cohesive user experiences and enhanced functionality.
 
-6. docker-database-migration: To streamline the deployment and management of the database, this branch will focus on migrating the project's database to Docker. This migration aims to enhance scalability, portability, and ease of maintenance by containerizing the database within a Docker environment.
+6. [**docker-migration**](https://github.com/Pris-c/library-manager/tree/docker-migration) ✔ : To streamline the deployment and management of the database, this branch focuses on migrating the project to Docker. This migration aims to enhance scalability, portability, and ease of maintenance by containerizing the database within a Docker environment.
